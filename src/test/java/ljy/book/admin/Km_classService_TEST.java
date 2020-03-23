@@ -15,9 +15,4 @@ public class Km_classService_TEST {
 
 	@Autowired
 	KM_ClassService km_classService;
-
-	@Test
-	@Ignore
-	public void getOneByUserId() {
-	}
 }
