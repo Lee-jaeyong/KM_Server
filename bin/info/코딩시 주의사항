@@ -1,0 +1,9 @@
+1. querydsl 설치 방법
+	- sts.ini 파일에 
+	
+	-vm
+	C:\Program Files\Java\jdk1.8.0_45\bin\javaw.exe 추가 (반드시 -vmargs 위에 놓아야함)
+	
+2. 메이븐 install 에러 발생시
+	-window -java -installJRE 에서 jdk 등록 후 jre는 삭제할 것
+	- 그 후 프로젝트 클린 진행 후 eclipes:eclipes 를 goel에 지정 하여 install 진행

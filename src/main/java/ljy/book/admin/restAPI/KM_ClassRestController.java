@@ -47,15 +47,9 @@ public class KM_ClassRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
-	ControllerLinkBuilder linkBuilder;
-
-	@PostConstruct
-	public void init() {
-		linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
-	}
-
 	@GetMapping
 	public ResponseEntity getClassList() {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		List<KM_classVO> list = km_classService.getClassList();
 		List<Object> result = new ArrayList<Object>();
 		for (KM_classVO listData : list) {
@@ -64,20 +58,22 @@ public class KM_ClassRestController {
 			km_classResource.add(linkBuilder.slash(listData.getSeq()).withRel("update").withDeprecation("수정"));
 			result.add(km_classResource);
 		}
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON_UTF8).body(result);
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(result);
 	}
 
 	@GetMapping("{idx}")
 	public ResponseEntity getClassInfo(@PathVariable long idx) {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		KM_classVO km_class = km_classService.getClassInfo(idx);
 		Km_classResource km_classResource = new Km_classResource(km_class);
 		km_classResource.add(linkBuilder.slash(km_class.getSeq()).withRel("delete").withDeprecation("삭제"));
 		km_classResource.add(linkBuilder.slash(km_class.getSeq()).withRel("update").withDeprecation("수정"));
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON_UTF8).body(km_classResource);
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}
 
 	@PostMapping
 	public ResponseEntity save(@Valid @RequestBody KM_classVO km_classVO, Errors errors) {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_classResource km_classResource = new Km_classResource(km_classVO);
 		km_classValidator.validate(km_classVO, errors);
 		if (errors.hasErrors()) {
@@ -87,7 +83,7 @@ public class KM_ClassRestController {
 		km_classResource.add(linkBuilder.slash("").withRel("delete").withDeprecation("삭제"));
 		KM_class km_class = km_classService.save(modelMapper.map(km_classVO, KM_class.class));
 		km_classVO.setSeq(km_class.getSeq());
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON_UTF8).body(km_classResource);
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}
 
 //	@GetMapping("{userID}")
