@@ -24,12 +24,4 @@ public class Km_Report_RestAPI_TEST {
 
 	MockMvc mvc;
 
-	@Test
-	public void getReport_TEST() throws Exception {
-		this.mvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new CharacterEncodingFilter("UTF-8", true))
-				.build();
-		System.out.println(
-				mvc.perform(get("/report/class").param("page", "5").param("size", "2").param("classIdx", "22"))
-						.andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
-	}
 }
