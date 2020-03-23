@@ -13,6 +13,4 @@ import ljy.book.admin.service.KM_ClassService;
 @RunWith(SpringRunner.class)
 public class Km_classService_TEST {
 
-	@Autowired
-	KM_ClassService km_classService;
 }
