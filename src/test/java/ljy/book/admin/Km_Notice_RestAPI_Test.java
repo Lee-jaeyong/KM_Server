@@ -33,12 +33,4 @@ public class Km_Notice_RestAPI_Test {
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
 	}
 
-	public void addNotice() throws Exception {
-		this.mvc = MockMvcBuilders.webAppContextSetup(wac).addFilter(new CharacterEncodingFilter("UTF-8", true))
-				.build();
-		System.out.println(mvc
-				.perform(post("/notice").param("noticeTitle", "자바 참고자료").param("noticeContent", "자바 참고자료 입니다.")
-						.param("id", "윤지원").param("classIdx", "22"))
-				.andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
-	}
 }
