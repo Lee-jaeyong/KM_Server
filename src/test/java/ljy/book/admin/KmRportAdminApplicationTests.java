@@ -59,24 +59,4 @@ class KmRportAdminApplicationTests {
 		System.out.println(mvc.perform(get("/professor/class").param("id", "윤지원")).andExpect(status().isOk())
 				.andReturn().getResponse().getContentAsString());
 	}
-
-//	public void pageTest() {
-//		CustomPageable pageable = new CustomPageable();
-//		pageable.setPage(0);
-//		pageable.setSize(3);
-//		pageable.setSort("className");
-//		Km_user user = new Km_user();
-//		user.setId("윤지원");
-//		List<Km_class> list = km_classAPI.findByUserId(user);
-//		for (Km_class c : list) {
-//			System.out.println(c.getClassName());
-//		}
-//	}
-
-	public void subjectInKm_user() {
-		KM_class classes = new KM_class();
-		//classes.setClassIdx(22L);
-		//Optional<KM_class> a = km_classAPI.findById(classes.getClassIdx());
-		//System.out.println(a.isPresent());
-	}
 }
