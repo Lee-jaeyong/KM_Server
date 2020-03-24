@@ -19,4 +19,8 @@ public interface KM_ClassAPI extends CommonRepository<KM_class, Long> {
 	@Query("UPDATE KM_class p SET p.plannerDocName = :docName WHERE p.seq = :idx")
 	void plannerDocFileUpload(@Param("docName") String docName, @Param("idx") long idx);
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE KM_class p SET p.plannerDocName = null WHERE p.seq = :idx")
+	void deletePlannerDocFile(@Param("idx") long idx);
 }

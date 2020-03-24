@@ -73,6 +73,11 @@ public class KM_ClassService {
 		return km_classAPI.save(km_class);
 	}
 
+	public boolean deletePlannerDoc(long idx) {
+		km_classAPI.deletePlannerDocFile(idx);
+		return true;
+	}
+
 //	public Km_classDTO save(Km_classDTO km_classDTO, HttpSession session) {
 //		KM_class km_class = modelMapper.map(km_classDTO, KM_class.class);
 //		KM_subject km_subject = new KM_subject();

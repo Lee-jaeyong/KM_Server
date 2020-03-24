@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,18 +147,16 @@ public class KM_FileUploadDownloadService {
 		}
 	}
 
-	public HashMap<String, Object> deleteFile(String type, String idx, String fileIdx, String fileName)
-			throws Exception {
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		String resultfilePath = "";
-		if (type.equals("reportIMG"))
-			resultfilePath += "downloadList/report/reportImg/" + idx + "/";
-		else if (type.equals("reportFile"))
-			resultfilePath += "downloadList/report/reportFile/" + idx + "/";
-		resultfilePath += fileName;
-		Path filePath = this.fileLocation.resolve(resultfilePath).normalize();
-		Resource resource = new UrlResource(filePath.toUri());
-		File deleteFile = resource.getFile();
+	public boolean deleteFile(long idx, String deleteType) throws Exception {
+		return this.customFileDeleteAll(idx, deleteType);
+//		if (type.equals("reportIMG"))
+//			resultfilePath += "downloadList/report/reportImg/" + idx + "/";
+//		else if (type.equals("reportFile"))
+//			resultfilePath += "downloadList/report/reportFile/" + idx + "/";
+//		resultfilePath += fileName;
+//		Path filePath = this.fileLocation.resolve(resultfilePath).normalize();
+//		Resource resource = new UrlResource(filePath.toUri());
+//		File deleteFile = resource.getFile();
 //		if (deleteFile.exists()) {
 //			if (deleteFile.delete()) {
 //				if (type.equals("reportIMG")) {
@@ -173,7 +170,23 @@ public class KM_FileUploadDownloadService {
 //		} else {
 //			result.put("result", false);
 //		}
-		return result;
+	}
+
+	private boolean customFileDeleteAll(long idx, String deleteType) throws Exception {
+		String resultfilePath = "\\professor\\downloadList\\" + deleteType + "\\" + idx;
+		File deleteFile = new File(this.fileLocation.toString() + resultfilePath);
+		if (deleteFile.exists()) {
+			if (deleteFile.isDirectory()) {
+				File[] folder_list = deleteFile.listFiles();
+				for (int j = 0; j < folder_list.length; j++) {
+					folder_list[j].delete();
+				}
+				deleteFile.delete();
+				if (deleteType.equals("classInfoExcel"))
+					km_classService.deletePlannerDoc(idx);
+			}
+		}
+		return true;
 	}
 
 	private boolean customFileSave(MultipartFile file, String uploadType, long idx) {

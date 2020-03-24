@@ -3,6 +3,7 @@ package ljy.book.admin.restAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,11 @@ public class KM_FileUploadRestController {
 	@PostMapping("/uploadFile/{idx}/{uploadType}")
 	public String uploadFile(@PathVariable long idx, @PathVariable String uploadType, MultipartFile file) {
 		return fileUploadService.storeFile(file, uploadType, idx);
+	}
+
+	@DeleteMapping(value = "/uploadFile/{idx}/{deleteType}")
+	public boolean deleteFileAll(@PathVariable long idx, @PathVariable String deleteType) throws Exception {
+		return fileUploadService.deleteFile(idx, deleteType);
 	}
 
 //	@PostMapping("/uploadFile")
