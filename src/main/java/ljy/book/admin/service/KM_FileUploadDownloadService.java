@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -21,6 +20,7 @@ import ljy.book.admin.common.exception.FileDownloadException;
 import ljy.book.admin.common.exception.FileUploadException;
 import ljy.book.admin.common.object.CustomFileUpload;
 import ljy.book.admin.entity.KM_Report;
+import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.repository.projection.Km_ReportFileProjection;
 import ljy.book.admin.repository.projection.Km_ReportImgProjection;
 
@@ -61,7 +61,8 @@ public class KM_FileUploadDownloadService {
 	}
 
 	public String save_ReportImgOrFile(MultipartFile file, String uploadType, KM_Report km_report) {
-		Optional<KM_Report> check_Report = km_reportService.checkByReportIdx(km_report);
+		// Optional<KM_Report> check_Report =
+		// km_reportService.checkByReportIdx(km_report);
 //		Km_ReportFile km_reportFile;
 //		Km_ReportImg km_reportImg;
 //		if (uploadType.equals("addReport_Img")) {
@@ -89,9 +90,21 @@ public class KM_FileUploadDownloadService {
 		return null;
 	}
 
-	public String storeFile(MultipartFile file, String uploadType, long idx) {
+	public String storeFileReport(MultipartFile file, String uploadType, String fileType, long idx) {
+		String originFileName = file.getOriginalFilename();
 		this.customFileSave(file, uploadType, idx);
-		return file.getOriginalFilename();
+		FileType _fileType = FileType.valueOf(fileType.toUpperCase());
+		km_reportService.uploadFile(originFileName, _fileType, idx);
+		return originFileName;
+	}
+
+	public String storeFile(MultipartFile file, String uploadType, long idx) {
+		String originFileName = file.getOriginalFilename();
+		this.customFileSave(file, uploadType, idx);
+		if (uploadType.equals("classInfoExcel")) {
+			km_classService.uploadFile(originFileName, idx);
+		}
+		return originFileName;
 //		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 //		Path targetLocation = null;
 //		if (uploadType.equals("addClass")) {
@@ -190,22 +203,19 @@ public class KM_FileUploadDownloadService {
 	}
 
 	private boolean customFileSave(MultipartFile file, String uploadType, long idx) {
-		if (!uploadType.equals("classInfoExcel")) {
+		if (!uploadType.equals("classInfoExcel") && !uploadType.equals("reportRelatedFiles")) {
 			return false;
 		}
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		// 자신의 수업이 맞는지 확인
-		if (uploadType.equals("classInfoExcel")) {
-			// km_classService.checkByKm_user()
-			km_classService.uploadFile(fileName, idx);
-		}
 		Path targetLocation = null;
 		km_classService.fileUpload_Km_class(idx, file.getOriginalFilename());
-		File directory = new File(this.fileLocation.toString() + "\\professor\\downloadList\\classInfoExcel\\" + idx);
-		if (!directory.exists())
+		File directory = new File(
+				this.fileLocation.toString() + "\\professor\\downloadList\\" + uploadType + "\\" + idx);
+		if (!directory.exists()) {
 			directory.mkdir();
+		}
 		targetLocation = this.fileLocation
-				.resolve(this.fileLocation + "/professor/downloadList/classInfoExcel/" + idx + "\\" + fileName);
+				.resolve(this.fileLocation + "/professor/downloadList/" + uploadType + "/" + idx + "\\" + fileName);
 		try {
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {

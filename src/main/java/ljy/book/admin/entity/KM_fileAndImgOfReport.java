@@ -6,6 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import ljy.book.admin.entity.enums.FileType;
 import lombok.Getter;
@@ -27,4 +28,7 @@ public class KM_fileAndImgOfReport {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	FileType type;
+
+	@ManyToOne
+	KM_Report kmReport;
 }

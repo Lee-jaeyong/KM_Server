@@ -19,6 +19,17 @@ public class KM_FileUploadRestController {
 	@Autowired
 	private KM_FileUploadDownloadService fileUploadService;
 
+	@PostMapping("/uploadFile/{idx}/{uploadType}/{fileType}")
+	public String uploadFile(@PathVariable long idx, @PathVariable String uploadType, @PathVariable String fileType,
+			MultipartFile[] file) {
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < file.length; i++) {
+			result.append(file[i].getOriginalFilename() + ",");
+			fileUploadService.storeFileReport(file[i], uploadType, fileType, idx);
+		}
+		return result.toString();
+	}
+
 	@PostMapping("/uploadFile/{idx}/{uploadType}")
 	public String uploadFile(@PathVariable long idx, @PathVariable String uploadType, MultipartFile file) {
 		return fileUploadService.storeFile(file, uploadType, idx);

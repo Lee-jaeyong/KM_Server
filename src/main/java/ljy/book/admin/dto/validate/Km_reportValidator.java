@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import ljy.book.admin.dto.Km_ReportDTO;
-import ljy.book.admin.entity.KM_class;
+import ljy.book.admin.request.KM_reportVO;
 import ljy.book.admin.service.KM_ClassService;
 
 @Component
@@ -21,21 +20,15 @@ public class Km_reportValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return Km_ReportDTO.class.equals(clazz);
+		return KM_reportVO.class.equals(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		Km_ReportDTO km_report = (Km_ReportDTO) target;
-		KM_class km_class = new KM_class();
-		//km_class.setClassIdx(km_report.getClassIdx());
-//		if (km_classService.findByClassIdx(km_class) == null) {
-//			errors.reject("classIdx", "존재하지 않는 수업입니다.");
-//		}
-
+		KM_reportVO km_report = (KM_reportVO) target;
 		try {
-			String startDate = km_report.getReportStartDate();
-			String endDate = km_report.getReportEndDate();
+			String startDate = km_report.getStartDate();
+			String endDate = km_report.getEndDate();
 			Calendar date = Calendar.getInstance();
 			SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date _startDate = transFormat.parse(startDate);
