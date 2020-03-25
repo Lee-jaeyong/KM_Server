@@ -1406,3 +1406,92 @@ Caused by: org.hibernate.tool.schema.spi.SchemaManagementException: Schema-valid
 2020-03-25 20:03:14.454  INFO 4504 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2020-03-25 20:03:14.454  INFO 4504 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2020-03-25 20:03:14.454  INFO 4504 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-03-25 20:55:36.487  INFO 19968 --- [main] ljy.book.admin.KmRportAdminApplication   : Starting KmRportAdminApplication on DESKTOP-4J2D9A7 with PID 19968 (C:\Users\LJY\Documents\KM_RPORTAdmin\target\classes started by LJY in C:\Users\LJY\Documents\KM_RPORTAdmin)
+2020-03-25 20:55:36.489  INFO 19968 --- [main] ljy.book.admin.KmRportAdminApplication   : No active profile set, falling back to default profiles: default
+2020-03-25 20:55:37.090  INFO 19968 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-03-25 20:55:37.251  INFO 19968 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 152ms. Found 5 JPA repository interfaces.
+2020-03-25 20:55:37.646  INFO 19968 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-03-25 20:55:37.885  INFO 19968 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
+2020-03-25 20:55:37.895  INFO 19968 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-03-25 20:55:37.895  INFO 19968 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.30]
+2020-03-25 20:55:38.078  INFO 19968 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-03-25 20:55:38.078  INFO 19968 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1538 ms
+2020-03-25 20:55:38.281  INFO 19968 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-03-25 20:55:38.367  INFO 19968 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.4.10.Final}
+2020-03-25 20:55:38.512  INFO 19968 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-03-25 20:55:38.719  INFO 19968 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-03-25 20:55:38.863  INFO 19968 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-03-25 20:55:38.877  INFO 19968 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-03-25 20:55:39.564  INFO 19968 --- [main] org.hibernate.tuple.PojoInstantiator     : HHH000182: No default (no-argument) constructor for class: ljy.book.admin.entity.KM_questionByStu (class must be instantiated by Interceptor)
+2020-03-25 20:55:39.915  INFO 19968 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-03-25 20:55:39.922  INFO 19968 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 20:55:40.596  WARN 19968 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-03-25 20:55:41.063  INFO 19968 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
+2020-03-25 20:55:41.065  INFO 19968 --- [main] ljy.book.admin.KmRportAdminApplication   : Started KmRportAdminApplication in 4.917 seconds (JVM running for 6.43)
+2020-03-25 20:56:11.618  INFO 19968 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-03-25 20:56:11.619  INFO 19968 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-03-25 20:56:11.626  INFO 19968 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2020-03-25 20:57:20.698  WARN 19968 --- [http-nio-8090-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unrecognized field "" (class ljy.book.admin.request.KM_reportVO), not marked as ignorable; nested exception is com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "" (class ljy.book.admin.request.KM_reportVO), not marked as ignorable (9 known properties: "startDate", "hit", "classIdx", "showOtherReportOfStu_state", "endDate", "submitOverDue_state", "name", "seq", "content"])
+ at [Source: (PushbackInputStream); line: 1, column: 174] (through reference chain: ljy.book.admin.request.KM_reportVO[""])]
+2020-03-25 20:58:29.120  INFO 19968 --- [RMI TCP Connection(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2020-03-25 20:58:29.126  INFO 19968 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 20:58:29.129  INFO 19968 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-03-25 20:58:29.133  INFO 19968 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-03-25 22:44:44.949  INFO 8972 --- [main] ljy.book.admin.KmRportAdminApplication   : Starting KmRportAdminApplication on DESKTOP-4J2D9A7 with PID 8972 (C:\Users\LJY\Documents\KM_RPORTAdmin\target\classes started by LJY in C:\Users\LJY\Documents\KM_RPORTAdmin)
+2020-03-25 22:44:44.952  INFO 8972 --- [main] ljy.book.admin.KmRportAdminApplication   : No active profile set, falling back to default profiles: default
+2020-03-25 22:44:45.658  INFO 8972 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-03-25 22:44:45.860  INFO 8972 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 193ms. Found 5 JPA repository interfaces.
+2020-03-25 22:44:46.311  INFO 8972 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-03-25 22:44:46.601  INFO 8972 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
+2020-03-25 22:44:46.613  INFO 8972 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-03-25 22:44:46.613  INFO 8972 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.30]
+2020-03-25 22:44:46.814  INFO 8972 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-03-25 22:44:46.814  INFO 8972 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1808 ms
+2020-03-25 22:44:47.047  INFO 8972 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-03-25 22:44:47.132  INFO 8972 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.4.10.Final}
+2020-03-25 22:44:47.272  INFO 8972 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-03-25 22:44:47.667  INFO 8972 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-03-25 22:44:47.864  INFO 8972 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-03-25 22:44:47.879  INFO 8972 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-03-25 22:44:48.704  INFO 8972 --- [main] org.hibernate.tuple.PojoInstantiator     : HHH000182: No default (no-argument) constructor for class: ljy.book.admin.entity.KM_questionByStu (class must be instantiated by Interceptor)
+2020-03-25 22:44:49.091  INFO 8972 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-03-25 22:44:49.100  INFO 8972 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 22:44:49.751  WARN 8972 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-03-25 22:44:50.229  INFO 8972 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
+2020-03-25 22:44:50.231  INFO 8972 --- [main] ljy.book.admin.KmRportAdminApplication   : Started KmRportAdminApplication in 5.634 seconds (JVM running for 7.161)
+2020-03-25 22:44:55.773  INFO 8972 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-03-25 22:44:55.774  INFO 8972 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-03-25 22:44:55.781  INFO 8972 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2020-03-25 22:48:56.064  INFO 8972 --- [RMI TCP Connection(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2020-03-25 22:48:56.068  INFO 8972 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 22:48:56.071  INFO 8972 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-03-25 22:48:56.075  INFO 8972 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-03-25 22:49:12.210  INFO 16076 --- [main] ljy.book.admin.KmRportAdminApplication   : Starting KmRportAdminApplication on DESKTOP-4J2D9A7 with PID 16076 (C:\Users\LJY\Documents\KM_RPORTAdmin\target\classes started by LJY in C:\Users\LJY\Documents\KM_RPORTAdmin)
+2020-03-25 22:49:12.215  INFO 16076 --- [main] ljy.book.admin.KmRportAdminApplication   : No active profile set, falling back to default profiles: default
+2020-03-25 22:49:12.848  INFO 16076 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2020-03-25 22:49:13.012  INFO 16076 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 156ms. Found 5 JPA repository interfaces.
+2020-03-25 22:49:13.417  INFO 16076 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-03-25 22:49:13.664  INFO 16076 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8090 (http)
+2020-03-25 22:49:13.672  INFO 16076 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-03-25 22:49:13.673  INFO 16076 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.30]
+2020-03-25 22:49:13.847  INFO 16076 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-03-25 22:49:13.847  INFO 16076 --- [main] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1579 ms
+2020-03-25 22:49:14.041  INFO 16076 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-03-25 22:49:14.107  INFO 16076 --- [main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.4.10.Final}
+2020-03-25 22:49:14.232  INFO 16076 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-03-25 22:49:14.435  INFO 16076 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-03-25 22:49:14.582  INFO 16076 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-03-25 22:49:14.596  INFO 16076 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2020-03-25 22:49:15.364  INFO 16076 --- [main] org.hibernate.tuple.PojoInstantiator     : HHH000182: No default (no-argument) constructor for class: ljy.book.admin.entity.KM_questionByStu (class must be instantiated by Interceptor)
+2020-03-25 22:49:15.693  INFO 16076 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-03-25 22:49:15.700  INFO 16076 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 22:49:16.324  WARN 16076 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-03-25 22:49:16.737  INFO 16076 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8090 (http) with context path ''
+2020-03-25 22:49:16.739  INFO 16076 --- [main] ljy.book.admin.KmRportAdminApplication   : Started KmRportAdminApplication in 4.868 seconds (JVM running for 6.402)
+2020-03-25 22:49:44.639  INFO 16076 --- [http-nio-8090-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-03-25 22:49:44.640  INFO 16076 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-03-25 22:49:44.651  INFO 16076 --- [http-nio-8090-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 11 ms
+2020-03-25 23:49:26.238  INFO 16076 --- [RMI TCP Connection(2)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2020-03-25 23:49:26.256  INFO 16076 --- [RMI TCP Connection(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2020-03-25 23:49:26.263  INFO 16076 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-03-25 23:49:26.266  INFO 16076 --- [RMI TCP Connection(2)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
