@@ -16,6 +16,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,6 +83,21 @@ public class KM_ClassRestController {
 		km_classResource.add(linkBuilder.slash("").withRel("update").withDeprecation("수정"));
 		km_classResource.add(linkBuilder.slash("").withRel("delete").withDeprecation("삭제"));
 		KM_class km_class = km_classService.save(modelMapper.map(km_classVO, KM_class.class));
+		km_classVO.setSeq(km_class.getSeq());
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
+	}
+
+	@PutMapping
+	public ResponseEntity update(@Valid @RequestBody KM_classVO km_classVO, Errors errors) {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+		Km_classResource km_classResource = new Km_classResource(km_classVO);
+		km_classValidator.validate(km_classVO, errors);
+		if (errors.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		km_classResource.add(linkBuilder.slash("").withRel("update").withDeprecation("수정"));
+		km_classResource.add(linkBuilder.slash("").withRel("delete").withDeprecation("삭제"));
+		KM_class km_class = km_classService.update(modelMapper.map(km_classVO, KM_class.class));
 		km_classVO.setSeq(km_class.getSeq());
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}

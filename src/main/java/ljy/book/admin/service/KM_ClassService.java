@@ -73,6 +73,13 @@ public class KM_ClassService {
 		return km_classAPI.save(km_class);
 	}
 
+	public KM_class update(KM_class km_class) {
+		km_classAPI.updateKm_class(km_class.getName(), km_class.getStartDate(), km_class.getEndDate(),
+				km_class.getContent(), km_class.getType(), km_class.getReplyPermit_state(), km_class.getSelectMenu(),
+				km_class.getUse_state(), km_class.getSeq());
+		return km_classAPI.findById(km_class.getSeq()).get();
+	}
+
 	public boolean deletePlannerDoc(long idx) {
 		km_classAPI.deletePlannerDocFile(idx);
 		return true;
