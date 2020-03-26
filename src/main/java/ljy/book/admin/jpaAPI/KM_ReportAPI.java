@@ -9,7 +9,9 @@ import ljy.book.admin.customRepository.CustomKm_reportAPI;
 import ljy.book.admin.entity.KM_Report;
 
 public interface KM_ReportAPI extends CommonRepository<KM_Report, Long>, CustomKm_reportAPI {
-	List<KM_Report> findByKmClass_Seq(long seq, Pageable pageable);
+	List<KM_Report> findByKmClass_SeqOrderBySeqDesc(long seq, Pageable pageable);
+
+	long countByKmClass_Seq(long seq);
 
 	// List<Km_ReportProjection> findByKmClass_ClassIdxOrderByReportIdxDesc(long
 	// idx, Pageable pageRequest);

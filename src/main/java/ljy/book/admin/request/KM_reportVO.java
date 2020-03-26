@@ -1,9 +1,5 @@
 package ljy.book.admin.request;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import ljy.book.admin.entity.enums.BooleanState;
@@ -17,7 +13,7 @@ import lombok.Setter;
 public class KM_reportVO {
 
 	long classIdx;
-	
+
 	Long seq;
 
 	@NotNull(message = "과제명을 입력해주세요.")
@@ -38,4 +34,7 @@ public class KM_reportVO {
 
 	@NotNull(message = "학생 제출 과제 공개 상태를 입력해주세요.")
 	BooleanState showOtherReportOfStu_state;
+
+	String fileList;
+	String imgList;
 }

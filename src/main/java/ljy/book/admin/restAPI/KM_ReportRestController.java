@@ -1,6 +1,7 @@
 package ljy.book.admin.restAPI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -49,17 +50,38 @@ public class KM_ReportRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@GetMapping("{reportIdx}")
+	public ResponseEntity getReport(@PathVariable long reportIdx) {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+		Km_reportResource km_reportResource = new Km_reportResource(km_ReportService.getReport(reportIdx));
+		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("delete").withDeprecation("삭제"));
+		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("update").withDeprecation("수정"));
+		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
+	}
+
 	@GetMapping("{classIdx}/list")
 	public ResponseEntity getReportList(@PathVariable long classIdx, Pageable pageable) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
-		List<Object> result = new ArrayList<Object>();
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		List<Object> resultList = new ArrayList<Object>();
+		result.put("totalCount", km_ReportService.getTotalCount(classIdx));
 		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable)) {
-			KM_reportVO data = modelMapper.map(c, KM_reportVO.class);
+			KM_reportVO data = new KM_reportVO();
+			data.setClassIdx(classIdx);
+			data.setContent(c.getContent());
+			data.setEndDate(c.getEndDate());
+			data.setHit(c.getHit());
+			data.setName(c.getName());
+			data.setSeq(c.getSeq());
+			data.setShowOtherReportOfStu_state(c.getShowOtherReportOfStu_state());
+			data.setStartDate(c.getStartDate());
+			data.setSubmitOverDue_state(c.getSubmitOverDue_state());
 			Km_reportResource km_reportResource = new Km_reportResource(data);
 			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("delete").withDeprecation("삭제"));
 			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("update").withDeprecation("수정"));
-			result.add(km_reportResource);
+			resultList.add(km_reportResource);
 		}
+		result.put("list", resultList);
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 

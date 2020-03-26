@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,6 @@ public class KM_fileAndImgOfReport {
 	@Column(nullable = false)
 	FileType type;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	KM_Report kmReport;
 }

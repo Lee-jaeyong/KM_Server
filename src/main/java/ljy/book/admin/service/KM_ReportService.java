@@ -3,13 +3,11 @@ package ljy.book.admin.service;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ljy.book.admin.common.object.CustomBlock;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_fileAndImgOfReport;
@@ -40,8 +38,37 @@ public class KM_ReportService {
 	@Autowired
 	ModelMapper modelMapper;
 
+	public KM_reportVO getReport(long reportIdx) {
+		List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI.findByKmReport_seq(reportIdx);
+		StringBuilder _fileList = new StringBuilder();
+		StringBuilder _imgList = new StringBuilder();
+		for (KM_fileAndImgOfReport c : fileList) {
+			if (c.getType() == FileType.FILE)
+				_fileList.append(c.getFileName() + ",");
+			else
+				_imgList.append(c.getFileName() + ",");
+		}
+		KM_reportVO result = new KM_reportVO();
+		KM_Report findReport = km_ReportAPI.findById(reportIdx).get();
+		result.setContent(findReport.getContent());
+		result.setEndDate(findReport.getEndDate());
+		result.setHit(findReport.getHit());
+		result.setName(findReport.getName());
+		result.setSeq(findReport.getSeq());
+		result.setShowOtherReportOfStu_state(findReport.getShowOtherReportOfStu_state());
+		result.setStartDate(findReport.getStartDate());
+		result.setSubmitOverDue_state(findReport.getSubmitOverDue_state());
+		result.setFileList(_fileList.toString());
+		result.setImgList(_imgList.toString());
+		return result;
+	}
+
+	public long getTotalCount(long classIdx) {
+		return km_ReportAPI.countByKmClass_Seq(classIdx);
+	}
+
 	public List<KM_Report> getReportList(long classIdx, Pageable pageable) {
-		return km_ReportAPI.findByKmClass_Seq(classIdx, pageable);
+		return km_ReportAPI.findByKmClass_SeqOrderBySeqDesc(classIdx, pageable);
 	}
 
 	public KM_Report save(KM_reportVO km_reportVO) {
