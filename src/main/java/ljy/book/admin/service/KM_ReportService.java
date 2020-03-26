@@ -1,5 +1,7 @@
 package ljy.book.admin.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -37,6 +39,17 @@ public class KM_ReportService {
 
 	@Autowired
 	ModelMapper modelMapper;
+
+	public List<Object> getReportFileList(long reportIdx) {
+		List<Object> fileList = new ArrayList<Object>();
+		for (KM_fileAndImgOfReport c : km_fileAndImgOfReportAPI.findByKmReport_seq(reportIdx)) {
+			HashMap<String, String> result = new HashMap<String, String>();
+			result.put("fileName", c.getFileName());
+			result.put("type", c.getType().toString());
+			fileList.add(result);
+		}
+		return fileList;
+	}
 
 	public KM_reportVO getReport(long reportIdx) {
 		List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI.findByKmReport_seq(reportIdx);
@@ -87,6 +100,18 @@ public class KM_ReportService {
 		km_fileAndImgOfReport.setType(fileType);
 		km_report.addKmFileAndImgOfReport(km_fileAndImgOfReport);
 		km_fileAndImgOfReportAPI.save(km_fileAndImgOfReport);
+		return true;
+	}
+
+	public boolean update(long reportIdx, KM_reportVO km_reportVO) {
+		km_ReportAPI.updateByReportIdx(km_reportVO.getName(), km_reportVO.getStartDate(), km_reportVO.getEndDate(),
+				km_reportVO.getContent(), km_reportVO.getSubmitOverDue_state(),
+				km_reportVO.getShowOtherReportOfStu_state(), reportIdx);
+		return true;
+	}
+
+	public boolean deleteFile(long idx, String fileName) {
+		km_fileAndImgOfReportAPI.deleteByKmReport_seqAndFileName(idx, fileName);
 		return true;
 	}
 

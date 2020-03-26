@@ -2,33 +2,30 @@ package ljy.book.admin.jpaAPI;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import ljy.book.admin.common.repository.CommonRepository;
 import ljy.book.admin.customRepository.CustomKm_reportAPI;
 import ljy.book.admin.entity.KM_Report;
+import ljy.book.admin.entity.enums.BooleanState;
 
 public interface KM_ReportAPI extends CommonRepository<KM_Report, Long>, CustomKm_reportAPI {
 	List<KM_Report> findByKmClass_SeqOrderBySeqDesc(long seq, Pageable pageable);
 
 	long countByKmClass_Seq(long seq);
 
-	// List<Km_ReportProjection> findByKmClass_ClassIdxOrderByReportIdxDesc(long
-	// idx, Pageable pageRequest);
-
-	// Long countByKmClass_ClassIdx(long idx);
-
-	// Km_ReportProjection findByReportIdx(Long idx);
-
-//	@Modifying
-//	@Transactional
-//	@Query("UPDATE Km_Report p" + " SET p.reportTitle=:title," + "p.reportContent=:content,"
-//			+ "p.reportStartDate=:startDate," + "p.reportEndDate=:endDate " + "WHERE p.reportIdx=:idx")
-//	void update(@Param("title") String title, @Param("content") String content, @Param("startDate") String startDate,
-//			@Param("endDate") String endDate, @Param("idx") Long idx);
-
-//	@Modifying
-//	@Transactional
-//	@Query("DELETE FROM Km_Report p WHERE p.reportIdx=:reportIdx")
-	// void deleteByReportIdx(@Param("reportIdx") Long idx);
+	@Modifying
+	@Transactional
+	@Query("UPDATE KM_Report p SET " + "p.name = :name," + "p.startDate = :startDate," + "p.endDate = :endDate,"
+			+ "p.content = :content," + "p.submitOverDue_state = :submitOverDue_state,"
+			+ "p.showOtherReportOfStu_state = :showOtherReportOfStu_state" + " WHERE p.seq = :seq")
+	void updateByReportIdx(@Param("name") String name, @Param("startDate") String startDate,
+			@Param("endDate") String endDate, @Param("content") String content,
+			@Param("submitOverDue_state") BooleanState submitOverDue_state,
+			@Param("showOtherReportOfStu_state") BooleanState showOtherReportOfStu_state, @Param("seq") long seq);
 }

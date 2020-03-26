@@ -34,9 +34,6 @@ public class KM_FileUploadDownloadService {
 //	KM_ReportFileAPI km_reportFileAPI;
 
 	@Autowired
-	KM_ReportFileAndImgService km_reportFileAndImgService;
-
-	@Autowired
 	KM_ClassService km_classService;
 
 	@Autowired
@@ -160,29 +157,31 @@ public class KM_FileUploadDownloadService {
 		}
 	}
 
-	public boolean deleteFile(long idx, String deleteType) throws Exception {
+	public boolean deleteFile(long idx, String deleteType, String fileName, String fileForm) {
+		this.customFileDelete(idx, deleteType, fileName, fileForm);
+		if (deleteType.equals("reportRelatedFiles")) {
+			km_reportService.deleteFile(idx, fileName + "." + fileForm);
+		}
+		return true;
+	}
+
+	public boolean deleteFileAll(long idx, String deleteType) throws Exception {
 		return this.customFileDeleteAll(idx, deleteType);
-//		if (type.equals("reportIMG"))
-//			resultfilePath += "downloadList/report/reportImg/" + idx + "/";
-//		else if (type.equals("reportFile"))
-//			resultfilePath += "downloadList/report/reportFile/" + idx + "/";
-//		resultfilePath += fileName;
-//		Path filePath = this.fileLocation.resolve(resultfilePath).normalize();
-//		Resource resource = new UrlResource(filePath.toUri());
-//		File deleteFile = resource.getFile();
-//		if (deleteFile.exists()) {
-//			if (deleteFile.delete()) {
-//				if (type.equals("reportIMG")) {
-//					km_reportImgAPI.deleteByReportImgIdx(Long.parseLong(fileIdx));
-//				} else {
-//					km_reportFileAPI.deleteByReportFileIdx(Long.parseLong(fileIdx));
-//				}
-//				result.put("result", true);
-//			} else
-//				result.put("result", false);
-//		} else {
-//			result.put("result", false);
-//		}
+	}
+
+	private boolean customFileDelete(long idx, String deleteType, String fileName, String fileForm) {
+		String resultfilePath = "\\professor\\downloadList\\" + deleteType + "\\" + idx + "\\" + fileName + "."
+				+ fileForm;
+		File deleteFile = new File(this.fileLocation.toString() + resultfilePath);
+		if (deleteFile.exists()) {
+			deleteFile.delete();
+			String directoryPath = "\\professor\\downloadList\\" + deleteType + "\\" + idx;
+			File directory = new File(this.fileLocation.toString() + directoryPath);
+			if (directory.isDirectory()) {
+				directory.delete();
+			}
+		}
+		return true;
 	}
 
 	private boolean customFileDeleteAll(long idx, String deleteType) throws Exception {
