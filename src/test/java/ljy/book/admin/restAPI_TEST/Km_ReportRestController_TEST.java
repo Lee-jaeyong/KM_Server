@@ -1,6 +1,7 @@
 package ljy.book.admin.restAPI_TEST;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,23 +44,8 @@ public class Km_ReportRestController_TEST {
 	}
 
 	@Test
-	public void delete_TEST() throws Exception {
-		Km_ReportDTO km_reportDTO = new Km_ReportDTO();
-		km_reportDTO.setReportIdx(83l);
-		mvc.perform(delete("/report").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(km_reportDTO))).andDo(print()).andExpect(status().isOk());
-	}
-
-	@Test
-	@Ignore
-	public void addReport_TEST() throws Exception {
-		Km_ReportDTO km_reportDTO = new Km_ReportDTO();
-		km_reportDTO.setClassIdx(1l);
-		km_reportDTO.setReportContent("fdsfd");
-		km_reportDTO.setReportEndDate("2020-10-10");
-		km_reportDTO.setReportStartDate("2020-01-01");
-		km_reportDTO.setReportTitle("fsdfsdfsd");
-		mvc.perform(post("/report").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(km_reportDTO))).andDo(print()).andExpect(status().isOk());
+	public void getReportList() throws Exception {
+		mvc.perform(get("/report/1/list").param("page", "0").param("size", "2")).andExpect(status().isOk())
+				.andDo(print());
 	}
 }

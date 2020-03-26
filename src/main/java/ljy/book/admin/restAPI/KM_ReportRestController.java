@@ -1,14 +1,23 @@
 package ljy.book.admin.restAPI;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +45,23 @@ public class KM_ReportRestController {
 
 	@Autowired
 	Km_reportValidator km_reportValidator;
+
+	@Autowired
+	ModelMapper modelMapper;
+
+	@GetMapping("{classIdx}/list")
+	public ResponseEntity getReportList(@PathVariable long classIdx, Pageable pageable) {
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+		List<Object> result = new ArrayList<Object>();
+		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable)) {
+			KM_reportVO data = modelMapper.map(c, KM_reportVO.class);
+			Km_reportResource km_reportResource = new Km_reportResource(data);
+			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("delete").withDeprecation("삭제"));
+			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("update").withDeprecation("수정"));
+			result.add(km_reportResource);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(result);
+	}
 
 	@PostMapping("{classIdx}")
 	public ResponseEntity save(@PathVariable long classIdx, @RequestBody @Valid KM_reportVO km_reportVO,

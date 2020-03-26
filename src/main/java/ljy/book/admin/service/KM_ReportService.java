@@ -1,8 +1,11 @@
 package ljy.book.admin.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,10 @@ public class KM_ReportService {
 
 	@Autowired
 	ModelMapper modelMapper;
+
+	public List<KM_Report> getReportList(long classIdx, Pageable pageable) {
+		return km_ReportAPI.findByKmClass_Seq(classIdx, pageable);
+	}
 
 	public KM_Report save(KM_reportVO km_reportVO) {
 		KM_class km_class = new KM_class();
