@@ -35,9 +35,15 @@ public class KM_FileUploadRestController {
 		return fileUploadService.storeFile(file, uploadType, idx);
 	}
 
+	@DeleteMapping("/uploadFile/{idx}/{deleteType}/{fileName}/{fileForm}")
+	public boolean deleteFile(@PathVariable long idx, @PathVariable String deleteType, @PathVariable String fileName,
+			@PathVariable String fileForm) {
+		return fileUploadService.deleteFile(idx, deleteType, fileName, fileForm);
+	}
+
 	@DeleteMapping(value = "/uploadFile/{idx}/{deleteType}")
 	public boolean deleteFileAll(@PathVariable long idx, @PathVariable String deleteType) throws Exception {
-		return fileUploadService.deleteFile(idx, deleteType);
+		return fileUploadService.deleteFileAll(idx, deleteType);
 	}
 
 //	@PostMapping("/uploadFile")
