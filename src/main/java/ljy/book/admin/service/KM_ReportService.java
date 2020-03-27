@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ljy.book.admin.common.object.CustomSearchObject;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_fileAndImgOfReport;
@@ -76,12 +77,12 @@ public class KM_ReportService {
 		return result;
 	}
 
-	public long getTotalCount(long classIdx) {
-		return km_ReportAPI.countByKmClass_Seq(classIdx);
+	public long getTotalCount(long classIdx, CustomSearchObject customSearchObj) {
+		return km_ReportAPI.countSearch_Km_report(classIdx, customSearchObj);
 	}
 
-	public List<KM_Report> getReportList(long classIdx, Pageable pageable) {
-		return km_ReportAPI.findByKmClass_SeqOrderBySeqDesc(classIdx, pageable);
+	public List<KM_Report> getReportList(long classIdx, Pageable pageable, CustomSearchObject customSearchObj) {
+		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj);
 	}
 
 	public KM_Report save(KM_reportVO km_reportVO) {
