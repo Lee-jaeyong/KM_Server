@@ -7,8 +7,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.data.domain.Pageable;
 
+import ljy.book.admin.common.object.CustomSearchObject;
 import ljy.book.admin.entity.KM_Report;
-import ljy.book.admin.entity.KM_class;
 
 public class CustomKm_reportAPIimpl implements CustomKm_reportAPI {
 
@@ -17,46 +17,49 @@ public class CustomKm_reportAPIimpl implements CustomKm_reportAPI {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<KM_Report> search_Km_report(KM_class km_class, KM_Report km_report, Pageable pageable) {
-//		String sql = "SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n"
-//				+ "AND report_title LIKE ?\r\n" + "AND report_start_date >= ?\r\n"
-//				+ "AND report_end_date <= ? ORDER BY report_idx DESC LIMIT ?,?";
-//		if (km_report.getReportStartDate().equals("") || km_report.getReportEndDate().equals("")) {
-//			sql = "SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n" + "AND report_title LIKE ?\r\n"
-//					+ " ORDER BY report_idx DESC LIMIT ?,?";
-//			return em.createNativeQuery(sql, KM_Report.class).setParameter(1, km_class.getClassIdx())
-//					.setParameter(2, "%" + km_report.getReportTitle() + "%")
-//					.setParameter(3, pageable.getPageNumber() * pageable.getPageSize())
-//					.setParameter(4, pageable.getPageSize()).getResultList();
-//		}
-//		return em.createNativeQuery(sql, KM_Report.class).setParameter(1, km_class.getClassIdx())
-//				.setParameter(2, "%" + km_report.getReportTitle() + "%").setParameter(3, km_report.getReportStartDate())
-//				.setParameter(4, km_report.getReportEndDate())
-//				.setParameter(5, pageable.getPageNumber() * pageable.getPageSize())
-//				.setParameter(6, pageable.getPageSize()).getResultList();
-		return null;
+	public List<KM_Report> search_Km_report(long seq, Pageable pageable, CustomSearchObject customSearchObj) {
+		String type = customSearchObj.getSearchType();
+		String searchName = customSearchObj.getName();
+		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq = " + seq;
+		if (!type.equals("")) {
+			sql += " AND p." + type + " LIKE '%" + searchName + "%' ";
+		}
+		if (!customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
+			sql += " AND p.start_date >= '" + customSearchObj.getStartDate() + "' AND p.end_date <= '"
+					+ customSearchObj.getEndDate() + "'";
+		} else {
+			if (!customSearchObj.getStartDate().equals("") && customSearchObj.getEndDate().equals("")) {
+				sql += " AND p.start_date = '" + customSearchObj.getStartDate() + "'";
+			}
+			if (customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
+				sql += " AND p.end_date= '" + customSearchObj.getEndDate() + "'";
+			}
+		}
+		sql += " ORDER BY p.seq DESC LIMIT ?,?";
+		return em.createNativeQuery(sql, KM_Report.class)
+				.setParameter(1, pageable.getPageNumber() * pageable.getPageSize())
+				.setParameter(2, pageable.getPageSize()).getResultList();
 	}
 
 	@Override
-	public long countSearch_Km_report(KM_class km_class, KM_Report km_report) {
-//		String sql = "SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n"
-//				+ "AND report_title LIKE ?\r\n" + "AND report_start_date >= ?\r\n" + "AND report_end_date <= ?";
-//		if (km_report.getReportStartDate().equals("") || km_report.getReportEndDate().equals("")) {
-//			sql = "SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n" + "AND report_title LIKE ?\r\n"
-//					+ "AND report_start_date >= ?\r\n" + "AND report_end_date <= ?";
-//			return em
-//					.createNativeQuery("SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n"
-//							+ "AND report_title LIKE ?", KM_Report.class)
-//					.setParameter(1, km_class.getClassIdx()).setParameter(2, "%" + km_report.getReportTitle() + "%")
-//					.getResultList().size();
-//		}
-//		return em
-//				.createNativeQuery("SELECT *\r\n" + "FROM km_report\r\n" + "WHERE km_class_idx = ?\r\n"
-//						+ "AND report_title LIKE ?\r\n" + "AND report_start_date >= ?\r\n" + "AND report_end_date <= ?",
-//						KM_Report.class)
-//				.setParameter(1, km_class.getClassIdx()).setParameter(2, "%" + km_report.getReportTitle() + "%")
-//				.setParameter(3, km_report.getReportStartDate()).setParameter(4, km_report.getReportEndDate())
-//				.getResultList().size();
-		return 0;
+	public long countSearch_Km_report(long seq, CustomSearchObject customSearchObj) {
+		String type = customSearchObj.getSearchType();
+		String searchName = customSearchObj.getName();
+		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq = " + seq;
+		if (!type.equals("")) {
+			sql += " AND p." + type + " LIKE '%" + searchName + "%' ";
+		}
+		if (!customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
+			sql += " AND p.start_date >= '" + customSearchObj.getStartDate() + "' AND p.end_date <= '"
+					+ customSearchObj.getEndDate() + "'";
+		} else {
+			if (!customSearchObj.getStartDate().equals("") && customSearchObj.getEndDate().equals("")) {
+				sql += " AND p.start_date = '" + customSearchObj.getStartDate() + "'";
+			}
+			if (customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
+				sql += " AND p.end_date= '" + customSearchObj.getEndDate() + "'";
+			}
+		}
+		return em.createNativeQuery(sql, KM_Report.class).getResultList().size();
 	}
 }

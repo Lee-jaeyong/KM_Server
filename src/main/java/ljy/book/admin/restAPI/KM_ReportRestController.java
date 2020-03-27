@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ljy.book.admin.common.object.CustomSearchObject;
 import ljy.book.admin.dto.validate.Km_reportValidator;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.resource.Km_reportResource;
@@ -63,12 +64,13 @@ public class KM_ReportRestController {
 	}
 
 	@GetMapping("{classIdx}/list")
-	public ResponseEntity getReportList(@PathVariable long classIdx, Pageable pageable) {
+	public ResponseEntity getReportList(@PathVariable long classIdx, Pageable pageable,
+			CustomSearchObject customsearchObj) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		List<Object> resultList = new ArrayList<Object>();
-		result.put("totalCount", km_ReportService.getTotalCount(classIdx));
-		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable)) {
+		result.put("totalCount", km_ReportService.getTotalCount(classIdx, customsearchObj));
+		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable, customsearchObj)) {
 			KM_reportVO data = new KM_reportVO();
 			data.setClassIdx(classIdx);
 			data.setContent(c.getContent());
