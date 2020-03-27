@@ -1,0 +1,5 @@
+[source,bash]
+----
+$ http GET 'http://localhost:8080/professor/class/31' \
+    'Accept:application/json'
+----

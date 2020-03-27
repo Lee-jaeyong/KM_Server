@@ -9,12 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,7 @@ public class KM_UserRestController {
 	@PostMapping(value = "login")
 	public ResponseEntity login(@RequestBody @Valid Km_userLoginDTO user, Errors error, HttpSession session)
 			throws JsonProcessingException {
-		org.springframework.hateoas.mvc.ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		if (error.hasErrors()) {
 			return loginError(user, error);
 		}
