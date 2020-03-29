@@ -2,10 +2,13 @@ package ljy.book.admin.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -34,7 +37,8 @@ public class KM_user {
 	String email;
 
 	@Enumerated(EnumType.STRING)
-	UserRule userRule;
+	@ElementCollection(fetch = FetchType.EAGER)
+	Set<UserRule> userRule;
 
 	@OneToMany(mappedBy = "kmUser")
 	List<KM_class> kmClass = new ArrayList<KM_class>();

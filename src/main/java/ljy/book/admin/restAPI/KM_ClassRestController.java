@@ -7,7 +7,13 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +33,7 @@ import ljy.book.admin.entity.resource.Km_classResource;
 import ljy.book.admin.request.KM_classVO;
 import ljy.book.admin.service.KM_ClassService;
 import ljy.book.admin.service.KM_FileUploadDownloadService;
+import lombok.experimental.var;
 
 @RestController
 @RequestMapping("professor/class")
@@ -47,6 +54,15 @@ public class KM_ClassRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	@GetMapping("/listPage")
+	public ResponseEntity<?> getClassListPage(Pageable pageable, PagedResourcesAssembler<KM_class> paged) {
+		Page<KM_class> page = this.km_classService.getClassListPage(pageable);
+		lombok.var pagedResources = paged.toModel(page,
+				e -> new Km_classResource(modelMapper.map(e, KM_classVO.class)));
+		pagedResources.add(new Link("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(pagedResources);
+	}
+
 	@GetMapping
 	public ResponseEntity getClassList() {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
@@ -54,8 +70,8 @@ public class KM_ClassRestController {
 		List<Object> result = new ArrayList<Object>();
 		for (KM_classVO listData : list) {
 			Km_classResource km_classResource = new Km_classResource(listData);
-			km_classResource.add(linkBuilder.slash(listData.getSeq()).withRel("delete").withDeprecation("삭제"));
-			km_classResource.add(linkBuilder.slash(listData.getSeq()).withRel("update").withDeprecation("수정"));
+			km_classResource.add(linkBuilder.slash(listData.getSeq()).withRel("delete"));
+			km_classResource.add(linkBuilder.slash(listData.getSeq()).withRel("update"));
 			result.add(km_classResource);
 		}
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(result);

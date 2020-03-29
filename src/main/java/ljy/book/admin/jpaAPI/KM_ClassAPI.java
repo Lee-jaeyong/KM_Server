@@ -1,9 +1,11 @@
 package ljy.book.admin.jpaAPI;
 
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.ClassType;
 
 public interface KM_ClassAPI extends CommonRepository<KM_class, Long> {
+	Page<KM_class> findByName(String name, Pageable pageable);
+
 	Optional<KM_class> findBykmUser_Id(String id);
 
 	@Transactional

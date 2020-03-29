@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.SaveState;
 import ljy.book.admin.entity.enums.ClassType;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode(of = "seq")
 @NoArgsConstructor
 public class KM_class {
 

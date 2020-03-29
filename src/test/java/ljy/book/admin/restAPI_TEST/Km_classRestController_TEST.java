@@ -1,36 +1,35 @@
 package ljy.book.admin.restAPI_TEST;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ljy.book.admin.entity.KM_class;
-import ljy.book.admin.entity.KM_subject;
-import ljy.book.admin.entity.KM_user;
-import ljy.book.admin.entity.enums.BooleanState;
-import ljy.book.admin.entity.enums.ClassType;
 import ljy.book.admin.jpaAPI.KM_ClassAPI;
-import ljy.book.admin.request.KM_classVO;
+import ljy.book.admin.restDoc.TestCommons;
 
-@AutoConfigureMockMvc
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@AutoConfigureRestDocs
+@AutoConfigureMockMvc
+@Import(TestCommons.class)
 public class Km_classRestController_TEST {
 
 	@Autowired
@@ -39,11 +38,8 @@ public class Km_classRestController_TEST {
 	@Autowired
 	KM_ClassAPI km_classAPI;
 
+	@Autowired
 	MockMvc mvc;
-
-	KM_user km_user;
-	KM_class km_class;
-	KM_subject km_subject;
 
 	@Autowired
 	ObjectMapper objMapper;
@@ -51,41 +47,33 @@ public class Km_classRestController_TEST {
 	@Autowired
 	ModelMapper modelMapper;
 
-	@Before
-	public void initialize() {
-		this.mvc = MockMvcBuilders.webAppContextSetup(wac).addFilters(new CharacterEncodingFilter("UTF-8", true))
-				.build();
-		createUser();
-		createClass();
-		createSubject();
+	@Test
+	public void a() throws Exception {
+		mvc.perform(get("/professor/class/listPage")
+				.param("page", "0")
+				.param("size", "10"))
+				.andExpect(status().isOk())
+				.andDo(print());
 	}
 
 	@Test
-	public void save() throws Exception {
-		KM_classVO km_classVO = modelMapper.map(km_class, KM_classVO.class);
-		mvc.perform(post("/professor/class").contentType(MediaType.APPLICATION_JSON)
-				.content(objMapper.writeValueAsString(km_classVO))).andExpect(status().isOk()).andDo(print());
+	@Ignore
+	public void getClassList() throws Exception {
+		mvc.perform(get("/professor/class")).andExpect(status().isOk()).andDo(print())
+				.andDo(document("GET - classList",
+						responseFields(fieldWithPath("[].seq").description("수업 번호"),
+								fieldWithPath("[0].name").description("수업 번호"),
+								fieldWithPath("[0].startDate").description("수업 번호"),
+								fieldWithPath("[0].endDate").description("수업 번호"),
+								fieldWithPath("[0].content").description("수업 번호"),
+								fieldWithPath("[0].plannerDocName").description("수업 번호").optional(),
+								fieldWithPath("[0].type").description("수업 번호"),
+								fieldWithPath("[0].replyPermit_state").description("수업 번호"),
+								fieldWithPath("[0].selectMenu").description("수업 번호"),
+								fieldWithPath("[0].use_state").description("수업 번호"),
+								fieldWithPath("[0].saveState").description("수업 번호"),
+								fieldWithPath("[0].links[].rel").description("수업 번호"),
+								fieldWithPath("[0].links[].href").description("수업 번호"))));
 	}
 
-	public void createUser() {
-		km_user = new KM_user();
-		km_user.setId("윤지원");
-		km_user.setSeq(1L);
-	}
-
-	public void createClass() {
-		km_class = new KM_class();
-		km_class.setName("JPA");
-		km_class.setStartDate("2020-03-22");
-		km_class.setEndDate("2020-10-10");
-		km_class.setType(ClassType.MAJOR);
-		km_class.setReplyPermit_state(BooleanState.YSE);
-		km_class.setSelectMenu("REPORT,");
-		km_class.setUse_state(BooleanState.YSE);
-	}
-
-	public void createSubject() {
-		km_subject = new KM_subject();
-		km_subject.setSeq(1L);
-	}
 }

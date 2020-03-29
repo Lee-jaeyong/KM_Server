@@ -3,6 +3,8 @@ package ljy.book.admin.entity.resource;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import ljy.book.admin.request.KM_classVO;
 import ljy.book.admin.restAPI.KM_ClassRestController;
 

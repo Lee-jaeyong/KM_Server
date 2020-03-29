@@ -3,22 +3,17 @@ package ljy.book.admin.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-
-import javax.servlet.http.HttpSession;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-
-import ljy.book.admin.dto.Km_classDTO;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_subject;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.jpaAPI.KM_ClassAPI;
-import ljy.book.admin.repository.projection.Km_classProjection;
 import ljy.book.admin.request.KM_classVO;
 
 @Service
@@ -26,9 +21,6 @@ public class KM_ClassService {
 
 	@Autowired
 	KM_ClassAPI km_classAPI;
-
-	@Autowired
-	KM_UserService km_userService;
 
 	@Autowired
 	KM_FileUploadDownloadService fileUploadService;
@@ -43,6 +35,10 @@ public class KM_ClassService {
 //		return null;
 //		// return km_classAPI.findByKmUser_id(km_user.getId());
 //	}
+
+	public Page<KM_class> getClassListPage(Pageable pageable) {
+		return km_classAPI.findByName("ㅁㅁㅁ", pageable);
+	}
 
 	public List<KM_classVO> getClassList() {
 		List<KM_class> list = km_classAPI.findAll();
