@@ -7,17 +7,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ljy.book.admin.dto.Km_userLoginDTO;
 import ljy.book.admin.dto.validate.Km_userLoginValidator;
-import ljy.book.admin.entity.resource.Km_userLoginResource;
+import ljy.book.admin.entity.KM_user;
+import ljy.book.admin.entity.resource.Km_userResource;
 import ljy.book.admin.security.KM_UserService;
 
 @RestController
@@ -32,10 +34,6 @@ public class KM_UserRestController {
 	@Autowired
 	Km_userLoginValidator km_userLoginValidator;
 
-	@PostMapping
-	public ResponseEntity<?> login(String id, String pass, String grant_type) {
-		return ResponseEntity.ok(null);
-	}
 
 //	@PostMapping(value = "login")
 //	public ResponseEntity login(@RequestBody @Valid Km_userLoginDTO user, Errors error, HttpSession session)
@@ -54,15 +52,15 @@ public class KM_UserRestController {
 //		return ResponseEntity.status(HttpStatus.OK).build();
 //	}
 
-	private ResponseEntity loginError(Km_userLoginDTO user, Errors error) {
-		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
-		Km_userLoginResource km_userResource = new Km_userLoginResource(user);
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		km_userResource.add(linkBuilder.slash(user.getId()).withRel("find_the_id_link"));
-		km_userResource.add(linkBuilder.withRel("join_link"));
-		km_userResource.add(linkBuilder.slash("login").withRel("login_link"));
-		result.put("error", error.getAllErrors());
-		result.put("href", km_userResource);
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
-	}
+//	private ResponseEntity loginError(Km_userLoginDTO user, Errors error) {
+//		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+//		Km_userLoginResource km_userResource = new Km_userLoginResource(user);
+//		HashMap<String, Object> result = new HashMap<String, Object>();
+//		km_userResource.add(linkBuilder.slash(user.getId()).withRel("find_the_id_link"));
+//		km_userResource.add(linkBuilder.withRel("join_link"));
+//		km_userResource.add(linkBuilder.slash("login").withRel("login_link"));
+//		result.put("error", error.getAllErrors());
+//		result.put("href", km_userResource);
+//		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
+//	}
 }

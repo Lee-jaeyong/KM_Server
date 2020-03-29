@@ -1,13 +1,10 @@
 package ljy.book.admin.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.Collection;
 
-import org.hibernate.validator.constraints.Email;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import ljy.book.admin.entity.enums.UserRule;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,28 +12,51 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Km_userDTO {
-	Long userSEQ;
+public class Km_userDTO implements UserDetails{
+	long seq;
 
-	@NotNull(message = "아이디를 입력해주세요.")
 	String id;
 
-	@NotNull(message = "비밀번호를 입력해주세요.")
 	String pass;
 
-	UserRule rule;
+	String name;
 
-	@Email
 	String email;
 
-	@Email
-	String phone;
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
 
-	@Email
-	@Size(min = 1, max = 6)
-	String birth;
+	@Override
+	public String getPassword() {
+		return this.pass;
+	}
 
-	@Email
-	@Size(min = 1)
-	String name;
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.id;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return false;
+	}
 }

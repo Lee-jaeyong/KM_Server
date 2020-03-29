@@ -15,20 +15,20 @@ import ljy.book.admin.security.KM_UserService;
 
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
-
-	@Autowired
-	PasswordEncoder passwordEncoder;
+public class AuthServerConfig extends AuthorizationServerConfigurerAdapter{
 
 	@Autowired
 	KM_UserService km_userService;
-
-	@Autowired
-	AuthenticationManager authenticationManager;
-
+	
 	@Autowired
 	TokenStore tokenStore;
-
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.passwordEncoder(passwordEncoder);
@@ -36,14 +36,21 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("KMAPP").scopes("read", "write").secret(this.passwordEncoder.encode("pass"))
-				.accessTokenValiditySeconds(10 * 60).refreshTokenValiditySeconds(6 * 10 * 60);
+		clients.inMemory()
+		.withClient("KMapp")
+		.authorizedGrantTypes("password","refresh_token")
+		.scopes("read","write")
+		.secret(this.passwordEncoder.encode("pass"))
+		.accessTokenValiditySeconds(10)
+		.refreshTokenValiditySeconds(10*60*6);
 	}
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.authenticationManager(authenticationManager).userDetailsService(km_userService)
-				.tokenStore(tokenStore);
+		endpoints
+			.authenticationManager(authenticationManager)
+			.tokenStore(tokenStore)
+			.userDetailsService(km_userService);
 	}
 
 }

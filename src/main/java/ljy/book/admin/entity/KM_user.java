@@ -47,4 +47,5 @@ public class KM_user {
 		this.kmClass.add(km_class);
 		km_class.setKmUser(this);
 	}
+
 }

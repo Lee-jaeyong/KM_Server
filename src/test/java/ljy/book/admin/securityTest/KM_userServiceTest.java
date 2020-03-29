@@ -6,24 +6,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import ljy.book.admin.CommonTestConfig;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.enums.UserRule;
 import ljy.book.admin.security.KM_UserService;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class KM_userServiceTest {
+public class KM_userServiceTest extends CommonTestConfig {
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -32,6 +29,7 @@ public class KM_userServiceTest {
 	KM_UserService km_userService;
 
 	@Test
+	@Ignore
 	public void findByUserId() {
 		KM_user user = new KM_user();
 		user.setId("dlwodyd202");
