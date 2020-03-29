@@ -43,7 +43,6 @@ public class KmRportAdminApplication implements ApplicationRunner {
 		km_user.setName("이재용");
 		Set<UserRule> rules = new HashSet<UserRule>();
 		rules.add(UserRule.PROFESSER);
-		rules.add(UserRule.STUDENT);
 		km_user.setUserRule(rules);
 
 		this.km_userService.save(km_user);
