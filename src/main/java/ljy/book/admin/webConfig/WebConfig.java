@@ -9,8 +9,10 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,8 +21,15 @@ import ljy.book.admin.converter.Km_UserEnum;
 
 @Configuration
 @EnableWebMvc
-@SuppressWarnings("deprecation")
 public class WebConfig implements WebMvcConfigurer {
+
+	private static final String[] RESOURCE_LOCATIONS = { "classpath:/static/" };
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/**").addResourceLocations(RESOURCE_LOCATIONS).setCachePeriod(3600)
+				.resourceChain(true).addResolver(new PathResourceResolver());
+	}
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {

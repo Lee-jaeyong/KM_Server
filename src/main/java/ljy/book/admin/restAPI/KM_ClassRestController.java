@@ -12,11 +12,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +33,6 @@ import ljy.book.admin.entity.resource.Km_classResource;
 import ljy.book.admin.request.KM_classVO;
 import ljy.book.admin.service.KM_ClassService;
 import ljy.book.admin.service.KM_FileUploadDownloadService;
-import lombok.experimental.var;
 
 @RestController
 @RequestMapping("professor/class")
@@ -56,6 +55,8 @@ public class KM_ClassRestController {
 
 	@GetMapping("/listPage")
 	public ResponseEntity<?> getClassListPage(Pageable pageable, PagedResourcesAssembler<KM_class> paged) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println(auth.getName());
 		Page<KM_class> page = this.km_classService.getClassListPage(pageable);
 		lombok.var pagedResources = paged.toModel(page,
 				e -> new Km_classResource(modelMapper.map(e, KM_classVO.class)));

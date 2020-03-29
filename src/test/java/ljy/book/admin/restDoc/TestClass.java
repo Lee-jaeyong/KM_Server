@@ -15,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ljy.book.admin.entity.KM_class;
+import ljy.book.admin.service.KM_ClassService;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureRestDocs
@@ -23,11 +26,22 @@ import org.springframework.test.web.servlet.MockMvc;
 public class TestClass {
 
 	@Autowired
+	KM_ClassService km_classService;
+	
+	@Autowired
 	private MockMvc mockMvc;
 
 	@Test
 	public void a() throws Exception {
-		this.mockMvc.perform(get("/professor/class/31").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+		KM_class km_class = new KM_class();
+		km_class.setName("C언어");
+		km_class.setStartDate("2020-03-01");
+		km_class.setEndDate("2020-10-10");
+		km_class.setSelectMenu("");
+
+		km_classService.save(km_class);
+
+		this.mockMvc.perform(get("/professor/class/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andDo(document("index"));
 	}
 }

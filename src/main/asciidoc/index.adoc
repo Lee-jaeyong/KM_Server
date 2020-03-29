@@ -1,3 +1,10 @@
-include::{snippets}/index/curl-request.adoc[]
-include::{snippets}/index/http-request.adoc[]
-include::{snippets}/index/http-response.adoc[]
+= 로그인
+== 사용자 인증
+include::{snippets}/km_auth/curl-request.adoc[]
+include::{snippets}/km_auth/http-request.adoc[]
+include::{snippets}/km_auth/http-response.adoc[]
+include::{snippets}/km_auth/httpie-request.adoc[]
+include::{snippets}/km_auth/path-parameters.adoc[]
+include::{snippets}/km_auth/request-parameters.adoc[]
+include::{snippets}/km_auth/response-body.adoc[]
+include::{snippets}/km_auth/response-fields.adoc[]

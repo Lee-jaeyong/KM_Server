@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers("/docs/index.html");
+		web.ignoring().mvcMatchers("/index");
 		web.ignoring().mvcMatchers("/favicon.ico");
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
