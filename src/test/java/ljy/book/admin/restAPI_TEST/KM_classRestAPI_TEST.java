@@ -70,7 +70,8 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 			.put("/professor/class").content(_content).contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andDo(print())
 		.andDo(document("Update KM_class By Professor",
-			requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
+			requestFields(
+				fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
 				fieldWithPath("seq").type(JsonFieldType.NUMBER).description("수업 번호").optional(),
 				fieldWithPath("name").type(JsonFieldType.STRING).description("수업명"),
 				fieldWithPath("startDate").type(JsonFieldType.STRING).description("수업 시작일"),
@@ -167,7 +168,10 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 		// When
 		this.mvc.perform(RestDocumentationRequestBuilders.get("/professor/class/{seq}", 3L).content(content))
 			.andExpect(status().isOk()).andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE)).andDo(print())
-			.andDo(document("Access KM_class Info by Professor", pathParameters(parameterWithName("seq").description("수업 번호")),
+			.andDo(document("Access KM_class Info by Professor", 
+				pathParameters(
+					parameterWithName("seq").description("수업 번호")
+				),
 				requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰")),
 				responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("수업 번호").optional(),
 					fieldWithPath("name").type(JsonFieldType.STRING).description("수업명").optional(),

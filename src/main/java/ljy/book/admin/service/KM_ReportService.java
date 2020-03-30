@@ -77,12 +77,12 @@ public class KM_ReportService {
 		return result;
 	}
 
-	public long getTotalCount(long classIdx, CustomSearchObject customSearchObj) {
-		return km_ReportAPI.countSearch_Km_report(classIdx, customSearchObj);
+	public long getTotalCount(long classIdx, CustomSearchObject customSearchObj,String id) {
+		return km_ReportAPI.countSearch_Km_report(classIdx, customSearchObj,id);
 	}
 
-	public List<KM_Report> getReportList(long classIdx, Pageable pageable, CustomSearchObject customSearchObj) {
-		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj);
+	public List<KM_Report> getReportList(long classIdx, Pageable pageable, CustomSearchObject customSearchObj,String id) {
+		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj,id);
 	}
 
 	public KM_Report save(KM_reportVO km_reportVO) {
@@ -106,8 +106,8 @@ public class KM_ReportService {
 
 	public boolean update(long reportIdx, KM_reportVO km_reportVO) {
 		km_ReportAPI.updateByReportIdx(km_reportVO.getName(), km_reportVO.getStartDate(), km_reportVO.getEndDate(),
-				km_reportVO.getContent(), km_reportVO.getSubmitOverDue_state(),
-				km_reportVO.getShowOtherReportOfStu_state(), reportIdx);
+			km_reportVO.getContent(), km_reportVO.getSubmitOverDue_state(), km_reportVO.getShowOtherReportOfStu_state(),
+			reportIdx);
 		return true;
 	}
 

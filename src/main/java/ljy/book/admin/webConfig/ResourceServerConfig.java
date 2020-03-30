@@ -35,6 +35,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //			.and()
 //			.authorizeRequests()
 //			.mvcMatchers(HttpMethod.GET,"/professor/class/**").hasRole(UserRule.PROFESSER.toString())
+//			.mvcMatchers(HttpMethod.GET,"/professor/report/**").hasRole(UserRule.PROFESSER.toString())
 //			.and()
 //			.exceptionHandling()
 //			.accessDeniedHandler(new OAuth2AccessDeniedHandler());

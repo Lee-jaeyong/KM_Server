@@ -17,16 +17,18 @@ public class CustomKm_reportAPIimpl implements CustomKm_reportAPI {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<KM_Report> search_Km_report(long seq, Pageable pageable, CustomSearchObject customSearchObj) {
+	public List<KM_Report> search_Km_report(long seq, Pageable pageable, CustomSearchObject customSearchObj, String id) {
 		String type = customSearchObj.getSearchType();
 		String searchName = customSearchObj.getName();
-		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq = " + seq;
+		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq IN \r\n"
+			+ "	(SELECT seq FROM km_class WHERE km_user_seq = (SELECT seq FROM km_user WHERE id = '" + id
+			+ "')) AND p.km_class_seq = " + seq;
 		if (!type.equals("")) {
 			sql += " AND p." + type + " LIKE '%" + searchName + "%' ";
 		}
 		if (!customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
 			sql += " AND p.start_date >= '" + customSearchObj.getStartDate() + "' AND p.end_date <= '"
-					+ customSearchObj.getEndDate() + "'";
+				+ customSearchObj.getEndDate() + "'";
 		} else {
 			if (!customSearchObj.getStartDate().equals("") && customSearchObj.getEndDate().equals("")) {
 				sql += " AND p.start_date = '" + customSearchObj.getStartDate() + "'";
@@ -36,22 +38,23 @@ public class CustomKm_reportAPIimpl implements CustomKm_reportAPI {
 			}
 		}
 		sql += " ORDER BY p.seq DESC LIMIT ?,?";
-		return em.createNativeQuery(sql, KM_Report.class)
-				.setParameter(1, pageable.getPageNumber() * pageable.getPageSize())
-				.setParameter(2, pageable.getPageSize()).getResultList();
+		return em.createNativeQuery(sql, KM_Report.class).setParameter(1, pageable.getPageNumber() * pageable.getPageSize())
+			.setParameter(2, pageable.getPageSize()).getResultList();
 	}
 
 	@Override
-	public long countSearch_Km_report(long seq, CustomSearchObject customSearchObj) {
+	public long countSearch_Km_report(long seq, CustomSearchObject customSearchObj, String id) {
 		String type = customSearchObj.getSearchType();
 		String searchName = customSearchObj.getName();
-		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq = " + seq;
+		String sql = "SELECT * " + "FROM km_report p " + "WHERE p.km_class_seq IN \r\n"
+			+ "	(SELECT seq FROM km_class WHERE km_user_seq = (SELECT seq FROM km_user WHERE id = '" + id
+			+ "')) AND p.km_class_seq = " + seq;
 		if (!type.equals("")) {
 			sql += " AND p." + type + " LIKE '%" + searchName + "%' ";
 		}
 		if (!customSearchObj.getStartDate().equals("") && !customSearchObj.getEndDate().equals("")) {
 			sql += " AND p.start_date >= '" + customSearchObj.getStartDate() + "' AND p.end_date <= '"
-					+ customSearchObj.getEndDate() + "'";
+				+ customSearchObj.getEndDate() + "'";
 		} else {
 			if (!customSearchObj.getStartDate().equals("") && customSearchObj.getEndDate().equals("")) {
 				sql += " AND p.start_date = '" + customSearchObj.getStartDate() + "'";

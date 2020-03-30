@@ -8,7 +8,7 @@ import ljy.book.admin.common.object.CustomSearchObject;
 import ljy.book.admin.entity.KM_Report;
 
 public interface CustomKm_reportAPI {
-	long countSearch_Km_report(long seq, CustomSearchObject customSearchObj);
+	long countSearch_Km_report(long seq, CustomSearchObject customSearchObj, String id);
 
-	List<KM_Report> search_Km_report(long seq, Pageable pageable, CustomSearchObject customSearchObj);
+	List<KM_Report> search_Km_report(long seq, Pageable pageable, CustomSearchObject customSearchObj, String id);
 }

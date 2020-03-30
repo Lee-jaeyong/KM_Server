@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ljy.book.admin.common.object.CustomSearchObject;
+import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.dto.validate.Km_reportValidator;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.resource.Km_reportResource;
@@ -32,7 +36,7 @@ import ljy.book.admin.service.KM_FileUploadDownloadService;
 import ljy.book.admin.service.KM_ReportService;
 
 @RestController
-@RequestMapping("report")
+@RequestMapping("professor/report")
 public class KM_ReportRestController {
 
 	Logger log = LoggerFactory.getLogger(KM_ReportRestController.class);
@@ -49,28 +53,34 @@ public class KM_ReportRestController {
 	@Autowired
 	ModelMapper modelMapper;
 
+	ControllerLinkBuilder linkBuilder;
+
+	@PostConstruct
+	public void init() {
+		linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+	}
+
 	@GetMapping("{reportIdx}")
 	public ResponseEntity getReport(@PathVariable long reportIdx) {
-		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_reportResource km_reportResource = new Km_reportResource(km_ReportService.getReport(reportIdx));
 		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("delete").withDeprecation("삭제"));
 		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("update").withDeprecation("수정"));
 		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
 	}
 
-	@GetMapping("{reportIdx}/fileList")
+	@GetMapping("/{reportIdx}/fileList")
 	public ResponseEntity getReportFileList(@PathVariable long reportIdx) {
 		return ResponseEntity.status(HttpStatus.OK).body(km_ReportService.getReportFileList(reportIdx));
 	}
 
-	@GetMapping("{classIdx}/list")
-	public ResponseEntity getReportList(@PathVariable long classIdx, Pageable pageable,
-			CustomSearchObject customsearchObj) {
-		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+	@GetMapping("/class/{classIdx}/list")
+	@Memo("해당 클래스의 과제  리스트를 가져오는 메소드")
+	public ResponseEntity<?> getReportList(@PathVariable long classIdx, Pageable pageable, CustomSearchObject customsearchObj) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		List<Object> resultList = new ArrayList<Object>();
-		result.put("totalCount", km_ReportService.getTotalCount(classIdx, customsearchObj));
-		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable, customsearchObj)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		result.put("totalCount", km_ReportService.getTotalCount(classIdx, customsearchObj, auth.getName()));
+		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable, customsearchObj, auth.getName())) {
 			KM_reportVO data = new KM_reportVO();
 			data.setClassIdx(classIdx);
 			data.setContent(c.getContent());
@@ -82,8 +92,8 @@ public class KM_ReportRestController {
 			data.setStartDate(c.getStartDate());
 			data.setSubmitOverDue_state(c.getSubmitOverDue_state());
 			Km_reportResource km_reportResource = new Km_reportResource(data);
-			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("delete").withDeprecation("삭제"));
-			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("update").withDeprecation("수정"));
+			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("delete"));
+			km_reportResource.add(linkBuilder.slash(data.getSeq()).withRel("update"));
 			resultList.add(km_reportResource);
 		}
 		result.put("list", resultList);
@@ -91,8 +101,7 @@ public class KM_ReportRestController {
 	}
 
 	@PostMapping("{classIdx}")
-	public ResponseEntity save(@PathVariable long classIdx, @RequestBody @Valid KM_reportVO km_reportVO,
-			Errors errors) {
+	public ResponseEntity save(@PathVariable long classIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors) {
 		km_reportValidator.validate(km_reportVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -102,14 +111,13 @@ public class KM_ReportRestController {
 		KM_Report km_report = km_ReportService.save(km_reportVO);
 		km_reportVO.setSeq(km_report.getSeq());
 		Km_reportResource km_reportResource = new Km_reportResource(km_reportVO);
-		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("delete").withDeprecation("삭제"));
-		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("update").withDeprecation("수정"));
+		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("delete"));
+		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("update"));
 		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
 	}
 
 	@PutMapping("{reportIdx}")
-	public ResponseEntity update(@PathVariable long reportIdx, @RequestBody @Valid KM_reportVO km_reportVO,
-			Errors errors) {
+	public ResponseEntity update(@PathVariable long reportIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors) {
 		km_reportValidator.validate(km_reportVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

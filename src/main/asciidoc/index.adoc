@@ -111,3 +111,15 @@ include::{snippets}/Update KM_class By Professor/request-fields.adoc[]
 include::{snippets}/Update KM_class By Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Update KM_class By Professor/response-fields.adoc[]
+
+= 과제
+== 과제 조회 [get]
+=== 교수
+- 요청 ex
+include::{snippets}/Access KM_report by Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_report by Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_report by Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_report by Professor/response-fields.adoc[]
