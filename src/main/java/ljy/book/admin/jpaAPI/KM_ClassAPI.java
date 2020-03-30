@@ -16,19 +16,28 @@ import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.ClassType;
 
 public interface KM_ClassAPI extends CommonRepository<KM_class, Long> {
-	Page<KM_class> findByName(String name, Pageable pageable);
+	Page<KM_class> findByKmUser_Id(String id, Pageable pageable);
+
+	KM_class findBySeqAndKmUser_Id(long idx, String id);
 
 	Optional<KM_class> findBykmUser_Id(String id);
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE KM_class p " + " SET p.name = :name," + "p.startDate = :startDate," + "p.endDate = :endDate,"
-			+ "p.content = :content," + "p.type = :type" + ",p.replyPermit_state = :replyPermit_state,"
-			+ "p.selectMenu = :selectMenu," + "p.use_state = :use_state" + " WHERE p.seq = :idx")
-	void updateKm_class(@Param("name") String name, @Param("startDate") String startDate,
-			@Param("endDate") String endDate, @Param("content") String content, @Param("type") ClassType type,
-			@Param("replyPermit_state") BooleanState replyPermit_state, @Param("selectMenu") String selectMenu,
-			@Param("use_state") BooleanState use_state, @Param("idx") long idx);
+	@Query(nativeQuery = true,value = 
+		"UPDATE KM_class p " + 
+		"SET p.name = :name, " + 
+		"p.start_Date = :startDate, " + 
+		"p.end_Date = :endDate, " + 
+		"p.content = :content, " + 
+		"p.type = :type, " + 
+		"p.reply_Permit_state = :replyPermit_state, " + 
+		"p.select_Menu = :selectMenu, " + 
+		"p.use_state = :use_state WHERE p.seq = :idx AND p.km_user_seq = (SELECT seq FROM km_user WHERE id = :userId)")
+	void updateKm_class(@Param("name") String name, @Param("startDate") String startDate, @Param("endDate") String endDate,
+		@Param("content") String content, @Param("type") String type,
+		@Param("replyPermit_state") String replyPermit_state, @Param("selectMenu") String selectMenu,
+		@Param("use_state") String use_state, @Param("idx") long idx, @Param("userId") String id);
 
 	@Transactional
 	@Modifying

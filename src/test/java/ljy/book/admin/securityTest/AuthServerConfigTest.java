@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -34,22 +35,13 @@ public class AuthServerConfigTest extends CommonTestConfig {
 	@Autowired
 	MockMvc mvc;
 
+	@Before
+	public void init() {
+		this.createUser();
+	}
+	
 	@Test
 	public void getAuthToken() throws Exception {
-		KM_user km_user = new KM_user();
-		km_user.setId("dlwodyd202");
-		km_user.setPass("dlwodyd");
-		km_user.setEmail("wodyd202@naver.com");
-		km_user.setName("이재용");
-		Set<UserRule> rules = new HashSet<UserRule>();
-		rules.add(UserRule.PROFESSER);
-		rules.add(UserRule.STUDENT);
-		km_user.setUserRule(rules);
-
-		this.km_userService.save(km_user);
-
-		String clientId = "KMapp";
-		String clientPass = "pass";
 
 		this.mvc.perform(RestDocumentationRequestBuilders.post("/oauth/token").with(httpBasic(clientId, clientPass)).param("username", "dlwodyd202")
 				.param("password", "dlwodyd").param("grant_type", "password")).andDo(print())

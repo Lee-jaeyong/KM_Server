@@ -30,6 +30,10 @@ public class KM_UserService implements UserDetailsService {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
+	public KM_user findByUserId(String id) {
+		return km_userAPI.findById(id).get();
+	}
+	
 	public KM_user save(KM_user user) {
 		user.setPass(passwordEncoder.encode(user.getPass()));
 		return km_userAPI.save(user);

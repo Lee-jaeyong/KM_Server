@@ -1,10 +1,113 @@
+= KM RESTful API Guide
+Andy Wilkinson;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[overview]]
+= Overview
+
+[[overview-http-verbs]]
+== HTTP verbs
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PUT`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+[[overview-http-status-codes]]
+== HTTP status codes
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
 = 로그인
-== 사용자 인증
-include::{snippets}/km_auth/curl-request.adoc[]
-include::{snippets}/km_auth/http-request.adoc[]
-include::{snippets}/km_auth/http-response.adoc[]
-include::{snippets}/km_auth/httpie-request.adoc[]
+== 사용자 인증 [post]
+- 요청 ex
 include::{snippets}/km_auth/path-parameters.adoc[]
+- 요청 파라미터
 include::{snippets}/km_auth/request-parameters.adoc[]
+- 응답 ex
 include::{snippets}/km_auth/response-body.adoc[]
+- 응답 파라미터 설명 
 include::{snippets}/km_auth/response-fields.adoc[]
+
+
+= 수업
+== 수업 조회 [get]
+=== 교수
+- 요청 ex
+include::{snippets}/Access KM_class by Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_class by Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_class by Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_class by Professor/response-fields.adoc[]
+
+== 수업 한건 조회 [get]
+=== 교수
+- 요청 ex
+include::{snippets}/Access KM_class Info by Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_class Info by Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_class Info by Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_class Info by Professor/response-fields.adoc[]
+
+== 수업 등록 [post]
+=== 교수
+- 요청 ex
+include::{snippets}/Save KM_class By Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Save KM_class By Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Save KM_class By Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Save KM_class By Professor/response-fields.adoc[]
+
+== 수업 수정 [put]
+=== 교수
+- 요청 ex
+include::{snippets}/Update KM_class By Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Update KM_class By Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Update KM_class By Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Update KM_class By Professor/response-fields.adoc[]

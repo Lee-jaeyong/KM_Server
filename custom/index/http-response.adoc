@@ -1,8 +1,0 @@
-[source,http,options="nowrap"]
-----
-HTTP/1.1 200 OK
-Content-Type: application/hal+json
-Content-Length: 816
-
-{"seq":31,"name":"DSDSDS","startDate":"2020-03-02","endDate":"2020-03-23","content":"<table>\n<thead>\n<tr>\n<th></th>\n<th></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>怨� �젣</td>\n<td>10</td>\n</tr>\n<tr>\n<td>異� �꽍</td>\n<td>10</td>\n</tr>\n<tr>\n<td>�떆 �뿕</td>\n<td>80</td>\n</tr>\n</tbody>\n</table>\n","plannerDocName":"ReportQuestion�뀒�씠釉�.xlsx","type":"CULTURE","replyPermit_state":"YSE","selectMenu":"REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,REPORT,,,,,REFERENCE,,,,,QnA,NOTICE,,,,,,,,,,,,,,,,","use_state":"YSE","saveState":null,"_links":{"self":{"href":"http://localhost:8080/professor/class"},"delete":{"href":"http://localhost:8080/professor/class/31","deprecation":"�궘�젣"},"update":{"href":"http://localhost:8080/professor/class/31","deprecation":"�닔�젙"}}}
-----
