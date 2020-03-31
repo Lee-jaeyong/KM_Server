@@ -69,7 +69,7 @@ include::{snippets}/km_auth/response-fields.adoc[]
 
 = 수업
 == 수업 조회 [get]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Access KM_class by Professor/request-body.adoc[]
 - 요청 파라미터
@@ -79,7 +79,25 @@ include::{snippets}/Access KM_class by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_class by Professor/response-fields.adoc[]
 
-=== 학생
+==== - 교수 수업에 대한 승인 요청 확인
+- 요청 ex
+include::{snippets}/Access SignUpClassForStu By Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access SignUpClassForStu By Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access SignUpClassForStu By Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access SignUpClassForStu By Professor/response-fields.adoc[]
+
+==== - 교수 수업에 대한 승인 요청 승인
+- 요청 ex
+include::{snippets}/Update signUpState of SignUpClassForStu By Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Update signUpState of SignUpClassForStu By Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Update signUpState of SignUpClassForStu By Professor/response-body.adoc[]
+
+=== - 학생
 - 요청 ex
 include::{snippets}/Access KM_class by Student/request-body.adoc[]
 - 요청 파라미터
@@ -89,7 +107,7 @@ include::{snippets}/Access KM_class by Student/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_class by Student/response-fields.adoc[]
 
-==== 학생 수업 신청
+==== - 학생 수업 신청
 - 요청 ex
 include::{snippets}/Sign Up Class For Student/request-body.adoc[]
 - 요청 파라미터
@@ -100,7 +118,7 @@ include::{snippets}/Sign Up Class For Student/response-body.adoc[]
 include::{snippets}/Sign Up Class For Student/response-fields.adoc[]
 
 == 수업 한건 조회 [get]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Access KM_class Info by Professor/request-body.adoc[]
 - 요청 파라미터
@@ -110,8 +128,18 @@ include::{snippets}/Access KM_class Info by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_class Info by Professor/response-fields.adoc[]
 
+=== - 학생
+- 요청 ex
+include::{snippets}/Access KM_class Info by Student/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_class Info by Student/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_class Info by Student/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_class Info by Student/response-fields.adoc[]
+
 == 수업 등록 [post]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Save KM_class By Professor/request-body.adoc[]
 - 요청 파라미터
@@ -122,7 +150,7 @@ include::{snippets}/Save KM_class By Professor/response-body.adoc[]
 include::{snippets}/Save KM_class By Professor/response-fields.adoc[]
 
 == 수업 수정 [put]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Update KM_class By Professor/request-body.adoc[]
 - 요청 파라미터
@@ -134,7 +162,7 @@ include::{snippets}/Update KM_class By Professor/response-fields.adoc[]
 
 = 과제
 == 과제 조회 [get]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Access KM_report by Professor/request-body.adoc[]
 - 요청 파라미터
@@ -144,8 +172,19 @@ include::{snippets}/Access KM_report by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_report by Professor/response-fields.adoc[]
 
+=== - 학생
+- 요청 ex
+include::{snippets}/Access KM_report by Student/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_report by Student/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_report by Student/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_report by Student/response-fields.adoc[]
+
+
 == 과제 한건 조회 [get]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Access Km_report Info by Professor/request-body.adoc[]
 - 요청 파라미터
@@ -155,8 +194,18 @@ include::{snippets}/Access Km_report Info by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access Km_report Info by Professor/response-fields.adoc[]
 
+=== - 학생
+- 요청 ex
+include::{snippets}/Access Km_report Info by Student/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access Km_report Info by Student/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access Km_report Info by Student/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access Km_report Info by Student/response-fields.adoc[]
+
 == 해당 과제 파일 리스트 조회 [get]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/request-body.adoc[]
 - 요청 파라미터
@@ -167,7 +216,7 @@ include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/response-
 include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/response-fields.adoc[]
 
 == 해당 과제 수정 [put]
-=== 교수
+=== - 교수
 - 요청 ex
 include::{snippets}/Update KM_report By Professor/request-body.adoc[]
 - 요청 파라미터

@@ -29,6 +29,6 @@ public class KM_signUpClassForStu {
 	@ManyToOne(fetch = FetchType.LAZY)
 	KM_class kmClass;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	KM_user kmUser;
 }

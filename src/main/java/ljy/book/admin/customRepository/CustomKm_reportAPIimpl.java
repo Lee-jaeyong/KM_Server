@@ -63,6 +63,10 @@ public class CustomKm_reportAPIimpl implements CustomKm_reportAPI {
 				sql += " AND p.end_date= '" + customSearchObj.getEndDate() + "'";
 			}
 		}
-		return em.createNativeQuery(sql, KM_Report.class).getResultList().size();
+		try {
+			return em.createNativeQuery(sql, KM_Report.class).getResultList().size();
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 }

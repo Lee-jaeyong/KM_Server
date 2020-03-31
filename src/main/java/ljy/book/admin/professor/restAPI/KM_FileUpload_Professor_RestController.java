@@ -19,8 +19,8 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
 import ljy.book.admin.professor.service.impl.KM_FileUploadDownload_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_Report_Professor_Service;
 import ljy.book.admin.security.CurrentKm_User;
-import ljy.book.admin.service.KM_reportServiceList;
 
 @RestController
 @RequestMapping(value = "api/professor/uploadFile/{idx}")
@@ -29,7 +29,7 @@ public class KM_FileUpload_Professor_RestController {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	KM_reportServiceList km_reportService;
+	KM_Report_Professor_Service km_reportService;
 
 	@Autowired
 	KM_Class_Professor_Service km_classService;

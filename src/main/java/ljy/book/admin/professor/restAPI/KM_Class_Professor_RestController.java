@@ -1,5 +1,9 @@
 package ljy.book.admin.professor.restAPI;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
@@ -30,9 +35,11 @@ import ljy.book.admin.dto.validate.Km_subjectValidator;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_classResource;
+import ljy.book.admin.entity.resource.Km_signUpClassForStuResource;
 import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
 import ljy.book.admin.professor.service.impl.KM_FileUploadDownload_Professor_Service;
 import ljy.book.admin.request.KM_classVO;
+import ljy.book.admin.request.KM_signUpClassForStuVO;
 import ljy.book.admin.security.CurrentKm_User;
 
 @RestController
@@ -61,6 +68,19 @@ public class KM_Class_Professor_RestController {
 	@PostConstruct
 	public void init() {
 		linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+	}
+
+	@GetMapping("/{idx}/signUpList")
+	@Memo("수업을 신청한 명단을 가져오는 메소드")
+	public ResponseEntity<?> getSignUpClassForStu(@PathVariable long idx, @CurrentKm_User KM_user km_user) {
+		List<KM_signUpClassForStuVO> list = km_classService.getSignUpClassList(idx, km_user.getId());
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		HashMap<String, Object> links = new HashMap<String, Object>();
+		links.put("self", linkBuilder.withSelfRel());
+		links.put("profile", new Link("/docs/index.html"));
+		result.put("_embedded", list);
+		result.put("_links", links);
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping
@@ -102,6 +122,16 @@ public class KM_Class_Professor_RestController {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}
 
+	@PutMapping("/{seq}/signUpList/{signUpIdx}")
+	@Memo("해당 수업신청 승인")
+	public ResponseEntity<?> signUpClassForStuSuccess(@PathVariable long seq, @PathVariable long signUpIdx,
+		@CurrentKm_User KM_user km_user) {
+		if (!km_classService.checkByKm_user(seq, "dlwodyd202"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		km_classService.signUpClassSuccess(seq, signUpIdx);
+		return ResponseEntity.status(HttpStatus.OK).build();
+	}
+
 	@PutMapping
 	@Memo("해당 교수의 수업을 수정")
 	public ResponseEntity<?> update(@Valid @RequestBody KM_classVO km_classVO, Errors errors, @CurrentKm_User KM_user km_user) {
@@ -113,7 +143,7 @@ public class KM_Class_Professor_RestController {
 		}
 		km_classResource.add(linkBuilder.slash("").withRel("update"));
 		km_classResource.add(linkBuilder.slash("").withRel("delete"));
-		KM_class km_class = km_classService.update(modelMapper.map(km_classVO, KM_class.class), "dlwodyd202");
+		KM_class km_class = km_classService.update(modelMapper.map(km_classVO, KM_class.class), km_user.getId());
 		km_classVO.setSeq(km_class.getSeq());
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}

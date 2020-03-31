@@ -7,6 +7,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,6 +68,32 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 	}
 
 	@Test
+	@Ignore
+	@Memo("학생이 수업의 정보를 가져오는 경우")
+	public void getKmClassInfo() throws Exception {
+		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/student/class/{seq}", 3).content(content)).andDo(print())
+			.andExpect(status().isOk())
+			.andDo(document("Access KM_class Info by Student", pathParameters(parameterWithName("seq").description("수업 번호")),
+				requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰")),
+				responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("수업 번호").optional(),
+					fieldWithPath("name").type(JsonFieldType.STRING).description("수업명").optional(),
+					fieldWithPath("startDate").type(JsonFieldType.STRING).description("수업 시작일"),
+					fieldWithPath("endDate").type(JsonFieldType.STRING).description("수업 종료일"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("수업 내용").optional(),
+					fieldWithPath("plannerDocName").type(JsonFieldType.STRING).description("강의 계획서").optional(),
+					fieldWithPath("type").type(JsonFieldType.STRING).description("수업 종류").optional(),
+					fieldWithPath("replyPermit_state").type(JsonFieldType.STRING).description("댓글 허용 여부").optional(),
+					fieldWithPath("selectMenu").type(JsonFieldType.STRING).description("연관 메뉴").optional(),
+					fieldWithPath("use_state").type(JsonFieldType.STRING).description("사용 여부").optional(),
+					fieldWithPath("saveState").type(JsonFieldType.STRING).description("임시저장 여부").optional(),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description("").optional(),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("참고").optional(),
+					fieldWithPath("_links.delete.href").type(JsonFieldType.STRING).description("수업 삭제").optional(),
+					fieldWithPath("_links.update.href").type(JsonFieldType.STRING).description("수업 수정").optional())));
+	}
+
+	@Test
+	@Ignore
 	@Memo("학생이 듣는 수업리스트를 가져오는 경우")
 	public void getKmClassList() throws Exception {
 		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/student/class").content(content)).andDo(print())

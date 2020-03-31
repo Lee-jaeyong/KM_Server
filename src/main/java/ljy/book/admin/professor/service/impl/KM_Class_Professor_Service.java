@@ -1,6 +1,8 @@
 package ljy.book.admin.professor.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -15,15 +17,25 @@ import ljy.book.admin.common.object.CustomCodeCreator;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.customRepository.mybaits.Km_classDAO;
 import ljy.book.admin.entity.KM_class;
+import ljy.book.admin.entity.KM_signUpClassForStu;
 import ljy.book.admin.entity.KM_user;
+import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.jpaAPI.KM_ClassAPI;
+import ljy.book.admin.jpaAPI.KM_signUpClassForStuAPI;
 import ljy.book.admin.request.KM_classVO;
+import ljy.book.admin.request.KM_signUpClassForStuVO;
 import ljy.book.admin.security.KM_UserService;
 import ljy.book.admin.service.KM_classServiceList;
 
 @Service
 @Transactional
 public class KM_Class_Professor_Service implements KM_classServiceList {
+
+	@Autowired
+	Km_classDAO km_classDAO;
+
+	@Autowired
+	KM_signUpClassForStuAPI km_signUpClassForStuAPI;
 
 	@Autowired
 	KM_ClassAPI km_classAPI;
@@ -54,7 +66,6 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 		return modelMapper.map(km_classAPI.findBySeqAndKmUser_Id(idx, id), KM_classVO.class);
 	}
 
-	@Override
 	public boolean checkByKm_user(long idx, String id) {
 		return km_classAPI.findBySeqAndKmUser_Id(idx, id) == null ? false : true;
 	}
@@ -62,6 +73,28 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	/*
 	 * 교수 권한 메소드
 	 */
+
+	@Memo("수업 신청을 승낙하는 메소드")
+	public boolean signUpClassSuccess(long classIdx, long seq) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("classIdx", classIdx);
+		map.put("seq", seq);
+		km_classDAO.changeStateToSignUpState(map);
+		return true;
+	}
+
+	@Memo("수업을 신청한 학생의 명단을 가져오는 메소드")
+	public List<KM_signUpClassForStuVO> getSignUpClassList(long idx, String id) {
+		List<KM_signUpClassForStu> list = km_signUpClassForStuAPI
+			.findBySignUpStateAndKmClass_KmUser_IdAndKmClass_Seq(BooleanState.NO, id, idx);
+		List<KM_signUpClassForStuVO> resultList = new ArrayList<KM_signUpClassForStuVO>();
+		list.forEach((c) -> {
+			KM_signUpClassForStuVO data = modelMapper.map(c, KM_signUpClassForStuVO.class);
+			data.setUserId(c.getKmUser().getId());
+			resultList.add(data);
+		});
+		return resultList;
+	}
 
 	@Memo("강의 계획서를 업로드하는 메소드")
 	public boolean uploadFile(String fileName, long idx) {

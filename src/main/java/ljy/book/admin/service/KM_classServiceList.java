@@ -15,6 +15,4 @@ public interface KM_classServiceList {
 	@Memo("해당 사용자의 수업 정보를 가져오는 메소드")
 	public KM_classVO getClassInfo(long idx, String id);
 
-	@Memo("해당 수업을 갖는지의 여부를 판단하는 메소드")
-	public boolean checkByKm_user(long idx, String id);
 }

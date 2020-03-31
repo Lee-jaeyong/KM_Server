@@ -50,9 +50,9 @@ public class KM_Class_Student_Service implements KM_classServiceList {
 		}
 	}
 
-	@Override
-	public boolean checkByKm_user(long idx, String id) {
-		return km_classAPI.findBySeqAndKmUser_Id(idx, id) == null ? false : true;
+	@Memo("학생이 수강한 수업이 맞는지의 여부를 판단하여 맞다면 그 수업을 리턴하는 메소드")
+	public KM_class checkByKm_user(long idx, String id) {
+		return km_classAPI.findBySeqAndKmSignUpClassForStu_SignUpStateAndKmUser_Id(idx, BooleanState.YSE, id);
 	}
 
 	/*

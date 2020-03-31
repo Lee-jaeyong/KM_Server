@@ -35,6 +35,7 @@ import ljy.book.admin.security.KM_UserService;
 @EnableConfigurationProperties({ CustomFileUpload.class })
 @MapperScan("ljy.book.admin.customRepository")
 public class KmReportAdminApplication implements ApplicationRunner {
+	
 	@Autowired
 	KM_UserService km_userService;
 

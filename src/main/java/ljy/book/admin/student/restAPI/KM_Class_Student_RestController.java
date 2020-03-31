@@ -1,7 +1,6 @@
 package ljy.book.admin.student.restAPI;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -46,6 +45,18 @@ public class KM_Class_Student_RestController {
 	@PostConstruct
 	public void init() {
 		linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
+	}
+
+	@GetMapping("{idx}")
+	@Memo("학생이 해당 수업의 정보를 가져오는 메소드")
+	public ResponseEntity<?> getClassInfo(@PathVariable long idx, @CurrentKm_User KM_user km_user) {
+		KM_class km_class = km_classService.checkByKm_user(idx, km_user.getId());
+		if (km_class == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		Km_classResource resource = new Km_classResource(modelMapper.map(km_class, KM_classVO.class));
+		resource.add(new Link("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(resource);
 	}
 
 	@GetMapping
