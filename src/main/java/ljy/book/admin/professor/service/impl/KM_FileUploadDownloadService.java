@@ -1,4 +1,4 @@
-package ljy.book.admin.service;
+package ljy.book.admin.professor.service.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -19,19 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import ljy.book.admin.common.exception.FileDownloadException;
 import ljy.book.admin.common.exception.FileUploadException;
 import ljy.book.admin.common.object.CustomFileUpload;
-import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.enums.FileType;
-import ljy.book.admin.repository.projection.Km_ReportFileProjection;
-import ljy.book.admin.repository.projection.Km_ReportImgProjection;
+import ljy.book.admin.service.KM_FileUploadDownloadServiceList;
 
 @Service
-public class KM_FileUploadDownloadService {
-
-//	@Autowired
-//	KM_ReportImgAPI km_reportImgAPI;
-//
-//	@Autowired
-//	KM_ReportFileAPI km_reportFileAPI;
+public class KM_FileUploadDownloadService implements KM_FileUploadDownloadServiceList {
 
 	@Autowired
 	KM_ClassService km_classService;
@@ -57,36 +48,6 @@ public class KM_FileUploadDownloadService {
 		}
 	}
 
-	public String save_ReportImgOrFile(MultipartFile file, String uploadType, KM_Report km_report) {
-		// Optional<KM_Report> check_Report =
-		// km_reportService.checkByReportIdx(km_report);
-//		Km_ReportFile km_reportFile;
-//		Km_ReportImg km_reportImg;
-//		if (uploadType.equals("addReport_Img")) {
-//			km_reportImg = new Km_ReportImg();
-//			km_reportImg.setReportImg(file.getOriginalFilename());
-//			//check_Report.get().addKm_ReportImg(km_reportImg);
-//			km_reportImgAPI.save(km_reportImg);
-//		} else {
-//			km_reportFile = new Km_ReportFile();
-//			km_reportFile.setReportFile(file.getOriginalFilename());
-//			//check_Report.get().addKm_ReportFile(km_reportFile);
-//			km_reportFileAPI.save(km_reportFile);
-//		}
-		// return storeFile(file, uploadType, km_report.getReportIdx());
-		return null;
-	}
-
-	public List<Km_ReportImgProjection> findByReportIdxAsImg(KM_Report km_report) {
-		// return km_reportImgAPI.findByKmReport_ReportIdx(km_report.getReportIdx());
-		return null;
-	}
-
-	public List<Km_ReportFileProjection> findByReportIdxAsFile(KM_Report km_report) {
-//		return km_reportFileAPI.findByKmReport_ReportIdx(km_report.getReportIdx());
-		return null;
-	}
-
 	public String storeFileReport(MultipartFile file, String uploadType, String fileType, long idx) {
 		String originFileName = file.getOriginalFilename();
 		this.customFileSave(file, uploadType, idx);
@@ -102,34 +63,6 @@ public class KM_FileUploadDownloadService {
 			km_classService.uploadFile(originFileName, idx);
 		}
 		return originFileName;
-//		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-//		Path targetLocation = null;
-//		if (uploadType.equals("addClass")) {
-//			km_classService.fileUpload_Km_class(classIdx, file.getOriginalFilename());
-//			File directory = new File(this.fileLocation.toString() + "\\downloadList\\classInfoExcel\\" + classIdx);
-//			if (!directory.exists())
-//				directory.mkdir();
-//			targetLocation = this.fileLocation
-//					.resolve(this.fileLocation + "/downloadList/classInfoExcel/" + classIdx + "\\" + fileName);
-//		} else if (uploadType.equals("addReport_Img")) {
-//
-//		} else if (uploadType.equals("addReport_File")) {
-//			KM_Report km_report = new KM_Report();
-//			// km_report.setReportIdx(classIdx);
-//
-//			// Km_ReportFile km_reportFile = new Km_ReportFile();
-////			km_reportFile.setReportFile(file.getOriginalFilename());
-////			//km_report.addKm_ReportFile(km_reportFile);
-////
-////			km_reportFileAndImgService.save_File(km_reportFile);
-//
-//			File directory = new File(this.fileLocation.toString() + "\\downloadList\\report\\reportFile\\" + classIdx);
-//			if (!directory.exists())
-//				directory.mkdir();
-//			targetLocation = this.fileLocation
-//					.resolve(this.fileLocation + "/downloadList/report/reportFile/" + classIdx + "\\" + fileName);
-//		}
-//		return fileName;
 	}
 
 	public Resource loadFileAsResource(String type, String idx, String fileName) throws Throwable {
@@ -169,9 +102,8 @@ public class KM_FileUploadDownloadService {
 		return this.customFileDeleteAll(idx, deleteType);
 	}
 
-	private boolean customFileDelete(long idx, String deleteType, String fileName, String fileForm) {
-		String resultfilePath = "\\professor\\downloadList\\" + deleteType + "\\" + idx + "\\" + fileName + "."
-				+ fileForm;
+	public  boolean customFileDelete(long idx, String deleteType, String fileName, String fileForm) {
+		String resultfilePath = "\\professor\\downloadList\\" + deleteType + "\\" + idx + "\\" + fileName + "." + fileForm;
 		File deleteFile = new File(this.fileLocation.toString() + resultfilePath);
 		if (deleteFile.exists()) {
 			deleteFile.delete();
@@ -207,14 +139,12 @@ public class KM_FileUploadDownloadService {
 		}
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		Path targetLocation = null;
-		km_classService.fileUpload_Km_class(idx, file.getOriginalFilename());
-		File directory = new File(
-				this.fileLocation.toString() + "\\professor\\downloadList\\" + uploadType + "\\" + idx);
+		File directory = new File(this.fileLocation.toString() + "\\professor\\downloadList\\" + uploadType + "\\" + idx);
 		if (!directory.exists()) {
 			directory.mkdir();
 		}
 		targetLocation = this.fileLocation
-				.resolve(this.fileLocation + "/professor/downloadList/" + uploadType + "/" + idx + "\\" + fileName);
+			.resolve(this.fileLocation + "/professor/downloadList/" + uploadType + "/" + idx + "\\" + fileName);
 		try {
 			Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {

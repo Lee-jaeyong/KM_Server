@@ -1,4 +1,4 @@
-package ljy.book.admin.restAPI;
+package ljy.book.admin.professor.restAPI;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -15,8 +15,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,13 +28,15 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.dto.validate.Km_classValidator;
 import ljy.book.admin.dto.validate.Km_subjectValidator;
 import ljy.book.admin.entity.KM_class;
+import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_classResource;
+import ljy.book.admin.professor.service.impl.KM_ClassService;
+import ljy.book.admin.professor.service.impl.KM_FileUploadDownloadService;
 import ljy.book.admin.request.KM_classVO;
-import ljy.book.admin.service.KM_ClassService;
-import ljy.book.admin.service.KM_FileUploadDownloadService;
+import ljy.book.admin.security.CurrentKm_User;
 
 @RestController
-@RequestMapping("professor/class")
+@RequestMapping("/api/professor/class")
 public class KM_ClassRestController {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
@@ -65,10 +65,9 @@ public class KM_ClassRestController {
 
 	@GetMapping
 	@Memo("해당 교수의 수업 리스트를 가져오는 메소드")
-	public ResponseEntity<?> getClassListPage(Pageable pageable, PagedResourcesAssembler<KM_class> paged) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		auth = SecurityContextHolder.getContext().getAuthentication();
-		Page<KM_class> page = this.km_classService.getClassListPage(auth.getName(), pageable);
+	public ResponseEntity<?> getClassListPage(Pageable pageable, PagedResourcesAssembler<KM_class> paged,
+		@CurrentKm_User KM_user km_user) {
+		Page<KM_class> page = this.km_classService.getClassListPage(km_user.getId(), pageable);
 		lombok.var pagedResources = paged.toModel(page, e -> new Km_classResource(modelMapper.map(e, KM_classVO.class)));
 		pagedResources.add(new Link("/docs/index.html").withRel("profile"));
 		pagedResources.add(linkBuilder.slash("/{seq}").withRel("delete"));
@@ -78,9 +77,8 @@ public class KM_ClassRestController {
 
 	@GetMapping("/{idx}")
 	@Memo("해당 교수의 수업 리스트 중 특정 수업의 정보를 가져오는 메소드")
-	public ResponseEntity getClassInfo(@PathVariable long idx) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		KM_classVO km_class = km_classService.getClassInfo(idx, auth.getName());
+	public ResponseEntity<?> getClassInfo(@PathVariable long idx, @CurrentKm_User KM_user km_user) {
+		KM_classVO km_class = km_classService.getClassInfo(idx, km_user.getId());
 		Km_classResource km_classResource = new Km_classResource(km_class);
 		km_classResource.add(linkBuilder.slash(km_class.getSeq()).withRel("delete"));
 		km_classResource.add(linkBuilder.slash(km_class.getSeq()).withRel("update"));
@@ -90,7 +88,7 @@ public class KM_ClassRestController {
 
 	@PostMapping
 	@Memo("해당 교수의 수업을 등록")
-	public ResponseEntity save(@Valid @RequestBody KM_classVO km_classVO, Errors errors) {
+	public ResponseEntity<?> save(@Valid @RequestBody KM_classVO km_classVO, Errors errors, @CurrentKm_User KM_user km_user) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_classResource km_classResource = new Km_classResource(km_classVO);
 		km_classValidator.validate(km_classVO, errors);
@@ -99,15 +97,14 @@ public class KM_ClassRestController {
 		}
 		km_classResource.add(linkBuilder.slash("").withRel("update"));
 		km_classResource.add(linkBuilder.slash("").withRel("delete"));
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		KM_class km_class = km_classService.save(modelMapper.map(km_classVO, KM_class.class), auth.getName());
+		KM_class km_class = km_classService.save(modelMapper.map(km_classVO, KM_class.class), km_user.getId());
 		km_classVO.setSeq(km_class.getSeq());
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}
 
 	@PutMapping
 	@Memo("해당 교수의 수업을 수정")
-	public ResponseEntity update(@Valid @RequestBody KM_classVO km_classVO, Errors errors) {
+	public ResponseEntity<?> update(@Valid @RequestBody KM_classVO km_classVO, Errors errors, @CurrentKm_User KM_user km_user) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_classResource km_classResource = new Km_classResource(km_classVO);
 		km_classValidator.validate(km_classVO, errors);
@@ -116,8 +113,7 @@ public class KM_ClassRestController {
 		}
 		km_classResource.add(linkBuilder.slash("").withRel("update"));
 		km_classResource.add(linkBuilder.slash("").withRel("delete"));
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		KM_class km_class = km_classService.update(modelMapper.map(km_classVO, KM_class.class), auth.getName());
+		KM_class km_class = km_classService.update(modelMapper.map(km_classVO, KM_class.class), "dlwodyd202");
 		km_classVO.setSeq(km_class.getSeq());
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
 	}

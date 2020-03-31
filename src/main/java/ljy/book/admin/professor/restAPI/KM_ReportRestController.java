@@ -1,4 +1,4 @@
-package ljy.book.admin.restAPI;
+package ljy.book.admin.professor.restAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,13 +29,16 @@ import ljy.book.admin.common.object.CustomSearchObject;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.dto.validate.Km_reportValidator;
 import ljy.book.admin.entity.KM_Report;
+import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_reportResource;
+import ljy.book.admin.professor.service.impl.KM_ClassService;
+import ljy.book.admin.professor.service.impl.KM_FileUploadDownloadService;
+import ljy.book.admin.professor.service.impl.KM_ReportService;
 import ljy.book.admin.request.KM_reportVO;
-import ljy.book.admin.service.KM_FileUploadDownloadService;
-import ljy.book.admin.service.KM_ReportService;
+import ljy.book.admin.security.CurrentKm_User;
 
 @RestController
-@RequestMapping("professor/report")
+@RequestMapping("api/professor/report")
 public class KM_ReportRestController {
 
 	Logger log = LoggerFactory.getLogger(KM_ReportRestController.class);
@@ -51,6 +53,9 @@ public class KM_ReportRestController {
 	Km_reportValidator km_reportValidator;
 
 	@Autowired
+	KM_ClassService km_classService;
+
+	@Autowired
 	ModelMapper modelMapper;
 
 	ControllerLinkBuilder linkBuilder;
@@ -61,26 +66,38 @@ public class KM_ReportRestController {
 	}
 
 	@GetMapping("{reportIdx}")
-	public ResponseEntity getReport(@PathVariable long reportIdx) {
-		Km_reportResource km_reportResource = new Km_reportResource(km_ReportService.getReport(reportIdx));
-		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("delete").withDeprecation("삭제"));
-		km_reportResource.add(linkBuilder.slash(reportIdx).withRel("update").withDeprecation("수정"));
-		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
+	@Memo("해당 과제의 정보를 가져오는 메소드")
+	public ResponseEntity<?> getReport(@PathVariable long reportIdx, @CurrentKm_User KM_user km_user) {
+		try {
+			Km_reportResource km_reportResource = new Km_reportResource(km_ReportService.getReport(reportIdx, km_user.getId()));
+			km_reportResource.add(linkBuilder.slash(reportIdx).withRel("delete"));
+			km_reportResource.add(linkBuilder.slash(reportIdx).withRel("update"));
+			km_reportResource.add(new Link("/docs/index.html").withRel("profile"));
+			return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
+		} catch (NullPointerException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 
 	@GetMapping("/{reportIdx}/fileList")
-	public ResponseEntity getReportFileList(@PathVariable long reportIdx) {
-		return ResponseEntity.status(HttpStatus.OK).body(km_ReportService.getReportFileList(reportIdx));
+	@Memo("해당 과제의 파일 및 이미지 리스트를 가져오는 메소드")
+	public ResponseEntity<?> getReportFileList(@PathVariable long reportIdx, @CurrentKm_User KM_user km_user) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("reportFileAndImgList", km_ReportService.getReportFileList(reportIdx, km_user.getId()));
+		HashMap<String, Object> _links = new HashMap<String, Object>();
+		_links.put("profile", new Link("/docs/index.html").withRel("profile"));
+		result.put("_links", _links);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 
 	@GetMapping("/class/{classIdx}/list")
 	@Memo("해당 클래스의 과제  리스트를 가져오는 메소드")
-	public ResponseEntity<?> getReportList(@PathVariable long classIdx, Pageable pageable, CustomSearchObject customsearchObj) {
+	public ResponseEntity<?> getReportList(@PathVariable long classIdx, Pageable pageable, CustomSearchObject customsearchObj,
+		@CurrentKm_User KM_user km_user) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		List<Object> resultList = new ArrayList<Object>();
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		result.put("totalCount", km_ReportService.getTotalCount(classIdx, customsearchObj, auth.getName()));
-		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable, customsearchObj, auth.getName())) {
+		result.put("totalCount", km_ReportService.getTotalCount(classIdx, customsearchObj, km_user.getId()));
+		for (KM_Report c : km_ReportService.getReportList(classIdx, pageable, customsearchObj, km_user.getId())) {
 			KM_reportVO data = new KM_reportVO();
 			data.setClassIdx(classIdx);
 			data.setContent(c.getContent());
@@ -101,10 +118,15 @@ public class KM_ReportRestController {
 	}
 
 	@PostMapping("{classIdx}")
-	public ResponseEntity save(@PathVariable long classIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors) {
+	@Memo("해당 클래스의 과제를 등록하는 메소드")
+	public ResponseEntity<?> save(@PathVariable long classIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors,
+		@CurrentKm_User KM_user km_user) {
 		km_reportValidator.validate(km_reportVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		if (!km_classService.checkByKm_user(classIdx, km_user.getId())) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		km_reportVO.setClassIdx(classIdx);
@@ -113,17 +135,29 @@ public class KM_ReportRestController {
 		Km_reportResource km_reportResource = new Km_reportResource(km_reportVO);
 		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("delete"));
 		km_reportResource.add(linkBuilder.slash(km_report.getSeq()).withRel("update"));
+		km_reportResource.add(new Link("/docs/index.html").withRel("profile"));
 		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
 	}
 
 	@PutMapping("{reportIdx}")
-	public ResponseEntity update(@PathVariable long reportIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors) {
+	@Memo("해당 클래스의 과제를 수정하는 메소드")
+	public ResponseEntity<?> update(@PathVariable long reportIdx, @RequestBody @Valid KM_reportVO km_reportVO, Errors errors,
+		@CurrentKm_User KM_user km_user) {
+		if (!km_ReportService.checkBySeqAndUserId(reportIdx, "dlwodyd202")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+
 		km_reportValidator.validate(km_reportVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		km_ReportService.update(reportIdx, km_reportVO);
-		return ResponseEntity.status(HttpStatus.OK).body(this.getReport(reportIdx));
+		km_reportVO.setSeq(reportIdx);
+		Km_reportResource km_reportResource = new Km_reportResource(km_reportVO);
+		km_reportResource.add(linkBuilder.slash(km_reportVO.getSeq()).withRel("delete"));
+		km_reportResource.add(linkBuilder.slash(km_reportVO.getSeq()).withRel("update"));
+		km_reportResource.add(new Link("/docs/index.html").withRel("profile"));
+		return ResponseEntity.status(HttpStatus.OK).body(km_reportResource);
 	}
 
 }

@@ -21,24 +21,26 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http
-			.anonymous()
-			.and()
-			.authorizeRequests()
-			.anyRequest()
-			.anonymous()
-			.and()
-			.exceptionHandling()
-			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
 //		http
 //			.anonymous()
 //			.and()
 //			.authorizeRequests()
-//			.mvcMatchers(HttpMethod.GET,"/professor/class/**").hasRole(UserRule.PROFESSER.toString())
-//			.mvcMatchers(HttpMethod.GET,"/professor/report/**").hasRole(UserRule.PROFESSER.toString())
+//			.anyRequest()
+//			.anonymous()
 //			.and()
 //			.exceptionHandling()
 //			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
+		http
+			.anonymous()
+			.and()
+			.authorizeRequests()
+			.mvcMatchers(HttpMethod.GET,"/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.POST,"/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.PUT,"/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.DELETE,"/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.and()
+			.exceptionHandling()
+			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
 	}
 
 }

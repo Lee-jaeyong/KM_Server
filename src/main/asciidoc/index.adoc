@@ -123,3 +123,36 @@ include::{snippets}/Access KM_report by Professor/request-fields.adoc[]
 include::{snippets}/Access KM_report by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_report by Professor/response-fields.adoc[]
+
+== 과제 한건 조회 [get]
+=== 교수
+- 요청 ex
+include::{snippets}/Access Km_report Info by Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access Km_report Info by Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access Km_report Info by Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access Km_report Info by Professor/response-fields.adoc[]
+
+== 해당 과제 파일 리스트 조회 [get]
+=== 교수
+- 요청 ex
+include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_fileAndImgList of KM_report by Professor/response-fields.adoc[]
+
+== 해당 과제 수정 [put]
+=== 교수
+- 요청 ex
+include::{snippets}/Update KM_report By Professor/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Update KM_report By Professor/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Update KM_report By Professor/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Update KM_report By Professor/response-fields.adoc[]

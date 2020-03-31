@@ -67,7 +67,7 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 		
 		this.mvc
 		.perform(RestDocumentationRequestBuilders
-			.put("/professor/class").content(_content).contentType(MediaType.APPLICATION_JSON))
+			.put("/api/professor/class").content(_content).contentType(MediaType.APPLICATION_JSON))
 		.andExpect(status().isOk()).andDo(print())
 		.andDo(document("Update KM_class By Professor",
 			requestFields(
@@ -125,7 +125,7 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 		// When
 		this.mvc
 			.perform(RestDocumentationRequestBuilders
-				.post("/professor/class").content(_content).contentType(MediaType.APPLICATION_JSON))
+				.post("/api/professor/class").content(_content).contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk()).andDo(print())
 			.andDo(document("Save KM_class By Professor",
 				requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
@@ -166,7 +166,7 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 	@Memo("토큰을 가진 사용자(교수)가 클래스 정보를 접근 하는 경우")
 	public void getKm_classInfo() throws Exception {
 		// When
-		this.mvc.perform(RestDocumentationRequestBuilders.get("/professor/class/{seq}", 3L).content(content))
+		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/professor/class/{seq}", 3L).content(content))
 			.andExpect(status().isOk()).andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE)).andDo(print())
 			.andDo(document("Access KM_class Info by Professor", 
 				pathParameters(
@@ -190,6 +190,7 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 					fieldWithPath("_links.update.href").type(JsonFieldType.STRING).description("수업 수정").optional())));
 	}
 
+	@Test
 	@Ignore
 	@Memo("토큰을 가진 사용자(교수)가 클래스 리스트에 접근을 성공")
 	public void getKm_classList() throws Exception {
@@ -199,7 +200,7 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 		String content = "{\"Authorization\" : \"Bearer " + bearer + "\"}";
 
 		// When
-		this.mvc.perform(get("/professor/class").content(content)).andExpect(status().isOk())
+		this.mvc.perform(get("/api/professor/class").content(content)).andExpect(status().isOk())
 			.andExpect(content().contentType(MediaTypes.HAL_JSON_VALUE)).andDo(print())
 			.andDo(document("Access KM_class by Professor",
 				requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰")),

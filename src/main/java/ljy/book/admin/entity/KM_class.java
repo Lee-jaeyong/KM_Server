@@ -31,6 +31,8 @@ public class KM_class {
 	@GeneratedValue
 	Long seq;
 
+	String classCode;
+
 	String name;
 
 	@Column(nullable = false)
@@ -64,6 +66,14 @@ public class KM_class {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "kmClass")
 	List<KM_Report> kmReport = new ArrayList<KM_Report>();
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "kmClass")
+	List<KM_signUpClassForStu> kmSignUpClassForStu = new ArrayList<KM_signUpClassForStu>();
+
+	public void addKmSignUpClassForStu(KM_signUpClassForStu signUp) {
+		this.kmSignUpClassForStu.add(signUp);
+		signUp.setKmClass(this);
+	}
 
 	public void addKmReport(KM_Report km_report) {
 		this.kmReport.add(km_report);

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import ljy.book.admin.professor.service.impl.KM_ClassService;
 import ljy.book.admin.request.KM_reportVO;
-import ljy.book.admin.service.KM_ClassService;
 
 @Component
 public class Km_reportValidator implements Validator {

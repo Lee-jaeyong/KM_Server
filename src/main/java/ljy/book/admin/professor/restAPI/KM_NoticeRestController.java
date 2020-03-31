@@ -1,4 +1,4 @@
-package ljy.book.admin.restAPI;
+package ljy.book.admin.professor.restAPI;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package ljy.book.admin.service;
+package ljy.book.admin.professor.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ljy.book.admin.common.object.CustomSearchObject;
+import ljy.book.admin.customRepository.mybaits.Km_reportDAO;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_fileAndImgOfReport;
@@ -18,22 +19,17 @@ import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.jpaAPI.KM_ReportAPI;
 import ljy.book.admin.jpaAPI.KM_fileAndImgOfReportAPI;
 import ljy.book.admin.request.KM_reportVO;
-
-/**
- * 
- * @author 이재용
- *
- *         1.TODO addReport // 과제 등록 하는 서비스 2.TODO getReportList // 해당 수업에 대한
- *         과제를 모두 가져오는 서비스 (조건 : 마감일이 지나지 않은 과제에 한하여) 3.TODO getReport // 해당 과제의
- *         정보를 보여주는 서비스
- */
+import ljy.book.admin.service.KM_reportServiceList;
 
 @Service
 @Transactional
-public class KM_ReportService {
+public class KM_ReportService implements KM_reportServiceList {
 
 	@Autowired
 	KM_ReportAPI km_ReportAPI;
+
+	@Autowired
+	Km_reportDAO km_reportDAO;
 
 	@Autowired
 	KM_fileAndImgOfReportAPI km_fileAndImgOfReportAPI;
@@ -41,9 +37,17 @@ public class KM_ReportService {
 	@Autowired
 	ModelMapper modelMapper;
 
-	public List<Object> getReportFileList(long reportIdx) {
+	@Override
+	public boolean checkBySeqAndUserId(long reportIdx, String id) {
+		if (km_ReportAPI.findByKmClass_KmUser_IdAndSeq(id, reportIdx) == null)
+			return false;
+		return true;
+	}
+
+	@Override
+	public List<Object> getReportFileList(long reportIdx, String id) {
 		List<Object> fileList = new ArrayList<Object>();
-		for (KM_fileAndImgOfReport c : km_fileAndImgOfReportAPI.findByKmReport_seq(reportIdx)) {
+		for (KM_fileAndImgOfReport c : km_fileAndImgOfReportAPI.findByKmReport_seqAndKmReport_KmClass_KmUser_Id(reportIdx, id)) {
 			HashMap<String, String> result = new HashMap<String, String>();
 			result.put("fileName", c.getFileName());
 			result.put("type", c.getType().toString());
@@ -52,18 +56,10 @@ public class KM_ReportService {
 		return fileList;
 	}
 
-	public KM_reportVO getReport(long reportIdx) {
-		List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI.findByKmReport_seq(reportIdx);
-		StringBuilder _fileList = new StringBuilder();
-		StringBuilder _imgList = new StringBuilder();
-		for (KM_fileAndImgOfReport c : fileList) {
-			if (c.getType() == FileType.FILE)
-				_fileList.append(c.getFileName() + ",");
-			else
-				_imgList.append(c.getFileName() + ",");
-		}
+	@Override
+	public KM_reportVO getReport(long reportIdx, String id) {
 		KM_reportVO result = new KM_reportVO();
-		KM_Report findReport = km_ReportAPI.findById(reportIdx).get();
+		KM_Report findReport = km_ReportAPI.findByKmClass_KmUser_IdAndSeq(id, reportIdx);
 		result.setContent(findReport.getContent());
 		result.setEndDate(findReport.getEndDate());
 		result.setHit(findReport.getHit());
@@ -72,19 +68,39 @@ public class KM_ReportService {
 		result.setShowOtherReportOfStu_state(findReport.getShowOtherReportOfStu_state());
 		result.setStartDate(findReport.getStartDate());
 		result.setSubmitOverDue_state(findReport.getSubmitOverDue_state());
-		result.setFileList(_fileList.toString());
-		result.setImgList(_imgList.toString());
+		if (findReport != null) {
+			List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI
+				.findByKmReport_seqAndKmReport_KmClass_KmUser_Id(reportIdx, id);
+			StringBuilder _fileList = new StringBuilder();
+			StringBuilder _imgList = new StringBuilder();
+			for (KM_fileAndImgOfReport c : fileList) {
+				if (c.getType() == FileType.FILE)
+					_fileList.append(c.getFileName() + ",");
+				else
+					_imgList.append(c.getFileName() + ",");
+			}
+			result.setFileList(_fileList.toString());
+			result.setImgList(_imgList.toString());
+		}
 		return result;
 	}
 
-	public long getTotalCount(long classIdx, CustomSearchObject customSearchObj,String id) {
-		return km_ReportAPI.countSearch_Km_report(classIdx, customSearchObj,id);
+	@Override
+	public long getTotalCount(long classIdx, CustomSearchObject customSearchObj, String id) {
+		return km_ReportAPI.countSearch_Km_report(classIdx, customSearchObj, id);
 	}
 
-	public List<KM_Report> getReportList(long classIdx, Pageable pageable, CustomSearchObject customSearchObj,String id) {
-		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj,id);
+	@Override
+	public List<KM_Report> getReportList(long classIdx, Pageable pageable, CustomSearchObject customSearchObj, String id) {
+		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj, id);
 	}
 
+	
+	/*
+	 * 교수 권한 메소드
+	 */
+	
+	
 	public KM_Report save(KM_reportVO km_reportVO) {
 		KM_class km_class = new KM_class();
 		km_class.setSeq(km_reportVO.getClassIdx());
@@ -105,9 +121,15 @@ public class KM_ReportService {
 	}
 
 	public boolean update(long reportIdx, KM_reportVO km_reportVO) {
-		km_ReportAPI.updateByReportIdx(km_reportVO.getName(), km_reportVO.getStartDate(), km_reportVO.getEndDate(),
-			km_reportVO.getContent(), km_reportVO.getSubmitOverDue_state(), km_reportVO.getShowOtherReportOfStu_state(),
-			reportIdx);
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("name", km_reportVO.getName());
+		map.put("startDate", km_reportVO.getStartDate());
+		map.put("endDate", km_reportVO.getEndDate());
+		map.put("content", km_reportVO.getContent());
+		map.put("submitOverDue_state", km_reportVO.getSubmitOverDue_state().toString());
+		map.put("showOtherReportOfStu_state", km_reportVO.getShowOtherReportOfStu_state().toString());
+		map.put("seq", Long.toString(reportIdx));
+		km_reportDAO.update(map);
 		return true;
 	}
 

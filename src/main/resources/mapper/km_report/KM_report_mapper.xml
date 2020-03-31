@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ljy.book.admin.customRepository.mybaits.Km_reportDAO">
+	<update id="update" parameterType="hashMap">
+		UPDATE KM_Report p
+		SET p.name = #{name},
+		p.start_Date = #{startDate}, 
+		p.end_Date = #{endDate},
+		p.content = #{content},
+		p.submit_Over_Due_state = #{submitOverDue_state},
+		p.show_Other_Report_Of_Stu_state = #{showOtherReportOfStu_state}
+		WHERE p.seq = #{seq}
+	</update>
+</mapper>

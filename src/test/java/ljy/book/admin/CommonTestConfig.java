@@ -3,6 +3,8 @@ package ljy.book.admin;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.enums.UserRule;
+import ljy.book.admin.professor.service.impl.KM_ClassService;
 import ljy.book.admin.restDoc.TestCommons;
 import ljy.book.admin.security.KM_UserService;
-import ljy.book.admin.service.KM_ClassService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -33,6 +35,9 @@ public class CommonTestConfig {
 
 	protected String clientPass = "pass";
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+	
 	@Autowired
 	public MockMvc mvc;
 
