@@ -1,4 +1,4 @@
-package ljy.book.admin.restAPI_TEST;
+package ljy.book.admin.PROFESSOR.restAPI_TEST;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;

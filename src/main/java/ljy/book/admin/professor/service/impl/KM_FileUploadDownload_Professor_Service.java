@@ -22,18 +22,18 @@ import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.service.KM_FileUploadDownloadServiceList;
 
 @Service
-public class KM_FileUploadDownloadService implements KM_FileUploadDownloadServiceList {
+public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDownloadServiceList {
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Autowired
-	KM_ReportService km_reportService;
+	KM_Report_Professor_Service km_reportService;
 
 	private final Path fileLocation;
 
 	@Autowired
-	public KM_FileUploadDownloadService(CustomFileUpload prop) {
+	public KM_FileUploadDownload_Professor_Service(CustomFileUpload prop) {
 		this.fileLocation = Paths.get(prop.getUploadDir()).toAbsolutePath().normalize();
 
 //		File directory = new File(prop.getUploadDir() + "/abc");

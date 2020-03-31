@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.enums.UserRule;
-import ljy.book.admin.professor.service.impl.KM_ClassService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
 import ljy.book.admin.restDoc.TestCommons;
 import ljy.book.admin.security.KM_UserService;
 
@@ -51,7 +51,7 @@ public class CommonTestConfig {
 	KM_UserService km_userService;
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	protected void createClass(String className, String id) {
 		KM_class km_class = new KM_class();

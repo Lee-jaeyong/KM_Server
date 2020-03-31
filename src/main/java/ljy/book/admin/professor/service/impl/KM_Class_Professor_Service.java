@@ -23,7 +23,7 @@ import ljy.book.admin.service.KM_classServiceList;
 
 @Service
 @Transactional
-public class KM_ClassService implements KM_classServiceList {
+public class KM_Class_Professor_Service implements KM_classServiceList {
 
 	@Autowired
 	KM_ClassAPI km_classAPI;
@@ -35,7 +35,7 @@ public class KM_ClassService implements KM_classServiceList {
 	KM_UserService km_userService;
 
 	@Autowired
-	KM_FileUploadDownloadService fileUploadService;
+	KM_FileUploadDownload_Professor_Service fileUploadService;
 
 	@Autowired
 	ModelMapper modelMapper;

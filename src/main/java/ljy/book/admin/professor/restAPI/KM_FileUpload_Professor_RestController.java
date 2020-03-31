@@ -17,14 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.KM_user;
-import ljy.book.admin.professor.service.impl.KM_ClassService;
-import ljy.book.admin.professor.service.impl.KM_FileUploadDownloadService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_FileUploadDownload_Professor_Service;
 import ljy.book.admin.security.CurrentKm_User;
 import ljy.book.admin.service.KM_reportServiceList;
 
 @RestController
 @RequestMapping(value = "api/professor/uploadFile/{idx}")
-public class KM_FileUploadRestController {
+public class KM_FileUpload_Professor_RestController {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,10 +32,10 @@ public class KM_FileUploadRestController {
 	KM_reportServiceList km_reportService;
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Autowired
-	private KM_FileUploadDownloadService fileUploadService;
+	private KM_FileUploadDownload_Professor_Service fileUploadService;
 
 	@PostMapping("/{uploadType}/{fileType}")
 	@Memo("과제 관련 이미지 및 파일을 업로드하는 메소드")

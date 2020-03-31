@@ -43,6 +43,9 @@ public class KM_user {
 	@OneToMany(mappedBy = "kmUser")
 	List<KM_class> kmClass = new ArrayList<KM_class>();
 
+	@OneToMany(mappedBy = "kmUser")
+	List<KM_signUpClassForStu> kmSignUpClassForStu= new ArrayList<KM_signUpClassForStu>();
+	
 	public void addKmClass(KM_class km_class) {
 		this.kmClass.add(km_class);
 		km_class.setKmUser(this);

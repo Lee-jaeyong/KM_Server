@@ -23,7 +23,7 @@ import ljy.book.admin.service.KM_reportServiceList;
 
 @Service
 @Transactional
-public class KM_ReportService implements KM_reportServiceList {
+public class KM_Report_Professor_Service implements KM_reportServiceList {
 
 	@Autowired
 	KM_ReportAPI km_ReportAPI;

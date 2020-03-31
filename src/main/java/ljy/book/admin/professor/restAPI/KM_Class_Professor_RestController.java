@@ -30,22 +30,22 @@ import ljy.book.admin.dto.validate.Km_subjectValidator;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_classResource;
-import ljy.book.admin.professor.service.impl.KM_ClassService;
-import ljy.book.admin.professor.service.impl.KM_FileUploadDownloadService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_FileUploadDownload_Professor_Service;
 import ljy.book.admin.request.KM_classVO;
 import ljy.book.admin.security.CurrentKm_User;
 
 @RestController
 @RequestMapping("/api/professor/class")
-public class KM_ClassRestController {
+public class KM_Class_Professor_RestController {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Autowired
-	KM_FileUploadDownloadService fileUploadService;
+	KM_FileUploadDownload_Professor_Service fileUploadService;
 
 	@Autowired
 	Km_subjectValidator km_subjectValidator;

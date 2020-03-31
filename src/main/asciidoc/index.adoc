@@ -79,6 +79,26 @@ include::{snippets}/Access KM_class by Professor/response-body.adoc[]
 - 응답 파라미터 설명
 include::{snippets}/Access KM_class by Professor/response-fields.adoc[]
 
+=== 학생
+- 요청 ex
+include::{snippets}/Access KM_class by Student/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Access KM_class by Student/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Access KM_class by Student/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Access KM_class by Student/response-fields.adoc[]
+
+==== 학생 수업 신청
+- 요청 ex
+include::{snippets}/Sign Up Class For Student/request-body.adoc[]
+- 요청 파라미터
+include::{snippets}/Sign Up Class For Student/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/Sign Up Class For Student/response-body.adoc[]
+- 응답 파라미터 설명
+include::{snippets}/Sign Up Class For Student/response-fields.adoc[]
+
 == 수업 한건 조회 [get]
 === 교수
 - 요청 ex

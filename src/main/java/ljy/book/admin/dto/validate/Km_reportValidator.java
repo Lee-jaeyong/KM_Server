@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import ljy.book.admin.professor.service.impl.KM_ClassService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
 import ljy.book.admin.request.KM_reportVO;
 
 @Component
 public class Km_reportValidator implements Validator {
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Override
 	public boolean supports(Class<?> clazz) {

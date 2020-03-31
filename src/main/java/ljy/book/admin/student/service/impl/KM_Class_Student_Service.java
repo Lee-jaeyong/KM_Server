@@ -1,5 +1,8 @@
 package ljy.book.admin.student.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -12,18 +15,20 @@ import org.springframework.stereotype.Service;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_signUpClassForStu;
+import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.jpaAPI.KM_ClassAPI;
 import ljy.book.admin.jpaAPI.KM_signUpClassForStuAPI;
 import ljy.book.admin.request.KM_classVO;
+import ljy.book.admin.request.KM_signUpClassForStuVO;
 import ljy.book.admin.service.KM_classServiceList;
 
 @Service
 @Transactional
-public class KM_ClassService implements KM_classServiceList {
+public class KM_Class_Student_Service implements KM_classServiceList {
 
 	@Autowired
 	KM_signUpClassForStuAPI km_signUpClassForStuAPI;
-	
+
 	@Autowired
 	KM_ClassAPI km_classAPI;
 
@@ -33,12 +38,16 @@ public class KM_ClassService implements KM_classServiceList {
 	@Override
 	@CacheEvict(value = "getClassListPage")
 	public Page<KM_class> getClassListPage(String id, Pageable pageable) {
-		return km_classAPI.findByKmUser_Id(id, pageable);
+		return km_classAPI.findByKmSignUpClassForStu_SignUpStateAndKmUser_Id(BooleanState.YSE, id, pageable);
 	}
 
 	@Override
 	public KM_classVO getClassInfo(long idx, String id) {
-		return modelMapper.map(km_classAPI.findBySeqAndKmUser_Id(idx, id), KM_classVO.class);
+		try {
+			return modelMapper.map(km_classAPI.findByClassCode(id), KM_classVO.class);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -51,11 +60,16 @@ public class KM_ClassService implements KM_classServiceList {
 	 */
 
 	@Memo("학생 수업 승인 요청 메소드")
-	public void signUpClassForStu(long classIdx, String id) {
+	public KM_signUpClassForStuVO signUpClassForStu(long idx, String id) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date nowTime = new Date();
 		KM_signUpClassForStu km_signUpClassForStu = new KM_signUpClassForStu();
+		km_signUpClassForStu.setSignUpState(BooleanState.NO);
+		km_signUpClassForStu.setDate(dateFormat.format(nowTime));
 		KM_class km_class = new KM_class();
-		km_class.setSeq(classIdx);
+		km_class.setSeq(idx);
 		km_class.addKmSignUpClassForStu(km_signUpClassForStu);
-		km_signUpClassForStuAPI.save(km_signUpClassForStu);
+		km_signUpClassForStu = km_signUpClassForStuAPI.save(km_signUpClassForStu);
+		return modelMapper.map(km_signUpClassForStu, KM_signUpClassForStuVO.class);
 	}
 }

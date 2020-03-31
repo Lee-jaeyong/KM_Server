@@ -1,11 +1,14 @@
 package ljy.book.admin.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import ljy.book.admin.entity.enums.BooleanState;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +21,14 @@ public class KM_signUpClassForStu {
 	@GeneratedValue
 	Long seq;
 
-	boolean signUp_state;
+	@Enumerated(EnumType.STRING)
+	BooleanState signUpState;
 
 	String date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	KM_class kmClass;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	KM_user kmUser;
 }

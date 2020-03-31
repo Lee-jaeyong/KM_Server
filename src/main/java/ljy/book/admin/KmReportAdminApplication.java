@@ -24,8 +24,8 @@ import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.entity.enums.UserRule;
-import ljy.book.admin.professor.service.impl.KM_ClassService;
-import ljy.book.admin.professor.service.impl.KM_ReportService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_Report_Professor_Service;
 import ljy.book.admin.request.KM_reportVO;
 import ljy.book.admin.security.KM_UserService;
 
@@ -39,10 +39,10 @@ public class KmReportAdminApplication implements ApplicationRunner {
 	KM_UserService km_userService;
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Autowired
-	KM_ReportService km_reportService;
+	KM_Report_Professor_Service km_reportService;
 
 	@Autowired
 	CustomCodeCreator customCodeCreator;
@@ -54,15 +54,15 @@ public class KmReportAdminApplication implements ApplicationRunner {
 	@Override
 	@Transactional
 	public void run(ApplicationArguments args) throws Exception {
-		// 학생 임의 테스트
-		this.createUser("dlwodyd202", "dlwodyd", "이재용", UserRule.PROFESSER).createUser("dbswldnjs202", "dbswldnjs", "윤지원",
-			UserRule.PROFESSER);
-		// 수업 임의 테스트
-		this.createClass("C언어", "dlwodyd202").createClass("자바", "dlwodyd202");
-		// 과제 임의 테스트
-		this.createReport("C언어 레포트는...", "2020-10-01", "2020-12-12", 3).createReport("자바 레포트는...", "2020-01-01", "2020-10-10", 3)
-			.createReport("시스템 레포트는...", "2020-01-01", "2020-10-10", 3);
-		this.createReportFile("C언어 파일", FileType.FILE, 5).createReportFile("자바 책", FileType.IMG, 5);
+//		// 학생 임의 테스트
+//		this.createUser("dlwodyd202", "dlwodyd", "이재용", UserRule.PROFESSER).createUser("dbswldnjs202", "dbswldnjs", "윤지원",
+//			UserRule.PROFESSER);
+//		// 수업 임의 테스트
+//		this.createClass("C언어", "dlwodyd202").createClass("자바", "dlwodyd202");
+//		// 과제 임의 테스트
+//		this.createReport("C언어 레포트는...", "2020-10-01", "2020-12-12", 3).createReport("자바 레포트는...", "2020-01-01", "2020-10-10", 3)
+//			.createReport("시스템 레포트는...", "2020-01-01", "2020-10-10", 3);
+//		this.createReportFile("C언어 파일", FileType.FILE, 5).createReportFile("자바 책", FileType.IMG, 5);
 	}
 
 	protected KmReportAdminApplication createReportFile(String fileName, FileType fileType, long reportIdx) {

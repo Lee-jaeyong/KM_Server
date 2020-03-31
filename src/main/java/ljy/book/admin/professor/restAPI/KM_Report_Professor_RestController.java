@@ -31,29 +31,29 @@ import ljy.book.admin.dto.validate.Km_reportValidator;
 import ljy.book.admin.entity.KM_Report;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_reportResource;
-import ljy.book.admin.professor.service.impl.KM_ClassService;
-import ljy.book.admin.professor.service.impl.KM_FileUploadDownloadService;
-import ljy.book.admin.professor.service.impl.KM_ReportService;
+import ljy.book.admin.professor.service.impl.KM_Class_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_FileUploadDownload_Professor_Service;
+import ljy.book.admin.professor.service.impl.KM_Report_Professor_Service;
 import ljy.book.admin.request.KM_reportVO;
 import ljy.book.admin.security.CurrentKm_User;
 
 @RestController
 @RequestMapping("api/professor/report")
-public class KM_ReportRestController {
+public class KM_Report_Professor_RestController {
 
-	Logger log = LoggerFactory.getLogger(KM_ReportRestController.class);
-
-	@Autowired
-	KM_ReportService km_ReportService;
+	Logger log = LoggerFactory.getLogger(KM_Report_Professor_RestController.class);
 
 	@Autowired
-	KM_FileUploadDownloadService km_fileUploadDownloadService;
+	KM_Report_Professor_Service km_ReportService;
+
+	@Autowired
+	KM_FileUploadDownload_Professor_Service km_fileUploadDownloadService;
 
 	@Autowired
 	Km_reportValidator km_reportValidator;
 
 	@Autowired
-	KM_ClassService km_classService;
+	KM_Class_Professor_Service km_classService;
 
 	@Autowired
 	ModelMapper modelMapper;
