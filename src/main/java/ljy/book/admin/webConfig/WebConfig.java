@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -16,9 +15,6 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ljy.book.admin.converter.Km_ReportConverter;
-import ljy.book.admin.converter.Km_UserEnum;
-
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
@@ -29,12 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**").addResourceLocations(RESOURCE_LOCATIONS).setCachePeriod(3600)
 				.resourceChain(true).addResolver(new PathResourceResolver());
-	}
-
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addFormatter(new Km_ReportConverter());
-		registry.addFormatter(new Km_UserEnum());
 	}
 
 	@Override
