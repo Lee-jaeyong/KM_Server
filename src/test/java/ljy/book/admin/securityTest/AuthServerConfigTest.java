@@ -34,7 +34,6 @@ public class AuthServerConfigTest extends CommonTestConfig {
 	}
 
 	@Test
-	@Ignore
 	public void getAuthToken() throws Exception {
 
 		this.mvc

@@ -31,13 +31,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //			.exceptionHandling()
 //			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
 		http
-			.anonymous()
-			.and()
 			.authorizeRequests()
-			.mvcMatchers(HttpMethod.GET,"/professor/**").hasRole(UserRule.PROFESSER.toString())
-			.mvcMatchers(HttpMethod.POST,"/professor/**").hasRole(UserRule.PROFESSER.toString())
-			.mvcMatchers(HttpMethod.PUT,"/professor/**").hasRole(UserRule.PROFESSER.toString())
-			.mvcMatchers(HttpMethod.DELETE,"/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.antMatchers(HttpMethod.OPTIONS).permitAll()
+			.mvcMatchers(HttpMethod.GET,"/api/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.POST,"/api/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.PUT,"/api/professor/**").hasRole(UserRule.PROFESSER.toString())
+			.mvcMatchers(HttpMethod.DELETE,"/api/professor/**").hasRole(UserRule.PROFESSER.toString())
 			.and()
 			.exceptionHandling()
 			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
