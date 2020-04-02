@@ -43,6 +43,7 @@ public class KM_Class_Student_RestController {
 	ControllerLinkBuilder linkBuilder;
 
 	@PostConstruct
+	
 	public void init() {
 		linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 	}

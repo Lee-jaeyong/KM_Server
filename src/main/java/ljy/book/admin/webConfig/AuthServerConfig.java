@@ -37,7 +37,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory().withClient("KMapp").authorizedGrantTypes("password", "refresh_token").scopes("read", "write")
-			.secret(this.passwordEncoder.encode("pass")).accessTokenValiditySeconds(10 * 60)
+			.secret(this.passwordEncoder.encode("pass")).accessTokenValiditySeconds(30 * 60)
 			.refreshTokenValiditySeconds(10 * 60 * 6);
 	}
 
