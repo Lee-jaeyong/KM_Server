@@ -14,6 +14,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.ClassType;
 import ljy.book.admin.entity.enums.SaveState;
@@ -68,6 +70,7 @@ public class KM_class {
 	List<KM_Report> kmReport = new ArrayList<KM_Report>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "kmClass")
+	@JsonManagedReference
 	List<KM_signUpClassForStu> kmSignUpClassForStu = new ArrayList<KM_signUpClassForStu>();
 
 	public void addKmSignUpClassForStu(KM_signUpClassForStu signUp) {

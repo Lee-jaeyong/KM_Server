@@ -1,5 +1,6 @@
 package ljy.book.admin.request;
 
+import ljy.book.admin.entity.KM_user;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class KM_signUpClassForStuVO {
 	Long seq;
-	boolean signUp_state;
+	String signUp_state;
 	String date;
-	String userId;
+	KM_user km_user;
 }

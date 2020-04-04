@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -33,6 +34,7 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.dto.validate.Km_classValidator;
 import ljy.book.admin.dto.validate.Km_subjectValidator;
 import ljy.book.admin.entity.KM_class;
+import ljy.book.admin.entity.KM_signUpClassForStu;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_classResource;
 import ljy.book.admin.entity.resource.Km_signUpClassForStuResource;
@@ -72,15 +74,15 @@ public class KM_Class_Professor_RestController {
 
 	@GetMapping("/{idx}/signUpList")
 	@Memo("수업을 신청한 명단을 가져오는 메소드")
-	public ResponseEntity<?> getSignUpClassForStu(@PathVariable long idx, @CurrentKm_User KM_user km_user) {
-		List<KM_signUpClassForStuVO> list = km_classService.getSignUpClassList(idx, km_user.getId());
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		HashMap<String, Object> links = new HashMap<String, Object>();
-		links.put("self", linkBuilder.withSelfRel());
-		links.put("profile", new Link("/docs/index.html"));
-		result.put("_embedded", list);
-		result.put("_links", links);
-		return ResponseEntity.ok(result);
+	public ResponseEntity<?> getSignUpClassForStu(@PathVariable long idx, @CurrentKm_User KM_user km_user, Pageable pageable,
+		PagedResourcesAssembler<KM_signUpClassForStuVO> paged) {
+		if (!km_classService.checkByKm_user(idx, km_user.getId()))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		Page<KM_signUpClassForStuVO> page = km_classService.getSignUpClassList(idx, pageable);
+		lombok.var pagedResources = paged.toModel(page,
+			e -> new Km_signUpClassForStuResource(modelMapper.map(e, KM_signUpClassForStuVO.class)));
+		pagedResources.add(new Link("/docs/index.html"));
+		return ResponseEntity.ok(pagedResources);
 	}
 
 	@GetMapping
@@ -126,8 +128,9 @@ public class KM_Class_Professor_RestController {
 	@Memo("해당 수업신청 승인")
 	public ResponseEntity<?> signUpClassForStuSuccess(@PathVariable long seq, @PathVariable long signUpIdx,
 		@CurrentKm_User KM_user km_user) {
-		if (!km_classService.checkByKm_user(seq, "dlwodyd202"))
+		if (!km_classService.checkByKm_user(seq, km_user.getId())) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
 		km_classService.signUpClassSuccess(seq, signUpIdx);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

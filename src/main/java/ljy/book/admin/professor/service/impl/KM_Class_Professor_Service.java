@@ -9,13 +9,18 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.common.object.CustomCodeCreator;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.customRepository.mybaits.Km_classDAO;
+import ljy.book.admin.dto.Km_classDTO;
 import ljy.book.admin.entity.KM_class;
 import ljy.book.admin.entity.KM_signUpClassForStu;
 import ljy.book.admin.entity.KM_user;
@@ -56,12 +61,13 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	CustomCodeCreator customCodeCreator;
 
 	@Override
-	@CacheEvict(value = "getClassListPage")
+	@Cacheable(value = "classList", key = "#id")
 	public Page<KM_class> getClassListPage(String id, Pageable pageable) {
 		return km_classAPI.findByKmUser_Id(id, pageable);
 	}
 
 	@Override
+	@Cacheable(value = "classInfo", key = "#idx")
 	public KM_classVO getClassInfo(long idx, String id) {
 		return modelMapper.map(km_classAPI.findBySeqAndKmUser_Id(idx, id), KM_classVO.class);
 	}
@@ -84,25 +90,34 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	}
 
 	@Memo("수업을 신청한 학생의 명단을 가져오는 메소드")
-	public List<KM_signUpClassForStuVO> getSignUpClassList(long idx, String id) {
-		List<KM_signUpClassForStu> list = km_signUpClassForStuAPI
-			.findBySignUpStateAndKmClass_KmUser_IdAndKmClass_Seq(BooleanState.NO, id, idx);
+	public PageImpl<KM_signUpClassForStuVO> getSignUpClassList(long idx, Pageable pageable) {
+		List<KM_signUpClassForStu> list = km_signUpClassForStuAPI.findBySignUpStateAndKmClass_Seq(BooleanState.NO, idx, pageable);
 		List<KM_signUpClassForStuVO> resultList = new ArrayList<KM_signUpClassForStuVO>();
 		list.forEach((c) -> {
-			KM_signUpClassForStuVO data = modelMapper.map(c, KM_signUpClassForStuVO.class);
-			data.setUserId(c.getKmUser().getId());
+			KM_user relativeUser = c.getKmUser();
+			KM_signUpClassForStuVO data = new KM_signUpClassForStuVO();
+			data.setDate(c.getDate());
+			data.setSeq(c.getSeq());
+			KM_user user = new KM_user();
+			user.setEmail(relativeUser.getEmail());
+			user.setId(relativeUser.getId());
+			user.setName(relativeUser.getName());
+			data.setKm_user(user);
+			data.setSignUp_state(c.getSignUpState().toString());
 			resultList.add(data);
 		});
-		return resultList;
+		return new PageImpl<KM_signUpClassForStuVO>(resultList);
 	}
 
 	@Memo("강의 계획서를 업로드하는 메소드")
+	@CacheEvict(value = "classInfo")
 	public boolean uploadFile(String fileName, long idx) {
 		km_classAPI.plannerDocFileUpload(fileName, idx);
 		return true;
 	}
 
 	@Memo("수업을 등록하는 메소드")
+	@CacheEvict(value = "classList", key = "#id", beforeInvocation = false)
 	public KM_class save(KM_class km_class, String id) {
 		KM_user user = km_userService.findByUserId(id);
 		user.addKmClass(km_class);
@@ -112,6 +127,7 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	}
 
 	@Memo("수업을 수정하는 메소드")
+	@CacheEvict(value = { "classInfo", "classList" }, allEntries = true)
 	public KM_class update(KM_class km_class, String id) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("name", km_class.getName());
@@ -137,6 +153,7 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	}
 
 	@Memo("수업을 삭제하는 메소드")
+	@CacheEvict(value = "classList", key = "#id", beforeInvocation = false)
 	public HashMap<String, String> deleteKm_classByUser(KM_class km_class) {
 		HashMap<String, String> result = new HashMap<String, String>();
 		try {

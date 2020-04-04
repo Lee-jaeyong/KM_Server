@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +29,10 @@ public class KM_signUpClassForStu {
 	String date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	KM_class kmClass;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
 	KM_user kmUser;
 }
