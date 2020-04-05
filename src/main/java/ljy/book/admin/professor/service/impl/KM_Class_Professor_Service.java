@@ -131,12 +131,8 @@ public class KM_Class_Professor_Service implements KM_classServiceList {
 	public KM_class update(KM_class km_class, String id) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("name", km_class.getName());
-		map.put("startDate", km_class.getStartDate());
-		map.put("endDate", km_class.getEndDate());
 		map.put("content", km_class.getContent());
 		map.put("type", km_class.getType().toString());
-		map.put("replyPermit_state", km_class.getReplyPermit_state().toString());
-		map.put("selectMenu", km_class.getSelectMenu());
 		map.put("use_state", km_class.getUse_state().toString());
 		map.put("idx", km_class.getSeq().toString());
 		map.put("userId", id);

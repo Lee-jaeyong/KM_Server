@@ -1,9 +1,5 @@
 package ljy.book.admin.professor.restAPI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
@@ -11,11 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
@@ -31,10 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ljy.book.admin.custom.anotation.Memo;
-import ljy.book.admin.dto.validate.Km_classValidator;
 import ljy.book.admin.dto.validate.Km_subjectValidator;
 import ljy.book.admin.entity.KM_class;
-import ljy.book.admin.entity.KM_signUpClassForStu;
 import ljy.book.admin.entity.KM_user;
 import ljy.book.admin.entity.resource.Km_classResource;
 import ljy.book.admin.entity.resource.Km_signUpClassForStuResource;
@@ -58,9 +50,6 @@ public class KM_Class_Professor_RestController {
 
 	@Autowired
 	Km_subjectValidator km_subjectValidator;
-
-	@Autowired
-	Km_classValidator km_classValidator;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -113,12 +102,12 @@ public class KM_Class_Professor_RestController {
 	public ResponseEntity<?> save(@Valid @RequestBody KM_classVO km_classVO, Errors errors, @CurrentKm_User KM_user km_user) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_classResource km_classResource = new Km_classResource(km_classVO);
-		km_classValidator.validate(km_classVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		km_classResource.add(linkBuilder.slash("").withRel("update"));
 		km_classResource.add(linkBuilder.slash("").withRel("delete"));
+		km_classResource.add(new Link("/docs/index.html").withRel("profile"));
 		KM_class km_class = km_classService.save(modelMapper.map(km_classVO, KM_class.class), km_user.getId());
 		km_classVO.setSeq(km_class.getSeq());
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaTypes.HAL_JSON).body(km_classResource);
@@ -140,7 +129,6 @@ public class KM_Class_Professor_RestController {
 	public ResponseEntity<?> update(@Valid @RequestBody KM_classVO km_classVO, Errors errors, @CurrentKm_User KM_user km_user) {
 		ControllerLinkBuilder linkBuilder = ControllerLinkBuilder.linkTo(this.getClass());
 		Km_classResource km_classResource = new Km_classResource(km_classVO);
-		km_classValidator.validate(km_classVO, errors);
 		if (errors.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}

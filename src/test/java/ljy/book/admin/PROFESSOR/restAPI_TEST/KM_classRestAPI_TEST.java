@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,9 +27,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import ljy.book.admin.CommonTestConfig;
 import ljy.book.admin.custom.anotation.Memo;
-import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.ClassType;
-import ljy.book.admin.entity.enums.SaveState;
+import ljy.book.admin.entity.enums.SelectClassMenu;
 import ljy.book.admin.request.KM_classVO;
 import ljy.book.admin.security.KM_UserService;
 
@@ -86,15 +87,9 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 		KM_classVO km_classVO = new KM_classVO();
 		km_classVO.setSeq(3l);
 		km_classVO.setName("RESTAPI");
-		km_classVO.setStartDate("2020-03-01");
-		km_classVO.setEndDate("2020-10-01");
 		km_classVO.setContent("fdsfds");
 		km_classVO.setPlannerDocName("dlwodyd202.xlsx");
 		km_classVO.setType(ClassType.MAJOR);
-		km_classVO.setReplyPermit_state(BooleanState.YSE);
-		km_classVO.setSelectMenu("REPORT,");
-		km_classVO.setUse_state(BooleanState.YSE);
-		km_classVO.setSaveState(SaveState.SAVE);
 
 		String _content = this.requestBodyPlus(objMapper.writeValueAsString(km_classVO), content);
 
@@ -137,21 +132,19 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 	}
 
 	@Test
-	@Ignore
 	@Memo("토큰을 가진 사용자(교수)가 클래스 정보를 등록")
 	public void saveKm_class() throws Exception {
+		Set<SelectClassMenu> classMenu = new HashSet<SelectClassMenu>();
+		classMenu.add(SelectClassMenu.NOTICE);
+		classMenu.add(SelectClassMenu.REFERENCE);
+		classMenu.add(SelectClassMenu.REPORT);
 		KM_classVO km_classVO = new KM_classVO();
 		km_classVO.setName("RESTAPI");
-		km_classVO.setStartDate("2020-03-01");
-		km_classVO.setEndDate("2020-10-01");
 		km_classVO.setContent("fdsfds");
 		km_classVO.setPlannerDocName("dlwodyd202.xlsx");
 		km_classVO.setType(ClassType.MAJOR);
-		km_classVO.setReplyPermit_state(BooleanState.YSE);
-		km_classVO.setSelectMenu("REPORT,");
-		km_classVO.setUse_state(BooleanState.YSE);
-		km_classVO.setSaveState(SaveState.SAVE);
-
+		km_classVO.setSelectMenu(classMenu);
+		
 		String _content = this.requestBodyPlus(objMapper.writeValueAsString(km_classVO), content);
 
 		// When
@@ -163,30 +156,21 @@ public class KM_classRestAPI_TEST extends CommonTestConfig {
 				requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
 					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("수업 번호").optional(),
 					fieldWithPath("name").type(JsonFieldType.STRING).description("수업명"),
-					fieldWithPath("startDate").type(JsonFieldType.STRING).description("수업 시작일"),
-					fieldWithPath("endDate").type(JsonFieldType.STRING).description("수업 종료일"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("수업 내용").optional(),
 					fieldWithPath("plannerDocName").type(JsonFieldType.STRING).description("강의 계획서").optional(),
 					fieldWithPath("type").type(JsonFieldType.STRING).description("수업 종류").optional(),
-					fieldWithPath("replyPermit_state").type(JsonFieldType.STRING).description("댓글 허용 여부").optional(),
-					fieldWithPath("selectMenu").type(JsonFieldType.STRING).description("연관 메뉴").optional(),
-					fieldWithPath("use_state").type(JsonFieldType.STRING).description("사용 여부").optional(),
-					fieldWithPath("saveState").type(JsonFieldType.STRING).description("임시저장 여부").optional(),
+					fieldWithPath("selectMenu").type(JsonFieldType.ARRAY).description("연관 메뉴").optional(),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description("").optional(),
 					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("참고").optional(),
 					fieldWithPath("_links.delete.href").type(JsonFieldType.STRING).description("수업 삭제").optional(),
 					fieldWithPath("_links.update.href").type(JsonFieldType.STRING).description("수업 수정").optional()),
 				responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("수업 번호").optional(),
 					fieldWithPath("name").type(JsonFieldType.STRING).description("수업명").optional(),
-					fieldWithPath("startDate").type(JsonFieldType.STRING).description("수업 시작일"),
-					fieldWithPath("endDate").type(JsonFieldType.STRING).description("수업 종료일"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("수업 내용").optional(),
 					fieldWithPath("plannerDocName").type(JsonFieldType.STRING).description("강의 계획서").optional(),
 					fieldWithPath("type").type(JsonFieldType.STRING).description("수업 종류").optional(),
-					fieldWithPath("replyPermit_state").type(JsonFieldType.STRING).description("댓글 허용 여부").optional(),
-					fieldWithPath("selectMenu").type(JsonFieldType.STRING).description("연관 메뉴").optional(),
+					fieldWithPath("selectMenu").type(JsonFieldType.ARRAY).description("연관 메뉴").optional(),
 					fieldWithPath("use_state").type(JsonFieldType.STRING).description("사용 여부").optional(),
-					fieldWithPath("saveState").type(JsonFieldType.STRING).description("임시저장 여부").optional(),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description("").optional(),
 					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("참고").optional(),
 					fieldWithPath("_links.delete.href").type(JsonFieldType.STRING).description("수업 삭제").optional(),

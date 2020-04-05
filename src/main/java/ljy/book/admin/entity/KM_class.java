@@ -2,8 +2,10 @@ package ljy.book.admin.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.ClassType;
 import ljy.book.admin.entity.enums.SaveState;
+import ljy.book.admin.entity.enums.SelectClassMenu;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,12 +40,6 @@ public class KM_class {
 
 	String name;
 
-	@Column(nullable = false)
-	String startDate;
-
-	@Column(nullable = false)
-	String endDate;
-
 	@Lob
 	String content;
 
@@ -51,17 +48,13 @@ public class KM_class {
 	@Enumerated(EnumType.STRING)
 	ClassType type;
 
-	@Enumerated(EnumType.STRING)
-	BooleanState replyPermit_state;
-
 	@Column(nullable = false)
-	String selectMenu;
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Enumerated(EnumType.STRING)
+	Set<SelectClassMenu> selectMenu;
 
 	@Enumerated(EnumType.STRING)
-	BooleanState use_state;
-
-	@Enumerated(EnumType.STRING)
-	SaveState saveState;
+	BooleanState use_state = BooleanState.YSE;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	KM_user kmUser;

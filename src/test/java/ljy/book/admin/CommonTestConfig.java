@@ -57,10 +57,7 @@ public class CommonTestConfig {
 		KM_class km_class = new KM_class();
 		km_class.setName(className);
 		km_class.setPlannerDocName(null);
-		km_class.setStartDate("2020-03-03");
-		km_class.setEndDate("2020-10-01");
 		km_class.setContent("");
-		km_class.setSelectMenu("REPORT,");
 		km_classService.save(km_class, id);
 	}
 
