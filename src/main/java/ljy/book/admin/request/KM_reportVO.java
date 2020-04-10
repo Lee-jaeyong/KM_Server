@@ -30,11 +30,5 @@ public class KM_reportVO {
 	long hit;
 
 	@NotNull(message = "마감일 이후 제출 가능 여부를 입력해주세요.")
-	BooleanState submitOverDue_state;
-
-	@NotNull(message = "학생 제출 과제 공개 상태를 입력해주세요.")
-	BooleanState showOtherReportOfStu_state;
-
-	String fileList;
-	String imgList;
+	BooleanState useSubmitDates;
 }

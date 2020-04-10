@@ -1,7 +1,10 @@
 package ljy.book.admin.professor.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,6 +68,15 @@ public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDow
 		return originFileName;
 	}
 
+	public File a() throws FileNotFoundException {
+		String resultfilePath = "\\professor\\downloadList\\classInfoExcel\\1.png";
+		File file = new File(this.fileLocation.toString() + resultfilePath);
+		if(file.exists()) {
+			System.out.println("fdsjkhfsdjkhfjskd");
+		}
+		return file;
+	}
+	
 	public Resource loadFileAsResource(String type, String idx, String fileName) throws Throwable {
 		try {
 			String resultfilePath = "";

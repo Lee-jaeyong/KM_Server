@@ -67,9 +67,8 @@ public class KM_Report_Student_Service implements KM_reportServiceList {
 		result.setHit(findReport.getHit());
 		result.setName(findReport.getName());
 		result.setSeq(findReport.getSeq());
-		result.setShowOtherReportOfStu_state(findReport.getShowOtherReportOfStu_state());
 		result.setStartDate(findReport.getStartDate());
-		result.setSubmitOverDue_state(findReport.getSubmitOverDue_state());
+		result.setUseSubmitDates(findReport.getSubmitOverDue_state());
 		if (findReport != null) {
 			List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI
 				.findByKmReport_seqAndKmReport_KmClass_KmUser_Id(reportIdx, id);
@@ -81,8 +80,6 @@ public class KM_Report_Student_Service implements KM_reportServiceList {
 				else
 					_imgList.append(c.getFileName() + ",");
 			}
-			result.setFileList(_fileList.toString());
-			result.setImgList(_imgList.toString());
 		}
 		return result;
 	}

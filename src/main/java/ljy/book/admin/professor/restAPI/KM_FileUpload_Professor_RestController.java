@@ -1,14 +1,22 @@
 package ljy.book.admin.professor.restAPI;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +44,20 @@ public class KM_FileUpload_Professor_RestController {
 
 	@Autowired
 	private KM_FileUploadDownload_Professor_Service fileUploadService;
+
+	@GetMapping(value = "/a")
+	public ResponseEntity<?> getimg() throws IOException {
+		InputStream in = new FileInputStream(fileUploadService.a());
+		ByteArrayOutputStream bao = new ByteArrayOutputStream();
+		int byteRead = 0;
+		byte[] buff = new byte[1024];
+		while((byteRead = in.read(buff)) > 0) {
+			bao.write(buff,0,byteRead);
+		}
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("byte", bao.toByteArray());
+		return ResponseEntity.ok(map);
+	}
 
 	@PostMapping("/{uploadType}/{fileType}")
 	@Memo("과제 관련 이미지 및 파일을 업로드하는 메소드")

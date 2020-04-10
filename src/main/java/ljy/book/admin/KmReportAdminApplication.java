@@ -102,8 +102,7 @@ public class KmReportAdminApplication implements ApplicationRunner {
 		km_reportVO.setName(name);
 		km_reportVO.setStartDate(startDate);
 		km_reportVO.setEndDate(endDate);
-		km_reportVO.setSubmitOverDue_state(BooleanState.YSE);
-		km_reportVO.setShowOtherReportOfStu_state(BooleanState.NO);
+		km_reportVO.setUseSubmitDates(BooleanState.YSE);
 		km_reportVO.setClassIdx(classIdx);
 		km_reportService.save(km_reportVO);
 		return this;

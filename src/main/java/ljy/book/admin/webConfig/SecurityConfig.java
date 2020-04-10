@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().mvcMatchers("/index");
 		web.ignoring().mvcMatchers("/favicon.ico");
+		web.ignoring().mvcMatchers("/chat/**");
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 
@@ -86,6 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.csrf()
 			.disable()
+			.headers()
+			.frameOptions().sameOrigin().and()
 			.anonymous()
 			.disable()
 			.authorizeRequests()

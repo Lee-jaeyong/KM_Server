@@ -74,9 +74,8 @@ public class KM_report_Student_RestController {
 			data.setHit(c.getHit());
 			data.setName(c.getName());
 			data.setSeq(c.getSeq());
-			data.setShowOtherReportOfStu_state(c.getShowOtherReportOfStu_state());
 			data.setStartDate(c.getStartDate());
-			data.setSubmitOverDue_state(c.getSubmitOverDue_state());
+			data.setUseSubmitDates(c.getSubmitOverDue_state());
 			Km_reportResource km_reportResource = new Km_reportResource(data);
 			resultList.add(km_reportResource);
 		}

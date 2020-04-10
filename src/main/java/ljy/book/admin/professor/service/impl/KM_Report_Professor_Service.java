@@ -65,9 +65,8 @@ public class KM_Report_Professor_Service implements KM_reportServiceList {
 		result.setHit(findReport.getHit());
 		result.setName(findReport.getName());
 		result.setSeq(findReport.getSeq());
-		result.setShowOtherReportOfStu_state(findReport.getShowOtherReportOfStu_state());
 		result.setStartDate(findReport.getStartDate());
-		result.setSubmitOverDue_state(findReport.getSubmitOverDue_state());
+		result.setUseSubmitDates(findReport.getSubmitOverDue_state());
 		if (findReport != null) {
 			List<KM_fileAndImgOfReport> fileList = km_fileAndImgOfReportAPI
 				.findByKmReport_seqAndKmReport_KmClass_KmUser_Id(reportIdx, id);
@@ -79,8 +78,6 @@ public class KM_Report_Professor_Service implements KM_reportServiceList {
 				else
 					_imgList.append(c.getFileName() + ",");
 			}
-			result.setFileList(_fileList.toString());
-			result.setImgList(_imgList.toString());
 		}
 		return result;
 	}
@@ -95,12 +92,10 @@ public class KM_Report_Professor_Service implements KM_reportServiceList {
 		return km_ReportAPI.search_Km_report(classIdx, pageable, customSearchObj, id);
 	}
 
-	
 	/*
 	 * 교수 권한 메소드
 	 */
-	
-	
+
 	public KM_Report save(KM_reportVO km_reportVO) {
 		KM_class km_class = new KM_class();
 		km_class.setSeq(km_reportVO.getClassIdx());
@@ -126,8 +121,7 @@ public class KM_Report_Professor_Service implements KM_reportServiceList {
 		map.put("startDate", km_reportVO.getStartDate());
 		map.put("endDate", km_reportVO.getEndDate());
 		map.put("content", km_reportVO.getContent());
-		map.put("submitOverDue_state", km_reportVO.getSubmitOverDue_state().toString());
-		map.put("showOtherReportOfStu_state", km_reportVO.getShowOtherReportOfStu_state().toString());
+		map.put("submitOverDue_state", km_reportVO.getUseSubmitDates().toString());
 		map.put("seq", Long.toString(reportIdx));
 		km_reportDAO.update(map);
 		return true;

@@ -50,44 +50,43 @@ public class KM_reportRestAPI_TEST extends CommonTestConfig {
 		km_reportVO.setName("C언어 레포fsdfsdfsdfds트는........");
 		km_reportVO.setStartDate("2020-01-04");
 		km_reportVO.setEndDate("2020-10-10");
-		km_reportVO.setSubmitOverDue_state(BooleanState.YSE);
-		km_reportVO.setShowOtherReportOfStu_state(BooleanState.NO);
+		km_reportVO.setUseSubmitDates(BooleanState.YSE);
 
 		String _content = this.requestBodyPlus(objMapper.writeValueAsString(km_reportVO), content);
 
-		this.mvc.perform(RestDocumentationRequestBuilders.put("/api/professor/report/{seq}", 5).content(_content)
-			.contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk())
-		.andDo(document("Update KM_report By Professor", 
-			pathParameters(parameterWithName("seq").description("수업 번호")),
-			requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
-				fieldWithPath("name").type(JsonFieldType.STRING).description("과제명").optional(),
-				fieldWithPath("startDate").type(JsonFieldType.STRING).description("과제 시작일").optional(),
-				fieldWithPath("endDate").type(JsonFieldType.STRING).description("과제 마감일").optional(),
-				fieldWithPath("content").type(JsonFieldType.STRING).description("과제 내용").optional(),
-				fieldWithPath("submitOverDue_state").type(JsonFieldType.STRING).description("마감일 이후 제출 여부").optional(),
-				fieldWithPath("showOtherReportOfStu_state").type(JsonFieldType.STRING).description("제출 과제 공개 여부")
-					.optional(),
-				fieldWithPath("classIdx").type(Integer.class).description("해당 수업 번호").optional(),
-				fieldWithPath("seq").type(Integer.class).description("과제 번호").optional(),
-				fieldWithPath("hit").type(Integer.class).description("조회수").optional(),
-				fieldWithPath("fileList").type(String.class).description("해당 과제 파일 리스트").optional(),
-				fieldWithPath("imgList").type(String.class).description("해당 과제 이미지 리스트").optional()),
-			responseFields(fieldWithPath("classIdx").type(Integer.class).description("해당 수업 번호").optional(),
-				fieldWithPath("seq").type(Integer.class).description("과제 번호").optional(),
-				fieldWithPath("name").type(String.class).description("과제명").optional(),
-				fieldWithPath("startDate").type(String.class).description("과제 시작일").optional(),
-				fieldWithPath("endDate").type(String.class).description("과제 마감일").optional(),
-				fieldWithPath("content").type(String.class).description("과제 내용").optional(),
-				fieldWithPath("hit").type(Integer.class).description("조회수").optional(),
-				fieldWithPath("submitOverDue_state").type(String.class).description("마감 이후 제출 여부").optional(),
-				fieldWithPath("showOtherReportOfStu_state").type(String.class).description("제출 과제 공개 여부").optional(),
-				fieldWithPath("fileList").type(String.class).description("해당 과제 파일 리스트").optional(),
-				fieldWithPath("imgList").type(String.class).description("해당 과제 이미지 리스트").optional(),
-				fieldWithPath("_links.self.href").type(String.class).description("").optional(),
-				fieldWithPath("_links.delete.href").type(String.class).description("수정").optional(),
-				fieldWithPath("_links.update.href").type(String.class).description("삭제").optional(),
-				fieldWithPath("_links.profile.href").type(String.class).description("참고").optional())
-			));
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.put("/api/professor/report/{seq}", 5).content(_content)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print()).andExpect(status().isOk()).andDo(
+				document("Update KM_report By Professor", pathParameters(parameterWithName("seq").description("수업 번호")),
+					requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
+						fieldWithPath("name").type(JsonFieldType.STRING).description("과제명").optional(),
+						fieldWithPath("startDate").type(JsonFieldType.STRING).description("과제 시작일").optional(),
+						fieldWithPath("endDate").type(JsonFieldType.STRING).description("과제 마감일").optional(),
+						fieldWithPath("content").type(JsonFieldType.STRING).description("과제 내용").optional(),
+						fieldWithPath("submitOverDue_state").type(JsonFieldType.STRING).description("마감일 이후 제출 여부").optional(),
+						fieldWithPath("showOtherReportOfStu_state").type(JsonFieldType.STRING).description("제출 과제 공개 여부")
+							.optional(),
+						fieldWithPath("classIdx").type(Integer.class).description("해당 수업 번호").optional(),
+						fieldWithPath("seq").type(Integer.class).description("과제 번호").optional(),
+						fieldWithPath("hit").type(Integer.class).description("조회수").optional(),
+						fieldWithPath("fileList").type(String.class).description("해당 과제 파일 리스트").optional(),
+						fieldWithPath("imgList").type(String.class).description("해당 과제 이미지 리스트").optional()),
+					responseFields(fieldWithPath("classIdx").type(Integer.class).description("해당 수업 번호").optional(),
+						fieldWithPath("seq").type(Integer.class).description("과제 번호").optional(),
+						fieldWithPath("name").type(String.class).description("과제명").optional(),
+						fieldWithPath("startDate").type(String.class).description("과제 시작일").optional(),
+						fieldWithPath("endDate").type(String.class).description("과제 마감일").optional(),
+						fieldWithPath("content").type(String.class).description("과제 내용").optional(),
+						fieldWithPath("hit").type(Integer.class).description("조회수").optional(),
+						fieldWithPath("submitOverDue_state").type(String.class).description("마감 이후 제출 여부").optional(),
+						fieldWithPath("showOtherReportOfStu_state").type(String.class).description("제출 과제 공개 여부").optional(),
+						fieldWithPath("fileList").type(String.class).description("해당 과제 파일 리스트").optional(),
+						fieldWithPath("imgList").type(String.class).description("해당 과제 이미지 리스트").optional(),
+						fieldWithPath("_links.self.href").type(String.class).description("").optional(),
+						fieldWithPath("_links.delete.href").type(String.class).description("수정").optional(),
+						fieldWithPath("_links.update.href").type(String.class).description("삭제").optional(),
+						fieldWithPath("_links.profile.href").type(String.class).description("참고").optional())));
 	}
 
 	@Test
@@ -98,8 +97,7 @@ public class KM_reportRestAPI_TEST extends CommonTestConfig {
 		km_reportVO.setName("C언어 레포트는........");
 		km_reportVO.setStartDate("2020-01-04");
 		km_reportVO.setEndDate("2020-10-10");
-		km_reportVO.setSubmitOverDue_state(BooleanState.YSE);
-		km_reportVO.setShowOtherReportOfStu_state(BooleanState.NO);
+		km_reportVO.setUseSubmitDates(BooleanState.YSE);
 
 		String _content = this.requestBodyPlus(objMapper.writeValueAsString(km_reportVO), content);
 
@@ -107,10 +105,7 @@ public class KM_reportRestAPI_TEST extends CommonTestConfig {
 			.perform(RestDocumentationRequestBuilders.post("/api/professor/report/{seq}", 3).content(_content)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print()).andExpect(status().isOk()).andDo(
-				document("Save KM_report By Professor", 
-					pathParameters(
-						parameterWithName("seq").description("과제 번호")
-						),
+				document("Save KM_report By Professor", pathParameters(parameterWithName("seq").description("과제 번호")),
 					requestFields(fieldWithPath("Authorization").type(JsonFieldType.STRING).description("보안 토큰").optional(),
 						fieldWithPath("name").type(JsonFieldType.STRING).description("과제명").optional(),
 						fieldWithPath("startDate").type(JsonFieldType.STRING).description("과제 시작일").optional(),
