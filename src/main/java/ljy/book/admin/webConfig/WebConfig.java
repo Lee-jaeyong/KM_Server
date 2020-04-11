@@ -2,8 +2,7 @@ package ljy.book.admin.webConfig;
 
 import java.util.List;
 
-import javax.servlet.Filter;
-
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -39,6 +38,16 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**").allowedMethods("*").allowedOrigins("*")
 			.allowedHeaders("Origin", "Accept", "Content-Type", "Authorization").allowCredentials(true);
+	}
+
+	@Bean
+	public FilterRegistrationBean<CorsFilterConfig> loggingFilter() {
+		FilterRegistrationBean<CorsFilterConfig> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new CorsFilterConfig());
+		registrationBean.addUrlPatterns("/api/*");
+		registrationBean.addUrlPatterns("/oauth/*");
+
+		return registrationBean;
 	}
 
 	@Bean

@@ -5,7 +5,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import ljy.book.admin.webConfig.ChatMessage;
+import ljy.book.admin.webConfig.webSocket.ChatMessage;
 
 @Controller
 public class KM_RealTimeClass {
@@ -15,7 +15,6 @@ public class KM_RealTimeClass {
 
 	@MessageMapping("/hello")
 	public String ReceiveMessage(ChatMessage msg) throws Exception {
-		System.out.println(msg.getContent());
 		webSocket.convertAndSend("/topics/testchat",msg.getContent());
 		webSocket.convertAndSend("/topics/testchat/1",msg.getContent());
 		return "fsdfjskdhfsdjk";
