@@ -10,30 +10,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.entity.Users;
-import ljy.book.admin.jpaAPI.EX_KM_UserAPI;
+import ljy.book.admin.jpaAPI.UsersAPI;
 
 @Service
 @Transactional
 public class KM_UserService implements UserDetailsService {
 
 	@Autowired
-	EX_KM_UserAPI km_userAPI;
+	UsersAPI userAPI;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
 	public Users findByUserId(String id) {
-		return km_userAPI.findById(id).get();
+		return userAPI.findById(id).get();
 	}
 	
 	public Users save(Users user) {
 		user.setPass(passwordEncoder.encode(user.getPass()));
-		return km_userAPI.save(user);
+		return userAPI.save(user);
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Users user = km_userAPI.findById(username).orElseThrow(() -> new UsernameNotFoundException(username));
+		Users user = userAPI.findById(username).orElseThrow(() -> new UsernameNotFoundException(username));
 		return new UserAdapter(user);
 	}
 

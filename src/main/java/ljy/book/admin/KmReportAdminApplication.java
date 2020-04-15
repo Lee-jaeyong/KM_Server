@@ -14,11 +14,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import ljy.book.admin.common.object.CustomCodeCreator;
 import ljy.book.admin.common.object.CustomFileUpload;
-import ljy.book.admin.common.repository.CommonRepositoryimpl;
 
 @SpringBootApplication
 @EnableCaching
-@EnableJpaRepositories(repositoryImplementationPostfix = "impl", repositoryBaseClass = CommonRepositoryimpl.class)
+@EnableJpaRepositories(repositoryImplementationPostfix = "impl")
 @EnableConfigurationProperties({ CustomFileUpload.class })
 @MapperScan("ljy.book.admin.customRepository")
 public class KmReportAdminApplication implements ApplicationRunner {
