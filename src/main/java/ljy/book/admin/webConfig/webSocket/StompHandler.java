@@ -18,10 +18,10 @@ public class StompHandler extends ChannelInterceptorAdapter {
 		String sessionId = accessor.getSessionId();
 		switch (accessor.getCommand()) {
 		case CONNECT:
-			System.out.println("fsdfsdfsd");
+			System.out.println("connect");
 			break;
 		case DISCONNECT:
-			System.out.println("aaaaa");
+			System.out.println("disConnect");
 			break;
 		default:
 			break;

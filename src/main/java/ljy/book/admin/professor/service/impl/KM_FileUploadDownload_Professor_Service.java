@@ -1,10 +1,8 @@
 package ljy.book.admin.professor.service.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,16 +20,9 @@ import ljy.book.admin.common.exception.FileDownloadException;
 import ljy.book.admin.common.exception.FileUploadException;
 import ljy.book.admin.common.object.CustomFileUpload;
 import ljy.book.admin.entity.enums.FileType;
-import ljy.book.admin.service.KM_FileUploadDownloadServiceList;
 
 @Service
-public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDownloadServiceList {
-
-	@Autowired
-	KM_Class_Professor_Service km_classService;
-
-	@Autowired
-	KM_Report_Professor_Service km_reportService;
+public class KM_FileUploadDownload_Professor_Service {
 
 	private final Path fileLocation;
 
@@ -55,7 +46,7 @@ public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDow
 		String originFileName = file.getOriginalFilename();
 		this.customFileSave(file, uploadType, idx);
 		FileType _fileType = FileType.valueOf(fileType.toUpperCase());
-		km_reportService.uploadFile(originFileName, _fileType, idx);
+		//km_reportService.uploadFile(originFileName, _fileType, idx);
 		return originFileName;
 	}
 
@@ -63,7 +54,7 @@ public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDow
 		String originFileName = file.getOriginalFilename();
 		this.customFileSave(file, uploadType, idx);
 		if (uploadType.equals("classInfoExcel")) {
-			km_classService.uploadFile(originFileName, idx);
+			//km_classService.uploadFile(originFileName, idx);
 		}
 		return originFileName;
 	}
@@ -105,7 +96,7 @@ public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDow
 	public boolean deleteFile(long idx, String deleteType, String fileName, String fileForm) {
 		this.customFileDelete(idx, deleteType, fileName, fileForm);
 		if (deleteType.equals("reportRelatedFiles")) {
-			km_reportService.deleteFile(idx, fileName + "." + fileForm);
+			//km_reportService.deleteFile(idx, fileName + "." + fileForm);
 		}
 		return true;
 	}
@@ -139,7 +130,9 @@ public class KM_FileUploadDownload_Professor_Service implements KM_FileUploadDow
 				}
 				deleteFile.delete();
 				if (deleteType.equals("classInfoExcel"))
-					km_classService.deletePlannerDoc(idx);
+				{
+					//km_classService.deletePlannerDoc(idx);
+				}
 			}
 		}
 		return true;

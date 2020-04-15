@@ -28,11 +28,6 @@ public class AuthServerConfigTest extends CommonTestConfig {
 	@Autowired
 	MockMvc mvc;
 
-	@Before
-	public void init() {
-		this.createUser();
-	}
-
 	@Test
 	public void getAuthToken() throws Exception {
 

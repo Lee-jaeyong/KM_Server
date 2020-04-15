@@ -8,20 +8,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import ljy.book.admin.entity.KM_user;
+import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.UserRule;
 	
-public class KM_userAdapter extends User {
+public class UserAdapter extends User {
 
-	KM_user km_user;
+	Users user;
 
-	public KM_userAdapter(KM_user km_user) {
-		super(km_user.getId(), km_user.getPass(), authorities(km_user.getUserRule()));
-		this.km_user = km_user;
+	public UserAdapter(Users user) {
+		super(user.getId(), user.getPass(), authorities(user.getUserRule()));
+		this.user = user;
 	}
 
-	public KM_user getKm_user() {
-		return km_user;
+	public Users getKm_user() {
+		return user;
 	}
 
 	private static Collection<? extends GrantedAuthority> authorities(Set<UserRule> roles) {

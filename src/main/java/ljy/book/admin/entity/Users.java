@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,12 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.swing.text.View;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import ljy.book.admin.entity.enums.UserRule;
 import lombok.Getter;
@@ -28,37 +25,52 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class KM_user {
+public class Users {
 
 	@Id
 	@GeneratedValue
 	@JsonIgnore
 	long seq;
 
+	@Column(nullable = false)
 	String id;
 
 	@JsonIgnore
+	@Column(nullable = false)
 	String pass;
 
+	@Column(nullable = false)
 	String name;
 
+	@Column(nullable = false)
 	String email;
+
+	@Column(nullable = false)
+	String date;
+
+	@Column(nullable = false)
+	String img;
 
 	@Enumerated(EnumType.STRING)
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JsonIgnore
 	Set<UserRule> userRule;
 
-	@OneToMany(mappedBy = "kmUser")
-	List<KM_class> kmClass = new ArrayList<KM_class>();
+	@OneToMany(mappedBy = "user")
+	List<PlanByUser> plan = new ArrayList<PlanByUser>();
 
-	@JsonManagedReference
-	@OneToMany(mappedBy = "kmUser")
-	List<KM_signUpClassForStu> kmSignUpClassForStu = new ArrayList<KM_signUpClassForStu>();
+	@OneToMany(mappedBy = "teamLeader")
+	List<Team> team = new ArrayList<Team>();
 
-	public void addKmClass(KM_class km_class) {
-		this.kmClass.add(km_class);
-		km_class.setKmUser(this);
+	@OneToMany(mappedBy = "user")
+	List<JoinTeam> joinTeam = new ArrayList<JoinTeam>();
+
+	@OneToMany(mappedBy = "user")
+	List<Notice> notice = new ArrayList<Notice>();
+
+	@OneToMany(mappedBy = "user")
+	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
+
+	public void addTeam(Team team) {
 	}
-
 }
