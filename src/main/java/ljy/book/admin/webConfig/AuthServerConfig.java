@@ -11,14 +11,14 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import ljy.book.admin.security.KM_UserService;
+import ljy.book.admin.security.UsersService;
 
 @Configuration
 @EnableAuthorizationServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	@Autowired
-	KM_UserService km_userService;
+	UsersService km_userService;
 
 	@Autowired
 	TokenStore tokenStore;

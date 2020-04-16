@@ -32,11 +32,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //			.accessDeniedHandler(new OAuth2AccessDeniedHandler());
 		http
 			.authorizeRequests()
-			.antMatchers(HttpMethod.OPTIONS).permitAll()
-			.mvcMatchers(HttpMethod.GET,"/api/professor/**").hasRole(UserRule.USER.toString())
-			.mvcMatchers(HttpMethod.POST,"/api/professor/**").hasRole(UserRule.USER.toString())
-			.mvcMatchers(HttpMethod.PUT,"/api/professor/**").hasRole(UserRule.USER.toString())
-			.mvcMatchers(HttpMethod.DELETE,"/api/professor/**").hasRole(UserRule.USER.toString())
+			//.antMatchers(HttpMethod.OPTIONS).permitAll()
+			.mvcMatchers(HttpMethod.PUT,"/api/users/**").authenticated()
+			.mvcMatchers(HttpMethod.DELETE,"/api/users/**").authenticated()
+			.mvcMatchers(HttpMethod.PATCH,"/api/user/**").authenticated()
+			.mvcMatchers(HttpMethod.GET,"/api/teamManage/**").authenticated()
+			.mvcMatchers(HttpMethod.POST,"/api/teamManage/**").authenticated()
+			.mvcMatchers(HttpMethod.PUT,"/api/teamManage/**").authenticated()
+			.mvcMatchers(HttpMethod.DELETE,"/api/teamManage/**").authenticated()
+			.mvcMatchers(HttpMethod.PATCH,"/api/teamManage/**").authenticated()
 			.and()
 			.exceptionHandling()
 			.accessDeniedHandler(new OAuth2AccessDeniedHandler());

@@ -13,15 +13,11 @@ import ljy.book.admin.entity.enums.UserRule;
 	
 public class UserAdapter extends User {
 
-	Users user;
+	public Users user;
 
 	public UserAdapter(Users user) {
 		super(user.getId(), user.getPass(), authorities(user.getUserRule()));
 		this.user = user;
-	}
-
-	public Users getKm_user() {
-		return user;
 	}
 
 	private static Collection<? extends GrantedAuthority> authorities(Set<UserRule> roles) {

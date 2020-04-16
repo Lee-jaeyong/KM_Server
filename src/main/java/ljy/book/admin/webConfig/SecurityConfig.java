@@ -19,14 +19,14 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import ljy.book.admin.security.KM_UserService;
+import ljy.book.admin.security.UsersService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	KM_UserService km_userService;
+	UsersService km_userService;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;

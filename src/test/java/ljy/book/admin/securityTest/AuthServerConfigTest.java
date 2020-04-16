@@ -18,12 +18,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ljy.book.admin.CommonTestConfig;
-import ljy.book.admin.security.KM_UserService;
+import ljy.book.admin.security.UsersService;
 
 public class AuthServerConfigTest extends CommonTestConfig {
 
 	@Autowired
-	KM_UserService km_userService;
+	UsersService km_userService;
 
 	@Autowired
 	MockMvc mvc;

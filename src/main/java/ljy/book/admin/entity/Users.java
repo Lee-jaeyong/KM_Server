@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.UserRule;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,11 +50,13 @@ public class Users {
 	String date;
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	BooleanState flag;
+
 	String img;
 
 	@Enumerated(EnumType.STRING)
 	@ElementCollection(fetch = FetchType.EAGER)
-	@JsonIgnore
 	Set<UserRule> userRule;
 
 	@OneToMany(mappedBy = "user")
@@ -72,5 +75,7 @@ public class Users {
 	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
 
 	public void addTeam(Team team) {
+		this.team.add(team);
+		team.setTeamLeader(this);
 	}
 }
