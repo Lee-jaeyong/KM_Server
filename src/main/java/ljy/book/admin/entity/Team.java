@@ -5,11 +5,14 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import ljy.book.admin.entity.enums.BooleanState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +38,10 @@ public class Team {
 	@Column(nullable = false)
 	String description;
 	byte progress;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	BooleanState flag;
 
 	@ManyToOne
 	Users teamLeader;

@@ -5,11 +5,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.transaction.Transactional;
+import java.util.Map;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.junit.runners.MethodSorters;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
+import org.springframework.test.web.servlet.ResultActions;
 
 import ljy.book.admin.CommonTestConfig;
 import ljy.book.admin.custom.anotation.Memo;
@@ -63,23 +66,58 @@ public class TeamManageContollerTEST extends CommonTestConfig {
 		team.setEndDate("2020-10-10");
 		team.setDescription("목표");
 		String json = objMapper.writeValueAsString(team);
-		this.mvc.perform(post("/api/teamManage").header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
-			.andExpect(status().isOk()).andDo(print())
-			.andDo(document("Create Team",
-				requestFields(
-					fieldWithPath("name").type(JsonFieldType.STRING).description("팀명"),
-					fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작일"),
-					fieldWithPath("endDate").type(JsonFieldType.STRING).description("최종일"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("목표")
-				),
-				responseFields(
-					fieldWithPath("name").type(JsonFieldType.STRING).description("팀명"),
-					fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작일"),
-					fieldWithPath("endDate").type(JsonFieldType.STRING).description("최종일"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("목표").optional(),
-					fieldWithPath("_links.update.href").type(JsonFieldType.STRING).description("팀 탈퇴"),
-					fieldWithPath("_links.delete.href").type(JsonFieldType.STRING).description("팀 수정"),
-					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description("")
-				)));
+		Jackson2JsonParser jsonParser = new Jackson2JsonParser();
+
+		ResultActions result = this.mvc
+			.perform(post("/api/teamManage").header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
+			.andExpect(status().isOk()).andDo(print());
+		Map<String, Object> contentStringMap = jsonParser.parseMap(result.andReturn().getResponse().getContentAsString());
+		result.andDo(document("Create Team",
+			requestFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호").optional(),
+				fieldWithPath("name").type(JsonFieldType.STRING).description("팀명"),
+				fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작일"),
+				fieldWithPath("endDate").type(JsonFieldType.STRING).description("최종일"),
+				fieldWithPath("description").type(JsonFieldType.STRING).description("목표")),
+			responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호").optional(),
+				fieldWithPath("name").type(JsonFieldType.STRING).description("팀명"),
+				fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작일"),
+				fieldWithPath("endDate").type(JsonFieldType.STRING).description("최종일"),
+				fieldWithPath("description").type(JsonFieldType.STRING).description("목표").optional(),
+				fieldWithPath("_links.update.href").type(JsonFieldType.STRING).description("팀 탈퇴"),
+				fieldWithPath("_links.delete.href").type(JsonFieldType.STRING).description("팀 수정"),
+				fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""))));
 	}
+
+	@Test
+	@Memo("팀을 수정하는 메소드")
+	public void test_3() throws Exception {
+		super.login();
+		TeamDTO saveTeam = new TeamDTO();
+		saveTeam.setName("자바 프로젝트");
+		saveTeam.setStartDate("2020-04-14");
+		saveTeam.setEndDate("2020-10-10");
+		saveTeam.setDescription("목표");
+		String json = objMapper.writeValueAsString(saveTeam);
+		Jackson2JsonParser jsonParser = new Jackson2JsonParser();
+		ResultActions result = this.mvc
+			.perform(post("/api/teamManage").header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
+			.andExpect(status().isOk()).andDo(print());
+		Map<String, Object> contentStringMap = jsonParser.parseMap(result.andReturn().getResponse().getContentAsString());
+		long teamCode = Long.parseLong(contentStringMap.get("seq").toString());
+		
+		//When
+		TeamDTO team = new TeamDTO();
+		team.setSeq(teamCode);
+		team.setName("자바 프로젝트");
+		team.setStartDate("2020-04-14");
+		team.setEndDate("2020-10-10");
+		team.setDescription("목표");
+		json = objMapper.writeValueAsString(team);
+		
+		//Then
+		this.mvc
+			.perform(put("/api/teamManage").header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
+			.andDo(print()).andExpect(status().isOk());
+	}
+
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class TeamDTO {
-
+	long seq;
 	@NotNull(message = "팀명을 입력해주세요")
 	String name;
 	@NotNull(message = "팀 시작일을 입력해주세요")

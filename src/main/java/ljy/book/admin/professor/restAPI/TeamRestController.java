@@ -5,9 +5,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,19 @@ public class TeamRestController {
 
 	@Autowired
 	TeamService teamService;
+	
+	@Memo("팀을 수정하는 메소드")
+	@PutMapping
+	public ResponseEntity<?> updateTeam(@RequestBody @Valid TeamDTO team, Errors error, @Current_User Users user) {
+		if (error.hasErrors()) {
+			return ResponseEntity.badRequest().build();
+		}
+		if (!teamService.checkTeamByUser(team, user)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		teamService.update(team);
+		return ResponseEntity.ok("");
+	}
 
 	@Memo("팀을 등록하는 메소드")
 	@PostMapping
@@ -31,7 +46,7 @@ public class TeamRestController {
 		if (error.hasErrors()) {
 			return ResponseEntity.badRequest().build();
 		}
-		teamService.save(team, user);
+		team.setSeq(teamService.save(team, user).getSeq());
 		EntityModel<TeamDTO> result = new EntityModel<TeamDTO>(team);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/update").withRel("update"));

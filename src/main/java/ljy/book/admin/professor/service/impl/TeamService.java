@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ljy.book.admin.common.object.CustomCodeCreator;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
+import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.jpaAPI.TeamAPI;
 import ljy.book.admin.professor.requestDTO.TeamDTO;
 
@@ -21,6 +22,19 @@ public class TeamService {
 	CustomCodeCreator codeCreator;
 
 	@Transactional
+	public boolean checkTeamByUser(TeamDTO team, Users user) {
+		if (teamAPI.findBySeqAndTeamLeader_Id(team.getSeq(), user.getId()) == null) {
+			return false;
+		}
+		return true;
+	}
+
+	@Transactional
+	public void update(TeamDTO team) {
+		
+	}
+
+	@Transactional
 	public Team save(TeamDTO team, Users user) {
 		Team saveTeam = new Team();
 		saveTeam.setName(team.getName());
@@ -28,6 +42,7 @@ public class TeamService {
 		saveTeam.setStartDate(team.getStartDate());
 		saveTeam.setEndDate(team.getEndDate());
 		saveTeam.setProgress((byte) 0);
+		saveTeam.setFlag(BooleanState.YSE);
 		Users belongUser = new Users();
 		belongUser.setSeq(user.getSeq());
 		belongUser.addTeam(saveTeam);
