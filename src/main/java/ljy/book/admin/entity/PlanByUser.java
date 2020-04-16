@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import ljy.book.admin.entity.enums.BooleanState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,9 @@ public class PlanByUser {
 	@Column(nullable = false)
 	byte progress;
 
+	@Column(nullable = false)
+	BooleanState teamPlan;
+	
 	@ManyToOne
 	Users user;
 

@@ -25,9 +25,6 @@ public class JoinTeam {
 	String date;
 
 	@Column(nullable = false)
-	BooleanState teamPlan;
-
-	@Column(nullable = false)
 	BooleanState state;
 
 	@ManyToOne

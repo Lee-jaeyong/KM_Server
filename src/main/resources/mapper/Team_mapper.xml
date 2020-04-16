@@ -7,7 +7,19 @@
 	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
 	<update id="update" parameterType="TeamDTO">
 		UPDATE team
-		SET NAME = #{name}, img = #{img}, email = #{email}
-		WHERE id = #{seq}
+		SET name = #{name}, start_Date = #{startDate}, end_Date = #{endDate}
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="delete" parameterType="TeamDTO">
+		UPDATE team
+		SET flag = 'NO'
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="updateProgress" parameterType="TeamDTO">
+		UPDATE team
+		SET progress = #{progress}
+		WHERE seq = #{seq}
 	</update>
 </mapper>

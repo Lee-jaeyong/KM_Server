@@ -57,4 +57,9 @@ public class Team {
 
 	@OneToMany(mappedBy = "team", targetEntity = FreeBoard.class)
 	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
+
+	public void addJoinPerson(JoinTeam joinTeam) {
+		this.joinPerson.add(joinTeam);
+		joinTeam.setTeam(this);
+	}
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.common.object.CustomCodeCreator;
+import ljy.book.admin.customRepository.mybaits.TeamDAO;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.BooleanState;
@@ -19,7 +20,22 @@ public class TeamService {
 	TeamAPI teamAPI;
 
 	@Autowired
+	TeamDAO teamDAO;
+
+	@Autowired
 	CustomCodeCreator codeCreator;
+
+	@Transactional
+	public Team getTeamByCode(String code) {
+		return teamAPI.findByCode(code);
+	}
+	
+	@Transactional
+	public boolean checkTeamByUserAndCode(String code, Users user) {
+		if (teamAPI.findByCodeAndTeamLeader_Id(code, user.getId()) == null)
+			return false;
+		return true;
+	}
 
 	@Transactional
 	public boolean checkTeamByUser(TeamDTO team, Users user) {
@@ -30,8 +46,9 @@ public class TeamService {
 	}
 
 	@Transactional
-	public void update(TeamDTO team) {
-		
+	public boolean update(TeamDTO team) {
+		teamDAO.update(team);
+		return true;
 	}
 
 	@Transactional
@@ -50,6 +67,19 @@ public class TeamService {
 		String code = codeCreator.createCode(Long.toString(returnTeam.getSeq())) + "" + returnTeam.getSeq();
 		returnTeam.setCode(code);
 		return returnTeam;
+	}
+
+	@Transactional
+	public boolean delete(TeamDTO team) {
+		teamDAO.delete(team);
+		return true;
+	}
+
+	@Transactional
+	public boolean updateProgress(TeamDTO team, TeamDTO teamContainProgess) {
+		team.setProgress(teamContainProgess.getProgress());
+		teamDAO.updateProgress(team);
+		return true;
 	}
 
 }
