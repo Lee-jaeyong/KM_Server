@@ -78,4 +78,9 @@ public class Users {
 		this.team.add(team);
 		team.setTeamLeader(this);
 	}
+
+	public void addPlan(PlanByUser plan) {
+		this.plan.add(plan);
+		plan.setUser(this);
+	}
 }

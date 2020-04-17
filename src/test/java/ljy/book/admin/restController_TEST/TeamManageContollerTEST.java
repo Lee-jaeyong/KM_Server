@@ -85,6 +85,7 @@ public class TeamManageContollerTEST extends CommonTestConfig {
 				fieldWithPath("description").type(JsonFieldType.STRING).description("목표")),
 			responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호").optional(),
 				fieldWithPath("name").type(JsonFieldType.STRING).description("팀명"),
+				fieldWithPath("code").type(JsonFieldType.STRING).description("팀 코드"),
 				fieldWithPath("progress").type(JsonFieldType.NUMBER).description("전체 진척도"),
 				fieldWithPath("startDate").type(JsonFieldType.STRING).description("시작일"),
 				fieldWithPath("endDate").type(JsonFieldType.STRING).description("최종일"),

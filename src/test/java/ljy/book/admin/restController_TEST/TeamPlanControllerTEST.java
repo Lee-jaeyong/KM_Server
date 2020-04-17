@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -97,8 +99,25 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 		super.login("dlwodyd202", "dlwodyd");
 		PlanByUserDTO planByUser = PlanByUserDTO.builder().tag("코딩 관련").content("뭐 해야됨").start("2020-04-17").end("2020-04-18")
 			.build();
-		this.mvc.perform(post("/api/teamManage/plan/{seq}", 6).header("Authorization", auth)
-			.contentType(MediaType.APPLICATION_JSON).content(objMapper.writeValueAsString(planByUser))).andDo(print())
-			.andExpect(status().isOk());
+		this.mvc
+			.perform(post("/api/teamManage/plan/{seq}", 2).header("Authorization", auth).contentType(MediaType.APPLICATION_JSON)
+				.content(objMapper.writeValueAsString(planByUser)))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("create plan",
+				requestFields(fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").optional(),
+					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률")),
+				responseFields(fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").optional(),
+					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile")
+				)));
 	}
 }

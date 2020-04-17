@@ -138,3 +138,31 @@ include::{snippets}/Update Progress of Team/response-fields.adoc[]
 include::{snippets}/joinTeamRequest/http-request.adoc[]
 - 응답 ex
 include::{snippets}/joinTeamRequest/response-body.adoc[]
+
+=== 팀 승인 요청 승낙
+- 요청 ex
+include::{snippets}/SignUpSuccess JoinTeam/http-request.adoc[]
+- 응답 ex
+include::{snippets}/SignUpSuccess JoinTeam/response-body.adoc[]
+
+=== 팀 승인 요청 반려
+- 요청 ex
+include::{snippets}/SignUpFaild JoinTeam/http-request.adoc[]
+- 응답 ex
+include::{snippets}/SignUpFaild JoinTeam/response-body.adoc[]
+
+=== 팀 정보 가져오기(UnFinished)
+- 요청 ex
+include::{snippets}/Get JoinTeamUnFinished/http-request.adoc[]
+- 응답 ex
+include::{snippets}/Get JoinTeamUnFinished/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/Get JoinTeamUnFinished/response-fields.adoc[]
+
+=== 팀 정보 가져오기(Finished)
+- 요청 ex
+include::{snippets}/Get JoinTeamFinished/http-request.adoc[]
+- 응답 ex
+include::{snippets}/Get JoinTeamFinished/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/Get JoinTeamFinished/response-fields.adoc[]

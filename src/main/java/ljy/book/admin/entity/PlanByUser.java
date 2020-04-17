@@ -5,12 +5,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import ljy.book.admin.entity.enums.BooleanState;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +23,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PlanByUser {
 
 	@Id
@@ -41,8 +47,13 @@ public class PlanByUser {
 	byte progress;
 
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	BooleanState teamPlan;
-	
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	BooleanState state;
+
 	@ManyToOne
 	Users user;
 

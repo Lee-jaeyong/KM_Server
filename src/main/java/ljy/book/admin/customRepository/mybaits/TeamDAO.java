@@ -19,7 +19,9 @@ public interface TeamDAO {
 	void signUpSuccess(long seq);
 
 	void signUpFaild(HashMap<String, Object> map);
-	
+
+	TeamDTO getTeam(HashMap<String, Object> map);
+
 	List<Team> getTeamsUnfinished(String id);
 
 	List<Team> getTeamsFinished(String id);

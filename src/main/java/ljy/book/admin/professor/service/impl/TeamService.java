@@ -1,5 +1,6 @@
 package ljy.book.admin.professor.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -35,6 +36,14 @@ public class TeamService {
 		return new PageImpl<Team>(result);
 	}
 
+	@Transactional
+	public TeamDTO checkAuthSuccessThenGetTeam(long seq,Users user) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("seq", seq);
+		map.put("id", user.getId());
+		return teamDAO.getTeam(map);
+	}
+	
 	@Transactional
 	public Page<Team> getTeamsUnfinished(Users user) {
 		List<Team> result = teamDAO.getTeamsUnfinished(user.getId());

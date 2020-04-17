@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import ljy.book.admin.entity.enums.BooleanState;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Team {
 
 	@Id
@@ -61,5 +64,10 @@ public class Team {
 	public void addJoinPerson(JoinTeam joinTeam) {
 		this.joinPerson.add(joinTeam);
 		joinTeam.setTeam(this);
+	}
+
+	public void addPlan(PlanByUser planByUser) {
+		this.planByUser.add(planByUser);
+		planByUser.setTeam(this);
 	}
 }
