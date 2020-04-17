@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ljy.book.admin.customRepository.mybaits.PlanByUserDAO;
 import ljy.book.admin.entity.PlanByUser;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
@@ -17,6 +18,20 @@ public class TeamPlanService {
 
 	@Autowired
 	PlanByUserAPI planByUserAPI;
+
+	@Autowired
+	PlanByUserDAO planByUserDAO;
+
+	@Transactional
+	public PlanByUser checkAuthPlanSuccessThenGet(long seq, Users user) {
+		return planByUserAPI.findBySeqAndUser_Id(seq, user.getId());
+	}
+
+	@Transactional
+	public boolean delete(long seq) {
+		planByUserDAO.delete(seq);
+		return true;
+	}
 
 	@Transactional
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {

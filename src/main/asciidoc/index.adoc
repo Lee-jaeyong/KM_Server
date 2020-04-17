@@ -166,3 +166,20 @@ include::{snippets}/Get JoinTeamFinished/http-request.adoc[]
 include::{snippets}/Get JoinTeamFinished/response-body.adoc[]
 - 응답 파라미터 설명 
 include::{snippets}/Get JoinTeamFinished/response-fields.adoc[]
+
+== 일정(Plan)
+=== 등록
+- 요청 ex
+include::{snippets}/create plan/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/create plan/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/create plan/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/create plan/response-fields.adoc[]
+
+=== 삭제
+- 요청 ex
+include::{snippets}/delete plan/http-request.adoc[]
+- 응답 ex
+include::{snippets}/delete plan/response-body.adoc[]

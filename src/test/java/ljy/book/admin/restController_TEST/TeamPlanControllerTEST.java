@@ -4,6 +4,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -117,7 +118,20 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").optional(),
 					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률"),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
-					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile")
-				)));
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile"))));
+	}
+
+	@Test
+	@Memo("일정을 삭제하는 테스트")
+	public void test_4() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc
+			.perform(
+				delete("/api/teamManage/plan/{seq}", 3).header("Authorization", auth).contentType(MediaType.APPLICATION_JSON))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("delete plan",
+				responseFields(fieldWithPath("content").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile"))));
 	}
 }
