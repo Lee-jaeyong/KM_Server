@@ -1,5 +1,7 @@
 package ljy.book.admin.professor.restAPI;
 
+import java.util.HashMap;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.JoinTeam;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
+import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.professor.requestDTO.JoinTeamDTO;
 import ljy.book.admin.professor.requestDTO.TeamDTO;
 import ljy.book.admin.professor.service.impl.TeamJoinRequestService;
@@ -37,6 +40,26 @@ public class TeamRestController {
 
 	@Autowired
 	TeamJoinRequestService teamJoinRequestService;
+
+	@Memo("자신이 소속되어있는 모든 팀 정보 가져오기(기간이 만료된)")
+	@GetMapping("/finished")
+	public ResponseEntity<?> getJoinTeamFinished(@Current_User Users user) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("_embedded", teamService.getTeamsFinished(user));
+		resultMap.put("_links", ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		resultMap.put("profile", ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(resultMap);
+	}
+	
+	@Memo("자신이 소속되어있는 모든 팀 정보 가져오기(기간이 만료되지 않은)")
+	@GetMapping
+	public ResponseEntity<?> getJoinTeam(@Current_User Users user) {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("_embedded", teamService.getTeamsUnfinished(user));
+		resultMap.put("_links", ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		resultMap.put("profile", ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(resultMap);
+	}
 
 	@Memo("팀을 수정하는 메소드")
 	@PutMapping("/{teamseq}")
@@ -121,6 +144,35 @@ public class TeamRestController {
 		joinTeamResult.setSeq(joinTeam.getSeq());
 		joinTeamResult.setState(joinTeam.getState());
 		EntityModel<JoinTeamDTO> result = new EntityModel<JoinTeamDTO>(joinTeamResult);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("팀 승인요청을 수락하는 메소드")
+	@PatchMapping("/{seq}/joinTeam")
+	public ResponseEntity<?> successJoinTeam(@PathVariable long seq, @Current_User Users user) {
+		JoinTeam checkAuth = teamJoinRequestService.checkJoinTeamAuth(seq, user);
+		if (checkAuth == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		teamJoinRequestService.signUpSuccessJoinTeam(seq);
+		EntityModel<Long> result = new EntityModel<Long>(seq);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("팀 승인요청을 반려하는 메소드")
+	@PatchMapping("/{seq}/joinTeam/faild")
+	public ResponseEntity<?> faildJoinTeam(@PathVariable long seq, String reson, @Current_User Users user) {
+		JoinTeam checkAuth = teamJoinRequestService.checkJoinTeamAuth(seq, user);
+		if (checkAuth == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		if (checkAuth.getState() == BooleanState.YSE) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		teamJoinRequestService.signUpFaildJoinTeam(seq, reson);
+		EntityModel<Long> result = new EntityModel<Long>(seq);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		return ResponseEntity.ok(result);
 	}

@@ -1,4 +1,4 @@
-= KM RESTful API Guide
+= Team Management System RESTful API Guide
 Andy Wilkinson;
 :doctype: book
 :icons: font
@@ -55,8 +55,8 @@ use of HTTP status codes.
 | The requested resource did not exist
 |===
 
-= 회원(User)
-== 로그인 [POST]
+== 회원(User)
+=== 로그인 [POST]
 - 요청 ex
 include::{snippets}/login/http-request.adoc[]
 - 요청 파라미터 설명
@@ -66,7 +66,7 @@ include::{snippets}/login/response-body.adoc[]
 - 응답 파라미터 설명 
 include::{snippets}/login/response-fields.adoc[]
 
-== 회원가입 [POST]
+=== 회원가입 [POST]
 - 요청 ex
 include::{snippets}/Join User/request-body.adoc[]
 - 요청 파라미터 설명
@@ -76,7 +76,7 @@ include::{snippets}/Join User/response-body.adoc[]
 - 응답 파라미터 설명 
 include::{snippets}/Join User/response-fields.adoc[]
 
-== 회원수정 [PUT]
+=== 회원수정 [PUT]
 - 요청 ex
 include::{snippets}/Update User/request-body.adoc[]
 - 요청 파라미터 설명
@@ -86,55 +86,55 @@ include::{snippets}/Update User/response-body.adoc[]
 - 응답 파라미터 설명 
 include::{snippets}/Update User/response-fields.adoc[]
 
-== 회원탈퇴[DELETE]
+=== 회원탈퇴[DELETE]
 - 요청 ex
-include::{snippets}/Join User/httpie-request.adoc[]
+include::{snippets}/Delete User/httpie-request.adoc[]
 - 응답 ex
-include::{snippets}/Join User/http-response.adoc[]
+include::{snippets}/Delete User/http-response.adoc[]
 
-= 팀(Team)
-== 팀 생성
+== 팀(Team)
+=== 팀 생성
 - 요청 ex
-include::{snippets}/Update User/request-body.adoc[]
+include::{snippets}/Create Team/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Update User/request-fields.adoc[]
+include::{snippets}/Create Team/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
+include::{snippets}/Create Team/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Update User/response-fields.adoc[]
+include::{snippets}/Create Team/response-fields.adoc[]
 
-== 팀 수정
+=== 팀 수정
 - 요청 ex
-include::{snippets}/Update User/request-body.adoc[]
+include::{snippets}/Update Team/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Update User/request-fields.adoc[]
+include::{snippets}/Update Team/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
+include::{snippets}/Update Team/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Update User/response-fields.adoc[]
+include::{snippets}/Update Team/response-fields.adoc[]
 
-== 팀 삭제
+=== 팀 삭제
 - 요청 ex
-include::{snippets}/Update User/request-body.adoc[]
+include::{snippets}/Delete Team/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Update User/request-fields.adoc[]
+include::{snippets}/Delete Team/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
+include::{snippets}/Delete Team/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Update User/response-fields.adoc[]
+include::{snippets}/Delete Team/response-fields.adoc[]
 
-== 팀 진척도 변경
+=== 팀 진척도 변경
 - 요청 ex
-include::{snippets}/Update User/request-body.adoc[]
+include::{snippets}/Update Progress of Team/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Update User/request-fields.adoc[]
+include::{snippets}/Update Progress of Team/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
+include::{snippets}/Update Progress of Team/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Update User/response-fields.adoc[]
+include::{snippets}/Update Progress of Team/response-fields.adoc[]
 
-== 팀 승인 요청
+=== 팀 승인 요청
 - 요청 ex
-include::{snippets}/Update User/http-request.adoc[]
+include::{snippets}/joinTeamRequest/http-request.adoc[]
 - 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
+include::{snippets}/joinTeamRequest/response-body.adoc[]

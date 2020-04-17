@@ -1,4 +1,4 @@
-package ljy.book.admin.restDoc;
+package ljy.book.admin;
 
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;

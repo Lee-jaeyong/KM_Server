@@ -27,7 +27,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ljy.book.admin.professor.requestDTO.TeamDTO;
-import ljy.book.admin.restDoc.TestCommons;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -58,11 +57,11 @@ public class CommonTestConfig {
 	protected long teamSeq;
 	protected String teamCode = "";
 
-	protected void login() throws Exception {
+	protected void login(String id,String pass) throws Exception {
 		Jackson2JsonParser jackson = new Jackson2JsonParser();
 		MockHttpServletResponse response = this.mvc
 			.perform(RestDocumentationRequestBuilders.post("/oauth/token").with(httpBasic(clientId, clientPass))
-				.param("username", "dlwodyd202").param("password", "dlwodyd").param("grant_type", "password"))
+				.param("username", id).param("password", pass).param("grant_type", "password"))
 			.andReturn().getResponse();
 
 		Map<String, Object> jacksonMap = jackson.parseMap(response.getContentAsString());

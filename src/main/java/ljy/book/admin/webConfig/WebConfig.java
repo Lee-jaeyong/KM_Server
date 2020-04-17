@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ljy.book.admin.webConfig.converter.TeamConverter;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
@@ -65,7 +66,6 @@ public class WebConfig implements WebMvcConfigurer {
 			@Override
 			public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 				super.configureMessageConverters(converters);
-
 				// 5. WebMvcConfigurerAdapter에 MessageConverter 추가
 				converters.add(htmlEscapingConveter());
 			}

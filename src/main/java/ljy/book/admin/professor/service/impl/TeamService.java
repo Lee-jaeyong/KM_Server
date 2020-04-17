@@ -1,8 +1,12 @@
 package ljy.book.admin.professor.service.impl;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.common.object.CustomCodeCreator;
@@ -26,10 +30,22 @@ public class TeamService {
 	CustomCodeCreator codeCreator;
 
 	@Transactional
+	public Page<Team> getTeamsFinished(Users user) {
+		List<Team> result = teamDAO.getTeamsFinished(user.getId());
+		return new PageImpl<Team>(result);
+	}
+
+	@Transactional
+	public Page<Team> getTeamsUnfinished(Users user) {
+		List<Team> result = teamDAO.getTeamsUnfinished(user.getId());
+		return new PageImpl<Team>(result);
+	}
+
+	@Transactional
 	public Team getTeamByCode(String code) {
 		return teamAPI.findByCode(code);
 	}
-	
+
 	@Transactional
 	public boolean checkTeamByUserAndCode(String code, Users user) {
 		if (teamAPI.findByCodeAndTeamLeader_Id(code, user.getId()) == null)

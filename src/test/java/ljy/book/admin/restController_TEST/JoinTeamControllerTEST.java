@@ -6,6 +6,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,8 +14,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Map;
 
-import org.junit.Before;
+import javax.transaction.Transactional;
+
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,34 +41,34 @@ public class JoinTeamControllerTEST extends CommonTestConfig {
 
 	@Autowired
 	TeamService teamService;
-	
+
 	@Autowired
 	UsersService userService;
-	
+
 	Team otherTeam;
-	
-	@Before
+
+	@Transactional
 	public void teamOfOtherUser() {
 		Users user = new Users();
 		user.setId("dbswldnjs202");
 		user.setPass("dbswldnjs");
-		
+
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(user.getId());
 		userDTO.setEmail("dbswldnjs@naver.com");
 		userDTO.setName("윤지원");
 		userDTO.setPass(user.getPass());
 		user = userService.save(userDTO);
-		
+
 		TeamDTO saveTeam = new TeamDTO();
 		saveTeam.setName("자바 프로젝트");
 		saveTeam.setStartDate("2020-04-14");
 		saveTeam.setEndDate("2020-10-10");
 		saveTeam.setDescription("aaaaa목표");
-		
+
 		otherTeam = teamService.save(saveTeam, user);
 	}
-	
+
 	@Test
 	@Memo("회원가입 테스트")
 	public void test_1() throws Exception {
@@ -96,7 +99,7 @@ public class JoinTeamControllerTEST extends CommonTestConfig {
 	@Test
 	@Memo("팀을 등록하는 테스트")
 	public void test_2() throws Exception {
-		super.login();
+		super.login("dlwodyd202", "dlwodyd");
 		TeamDTO team = new TeamDTO();
 		team.setName("자바 프로젝트");
 		team.setStartDate("2020-04-14");
@@ -131,12 +134,111 @@ public class JoinTeamControllerTEST extends CommonTestConfig {
 	@Test
 	@Memo("팀에게 승인 요청을 보내는 경우")
 	public void test_3() throws Exception {
-		super.login();
+		this.teamOfOtherUser();
+		super.login("dlwodyd202", "dlwodyd");
 		super.createTeam();
-		this.mvc.perform(RestDocumentationRequestBuilders.post("/api/teamManage/{code}/joinTeam", otherTeam.getCode()).header("Authorization", auth))
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.post("/api/teamManage/{code}/joinTeam", otherTeam.getCode())
+				.header("Authorization", auth))
 			.andDo(print()).andExpect(status().isOk())
-			.andDo(document("JoinTeamRequest", 
-				pathParameters(parameterWithName("code").description("팀 코드"))
-			));
+			.andDo(document("JoinTeamRequest", pathParameters(parameterWithName("code").description("팀 코드"))));
+	}
+
+	@Test
+	@Memo("팀 승인 요청을 수락하는 경우")
+	public void test_4() throws Exception {
+		super.login("dbswldnjs202", "dbswldnjs");
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.patch("/api/teamManage/{seq}/joinTeam", 6).header("Authorization", auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("SignUpSuccess JoinTeam", pathParameters(parameterWithName("seq").description("요청 고유 번호")),
+				responseFields(fieldWithPath("content").type(JsonFieldType.NUMBER).description("승인 요청 코드"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""))));
+	}
+
+	@Test
+	@Ignore
+	@Memo("팀 요청을 반려하는 경우")
+	public void test_5() throws Exception {
+		super.login("dbswldnjs202", "dbswldnjs");
+		this.mvc
+			.perform(RestDocumentationRequestBuilders
+				.patch("/api/teamManage/{seq}/joinTeam/faild", 6).param("reson", "안됨").header("Authorization", auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("SignUpFaild JoinTeam", pathParameters(parameterWithName("seq").description("반려 고유 번호")),
+				responseFields(fieldWithPath("content").type(JsonFieldType.NUMBER).description("승인 반려 코드"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""))));
+	}
+
+	@Test
+	@Memo("자신이 소속되어있는 모든 팀 정보 가져오기")
+	public void test_6() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc.perform(get("/api/teamManage").header("Authorization", auth)).andDo(print()).andExpect(status().isOk())
+			.andDo(document("Get JoinTeamUnFinished",
+				responseFields(
+					fieldWithPath("_embedded.content").type(JsonFieldType.ARRAY).description(""),
+					fieldWithPath("_embedded.content[].end_date").type(JsonFieldType.STRING).description("팀 마감일").optional(),
+					fieldWithPath("_embedded.content[].code").type(JsonFieldType.STRING).description("팀 코드").optional(),
+					fieldWithPath("_embedded.content[].flag").type(JsonFieldType.STRING).description("팀 상태").optional(),
+					fieldWithPath("_embedded.content[].team_leader_seq").type(JsonFieldType.NUMBER).description("팀 리더 번호").optional(),
+					fieldWithPath("_embedded.content[].name").type(JsonFieldType.STRING).description("팀 이름").optional(),
+					fieldWithPath("_embedded.content[].description").type(JsonFieldType.STRING).description("팀 목표").optional(),
+					fieldWithPath("_embedded.content[].progress").type(JsonFieldType.NUMBER).description("팀 진척도").optional(),
+					fieldWithPath("_embedded.content[].seq").type(JsonFieldType.NUMBER).description("팀 고유 번호").optional(),
+					fieldWithPath("_embedded.content[].start_date").type(JsonFieldType.STRING).description("팀 시작일").optional(),
+					fieldWithPath("_embedded.pageable").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_embedded.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.number").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.numberOfElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.first").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.empty").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.sorted").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.unsorted").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.empty").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.last").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_links.rel").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("profile.rel").type(JsonFieldType.STRING).description("")
+				)));
+	}
+	
+	@Test
+	@Memo("자신이 소속되어있는 지난 모든 팀 정보 가져오기")
+	public void test_7() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc.perform(get("/api/teamManage/finished").header("Authorization", auth)).andDo(print()).andExpect(status().isOk())
+			.andDo(document("Get JoinTeamFinished",
+				responseFields(
+					fieldWithPath("_embedded.content").type(JsonFieldType.ARRAY).description(""),
+					fieldWithPath("_embedded.content[].end_date").type(JsonFieldType.STRING).description("팀 마감일").optional(),
+					fieldWithPath("_embedded.content[].code").type(JsonFieldType.STRING).description("팀 코드").optional(),
+					fieldWithPath("_embedded.content[].flag").type(JsonFieldType.STRING).description("팀 상태").optional(),
+					fieldWithPath("_embedded.content[].team_leader_seq").type(JsonFieldType.NUMBER).description("팀 리더 번호").optional(),
+					fieldWithPath("_embedded.content[].name").type(JsonFieldType.STRING).description("팀 이름").optional(),
+					fieldWithPath("_embedded.content[].description").type(JsonFieldType.STRING).description("팀 목표").optional(),
+					fieldWithPath("_embedded.content[].progress").type(JsonFieldType.NUMBER).description("팀 진척도").optional(),
+					fieldWithPath("_embedded.content[].seq").type(JsonFieldType.NUMBER).description("팀 고유 번호").optional(),
+					fieldWithPath("_embedded.content[].start_date").type(JsonFieldType.STRING).description("팀 시작일").optional(),
+					fieldWithPath("_embedded.pageable").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_embedded.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.number").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.numberOfElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("_embedded.first").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.empty").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.sorted").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.unsorted").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.sort.empty").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_embedded.last").type(JsonFieldType.BOOLEAN).description(""),
+					fieldWithPath("_links.rel").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("profile.rel").type(JsonFieldType.STRING).description("")
+				)));
 	}
 }

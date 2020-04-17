@@ -75,7 +75,7 @@ public class UserControllerTEST extends CommonTestConfig {
 	@Test
 	@Memo("회원 정보를 수정하는 테스트")
 	public void test_2() throws Exception {
-		super.login();
+		super.login("dlwodyd202","dlwodyd");
 		UserDTO user = new UserDTO();
 		user.setId("dlwodyd202");
 		user.setPass("dlwodydssssss");
@@ -103,7 +103,7 @@ public class UserControllerTEST extends CommonTestConfig {
 	@Test
 	@Memo("회원 탈퇴 테스트")
 	public void test_3() throws Exception {
-		super.login();
+		super.login("dlwodyd202","dlwodyd");
 		this.mvc
 			.perform(RestDocumentationRequestBuilders.delete("/api/users").header("Authorization", auth)).andDo(print());
 	}

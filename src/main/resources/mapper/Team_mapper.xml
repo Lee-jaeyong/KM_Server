@@ -5,6 +5,63 @@
 
 <mapper
 	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
+	
+	<select id="getTeamsUnfinished" parameterType="string" resultType="hashmap">
+	<![CDATA[
+		SELECT t.*
+		FROM team t
+		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
+		WHERE
+		(
+		t.team_leader_seq = (
+					SELECT seq
+					FROM Users
+					WHERE id = #{id}
+				
+		)
+		OR
+		(
+		q.state = 'YES'
+		AND
+		q.user_seq = (
+			SELECT seq
+			FROM users
+			WHERE id = #{id}
+		)
+		)
+		)
+		AND t.start_date <= LEFT(NOW(),10) AND t.end_date >= LEFT(NOW(),10) AND t.flag = 'YSE'
+	]]>
+	</select>
+
+	<select id="getTeamsFinished" parameterType="string" resultType="hashmap">
+	<![CDATA[
+		SELECT t.*
+		FROM team t
+		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
+		WHERE
+		(
+		t.team_leader_seq = (
+					SELECT seq
+					FROM Users
+					WHERE id = #{id}
+				
+		)
+		OR
+		(
+		q.state = 'YES'
+		AND
+		q.user_seq = (
+			SELECT seq
+			FROM users
+			WHERE id = #{id}
+		)
+		)
+		)
+		AND t.end_date < LEFT(NOW(),10) AND t.flag = 'YSE'
+	]]>
+	</select>
+	
 	<update id="update" parameterType="TeamDTO">
 		UPDATE team
 		SET name = #{name}, start_Date = #{startDate}, end_Date = #{endDate}
@@ -20,6 +77,18 @@
 	<update id="updateProgress" parameterType="TeamDTO">
 		UPDATE team
 		SET progress = #{progress}
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="signUpSuccess" parameterType="long">
+		UPDATE `join_team`
+		SET state = 'YES'
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="signUpFaild" parameterType="hashMap">
+		UPDATE `join_team`
+		SET reson = #{reson}
 		WHERE seq = #{seq}
 	</update>
 </mapper>
