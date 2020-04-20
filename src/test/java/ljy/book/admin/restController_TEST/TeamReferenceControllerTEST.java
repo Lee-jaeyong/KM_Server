@@ -4,6 +4,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,6 +21,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.annotation.Rollback;
 
@@ -109,8 +112,38 @@ public class TeamReferenceControllerTEST extends CommonTestConfig {
 	public void test_4() throws Exception {
 		this.login("dbswldnjs202", "dbswldnjs");
 		this.mvc
-			.perform(
-				get("/api/teamManage/notice/{code}", "C81E728D2").param("page", "0").param("size", "10").header("Authorization", auth))
-			.andDo(print()).andExpect(status().isOk());
+			.perform(RestDocumentationRequestBuilders.get("/api/teamManage/notice/{code}/all", "C81E728D2").param("page", "0")
+				.param("size", "10").header("Authorization", auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("getAll notice", pathParameters(parameterWithName("code").description("팀 코드")),
+				responseFields(
+					fieldWithPath("_embedded.noticeList[].seq").type(JsonFieldType.NUMBER).description("고유번호").optional(),
+					fieldWithPath("_embedded.noticeList[].title").type(JsonFieldType.STRING).description("제목"),
+					fieldWithPath("_embedded.noticeList[].content").type(JsonFieldType.STRING).description("내용"),
+					fieldWithPath("_embedded.noticeList[].date").type(JsonFieldType.STRING).description("등록일"),
+					fieldWithPath("_embedded.noticeList[].state").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.number").type(JsonFieldType.NUMBER).description(""))));
+	}
+
+	@Test
+	@Memo("해당 공지사항을 가져오는 메소드")
+	public void test_5() throws Exception {
+		this.login("dbswldnjs202", "dbswldnjs");
+		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/teamManage/notice/{seq}", 5).header("Authorization", auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("getOne notice",
+				responseFields(
+					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호").optional(),
+					fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
+					fieldWithPath("date").type(JsonFieldType.STRING).description("등록일"),
+					fieldWithPath("state").type(JsonFieldType.STRING).description("상태"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""))));
 	}
 }

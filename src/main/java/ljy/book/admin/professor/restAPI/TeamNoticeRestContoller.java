@@ -39,7 +39,23 @@ public class TeamNoticeRestContoller {
 	@Autowired
 	TeamService teamService;
 
-	@GetMapping("/{code}")
+	@GetMapping("/{seq}")
+	@Memo("해당 공지사항을 가져오는 메소드")
+	public ResponseEntity<?> get(@PathVariable long seq, @Current_User Users user) {
+		Notice checkNotice = noticeService.getOne(seq);
+		if (checkNotice == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		if (!teamService.checkTeamAuth(user, checkNotice.getTeam().getCode())) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		EntityModel<Notice> result = new EntityModel<Notice>(checkNotice);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/{code}/all")
 	@Memo("팀의 모든 공지사항을 가져오는 메소드")
 	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user, Pageable pageable,
 		PagedResourcesAssembler<Notice> assembler) {
@@ -47,7 +63,6 @@ public class TeamNoticeRestContoller {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		PagedModel<EntityModel<Notice>> result = assembler.toModel(noticeService.getAll(code, pageable));
-		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}
