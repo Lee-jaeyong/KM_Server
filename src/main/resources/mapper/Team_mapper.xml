@@ -19,7 +19,7 @@
 			)
 			OR
 			team.seq IN (
-				SELECT user_seq
+				SELECT team_seq
 				FROM join_team
 				WHERE state = 'YES' AND user_seq IN (
 									SELECT seq

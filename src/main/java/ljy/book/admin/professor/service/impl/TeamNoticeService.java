@@ -1,7 +1,5 @@
 package ljy.book.admin.professor.service.impl;
 
-import java.util.NoSuchElementException;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +29,7 @@ public class TeamNoticeService {
 	@Transactional
 	@Memo("번호를 통해 공지사항을 가져옴")
 	public Notice getOne(long seq) {
-		try {
-			return noticeAPI.findById(seq).get();
-		} catch (NoSuchElementException e) {
-			return null;
-		}
+		return noticeAPI.findBySeqAndState(seq, BooleanState.YSE);
 	}
 
 	@Transactional

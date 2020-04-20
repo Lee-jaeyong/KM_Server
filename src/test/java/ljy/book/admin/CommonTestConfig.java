@@ -38,8 +38,8 @@ import ljy.book.admin.security.UsersService;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(TestCommons.class)
-public class CommonTestConfig {
 
+public class CommonTestConfig {
 	protected String clientId = "KMapp";
 
 	protected String clientPass = "pass";
@@ -67,6 +67,7 @@ public class CommonTestConfig {
 	protected String auth;
 	protected long teamSeq;
 	protected String teamCode = "";
+	protected final String AUTHRIZATION = "Authorization";
 
 	public Users createUser(String id, String pass, String name, String email) {
 		UserDTO user = new UserDTO();

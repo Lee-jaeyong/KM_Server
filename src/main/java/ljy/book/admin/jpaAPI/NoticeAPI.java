@@ -11,4 +11,6 @@ public interface NoticeAPI extends JpaRepository<Notice, Long> {
 	Notice findBySeqAndUser_Id(long seq, String id);
 
 	Page<Notice> findByTeam_CodeAndState(String code, BooleanState booleanState, Pageable pageable);
+
+	Notice findBySeqAndState(long seq, BooleanState booleanState);
 }

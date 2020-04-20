@@ -43,6 +43,19 @@ public class TeamService {
 	}
 
 	@Transactional
+	@Memo("팀 코드를 통해 해당 유저가 접근 권한이 있는가를 판단 후 있다면 팀 정보를 가져옴")
+	public TeamDTO checkAuthByCodeSuccessThenGet(String code, Users user) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("id", user.getId());
+		map.put("code", code);
+		List<TeamDTO> team = teamDAO.checkTeamAuth(map);
+		if (team.size() == 0) {
+			return null;
+		}
+		return team.get(0);
+	}
+
+	@Transactional
 	@Memo("만료된 팀을 가져옴")
 	public Page<Team> getTeamsFinished(Users user) {
 		List<Team> result = teamDAO.getTeamsFinished(user.getId());

@@ -26,5 +26,5 @@ public interface TeamDAO {
 
 	List<Team> getTeamsFinished(String id);
 
-	List<Team> checkTeamAuth(HashMap<String, Object> map);
+	List<TeamDTO> checkTeamAuth(HashMap<String, Object> map);
 }
