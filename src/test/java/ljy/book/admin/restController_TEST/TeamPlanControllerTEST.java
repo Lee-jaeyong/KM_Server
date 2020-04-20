@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import ljy.book.admin.CommonTestConfig;
 import ljy.book.admin.custom.anotation.Memo;
+import ljy.book.admin.professor.requestDTO.DateRequestDTO;
 import ljy.book.admin.professor.requestDTO.PlanByUserDTO;
 import ljy.book.admin.professor.requestDTO.TeamDTO;
 import ljy.book.admin.professor.requestDTO.UserDTO;
@@ -173,26 +174,26 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	@Memo("팀의 특정 월의 모든 일정을 가져오는 메소드")
 	public void test_6() throws Exception {
 		super.login("dlwodyd202", "dlwodyd");
-		this.mvc.perform(get("/api/teamManage/plan/{code}","C81E728D2").header("Authorization", auth))
-		.andDo(print())
-		.andExpect(status().isOk())
-		.andDo(document("Get PlanByUserUnFinished",
-			responseFields(
-				fieldWithPath("_embedded.planByUserList").type(JsonFieldType.ARRAY).description(""),
-				fieldWithPath("_embedded.planByUserList[].seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
-				fieldWithPath("_embedded.planByUserList[].tag").type(JsonFieldType.STRING).description("일정 태그"),
-				fieldWithPath("_embedded.planByUserList[].content").type(JsonFieldType.STRING).description("일정 설명"),
-				fieldWithPath("_embedded.planByUserList[].start").type(JsonFieldType.STRING).description("일정 시작일"),
-				fieldWithPath("_embedded.planByUserList[].end").type(JsonFieldType.STRING).description("일정 종료일"),
-				fieldWithPath("_embedded.planByUserList[].progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
-				fieldWithPath("_embedded.planByUserList[].teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
-				fieldWithPath("_embedded.planByUserList[].state").type(JsonFieldType.STRING).description("일정 상태"),
-				fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
-				fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
-				fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
-				fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
-				fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
-				fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("")
-			)));
+		String json = objMapper.writeValueAsString(DateRequestDTO.builder().year("2020").month("10").day("20").build());
+		this.mvc
+			.perform(get("/api/teamManage/plan/{code}", "C81E728D2")
+				.header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("Get PlanByUserUnFinished",
+				responseFields(fieldWithPath("_embedded.planByUserList").type(JsonFieldType.ARRAY).description(""),
+					fieldWithPath("_embedded.planByUserList[].seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+					fieldWithPath("_embedded.planByUserList[].tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("_embedded.planByUserList[].content").type(JsonFieldType.STRING).description("일정 설명"),
+					fieldWithPath("_embedded.planByUserList[].start").type(JsonFieldType.STRING).description("일정 시작일"),
+					fieldWithPath("_embedded.planByUserList[].end").type(JsonFieldType.STRING).description("일정 종료일"),
+					fieldWithPath("_embedded.planByUserList[].progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
+					fieldWithPath("_embedded.planByUserList[].teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
+					fieldWithPath("_embedded.planByUserList[].state").type(JsonFieldType.STRING).description("일정 상태"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.number").type(JsonFieldType.NUMBER).description(""))));
 	}
 }

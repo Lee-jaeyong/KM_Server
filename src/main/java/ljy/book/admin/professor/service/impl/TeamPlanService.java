@@ -13,6 +13,7 @@ import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.jpaAPI.PlanByUserAPI;
+import ljy.book.admin.professor.requestDTO.DateRequestDTO;
 import ljy.book.admin.professor.requestDTO.PlanByUserDTO;
 
 @Service
@@ -25,8 +26,10 @@ public class TeamPlanService {
 	PlanByUserDAO planByUserDAO;
 
 	@Transactional
-	public Page<PlanByUser> getAll(String code) {
-		return planByUserAPI.findByStateAndTeam_Code(BooleanState.YSE, code, PageRequest.of(0, 50));
+	public Page<PlanByUser> getAll(String code, DateRequestDTO dateRequestDTO) {
+		String[] date = dateRequestDTO.getFirstAndLastDay();
+		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YSE, code, date[0],
+			date[1], PageRequest.of(0, 50));
 	}
 
 	@Transactional

@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ljy.book.admin.entity.PlanByUser;
 import ljy.book.admin.entity.enums.BooleanState;
+import ljy.book.admin.professor.requestDTO.DateRequestDTO;
 
 public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 	PlanByUser findBySeqAndUser_Id(long seq, String id);
 
-	Page<PlanByUser> findByStateAndTeam_Code(BooleanState booleanState, String code, Pageable pageable);
+	Page<PlanByUser> findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState booleanState, String code,
+		String start, String end, Pageable pageable);
 }

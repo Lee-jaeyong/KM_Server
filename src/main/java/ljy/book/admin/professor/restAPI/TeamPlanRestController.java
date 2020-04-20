@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ljy.book.admin.custom.anotation.Memo;
+import ljy.book.admin.dto.validate.DateRequestDTOValid;
 import ljy.book.admin.entity.PlanByUser;
 import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.BooleanState;
+import ljy.book.admin.professor.requestDTO.DateRequestDTO;
 import ljy.book.admin.professor.requestDTO.PlanByUserDTO;
 import ljy.book.admin.professor.requestDTO.TeamDTO;
 import ljy.book.admin.professor.service.impl.TeamPlanService;
@@ -39,14 +41,24 @@ public class TeamPlanRestController {
 	@Autowired
 	TeamPlanService teamPlanService;
 
+	@Autowired
+	DateRequestDTOValid dateRequestValid;
+
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
 	@GetMapping("/{code}")
-	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user,
-		PagedResourcesAssembler<PlanByUser> assembler) {
+	public ResponseEntity<?> getAll(@PathVariable String code, @RequestBody @Valid DateRequestDTO dateRequestDTO, Errors error,
+		@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler) {
+		if (error.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		dateRequestValid.validate(dateRequestDTO, error);
+		if (error.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 		if (!teamService.checkTeamAuth(user, code))
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getAll(code));
-		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));		
+		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getAll(code, dateRequestDTO));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}
 
