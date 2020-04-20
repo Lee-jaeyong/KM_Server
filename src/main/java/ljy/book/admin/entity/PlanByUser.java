@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,11 +57,14 @@ public class PlanByUser {
 	BooleanState state;
 
 	@ManyToOne
+	@JsonIgnore
 	Users user;
 
 	@ManyToOne
+	@JsonIgnore
 	Team team;
 
 	@OneToMany(mappedBy = "plan")
+	@JsonIgnore
 	List<PlanFileAndImg> fileList = new ArrayList<PlanFileAndImg>();
 }

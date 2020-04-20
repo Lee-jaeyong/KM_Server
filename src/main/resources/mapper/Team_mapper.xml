@@ -6,6 +6,30 @@
 <mapper
 	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
 	
+	<select id="checkTeamAuth" parameterType="hashmap" resultType="TeamDTO">
+		SELECT team.*
+		FROM team
+		WHERE
+		team.code = #{code} AND 
+		(
+			team.team_leader_seq = (
+						SELECT seq
+						FROM users
+						WHERE id = #{id}
+			)
+			OR
+			team.seq IN (
+				SELECT user_seq
+				FROM join_team
+				WHERE state = 'YES' AND user_seq IN (
+									SELECT seq
+									FROM users
+									WHERE id = #{id}
+				)
+			)
+		)
+	</select>
+	
 	<select id="getTeam" resultType="TeamDTO" parameterType="hashmap">
 		SELECT t.*
 		FROM team t

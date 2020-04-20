@@ -3,14 +3,18 @@ package ljy.book.admin.professor.restAPI;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +39,17 @@ public class TeamPlanRestController {
 	@Autowired
 	TeamPlanService teamPlanService;
 
+	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
+	@GetMapping("/{code}")
+	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler) {
+		if (!teamService.checkTeamAuth(user, code))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getAll(code));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));		
+		return ResponseEntity.ok(result);
+	}
+
 	@Memo("일정을 등록하는 메소드")
 	@PostMapping("/{team}")
 	public ResponseEntity<?> save(@PathVariable TeamDTO team, @RequestBody @Valid PlanByUserDTO planByUser, Errors error,
@@ -49,6 +64,22 @@ public class TeamPlanRestController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		teamPlanService.save(team.getSeq(), planByUser, user);
+		EntityModel<PlanByUserDTO> result = new EntityModel<PlanByUserDTO>(planByUser);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("일정을 수정하는 메소드")
+	@PutMapping("/{seq}")
+	public ResponseEntity<?> update(@PathVariable long seq, @RequestBody @Valid PlanByUserDTO planByUser,
+		@Current_User Users user) {
+		// 1. first 자신의 일정이 맞는가를 확인
+		PlanByUser plan = teamPlanService.checkAuthPlanSuccessThenGet(seq, user);
+		if (plan == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		teamPlanService.update(seq, planByUser);
 		EntityModel<PlanByUserDTO> result = new EntityModel<PlanByUserDTO>(planByUser);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));

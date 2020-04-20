@@ -3,6 +3,8 @@ package ljy.book.admin.professor.service.impl;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.customRepository.mybaits.PlanByUserDAO;
@@ -21,6 +23,11 @@ public class TeamPlanService {
 
 	@Autowired
 	PlanByUserDAO planByUserDAO;
+
+	@Transactional
+	public Page<PlanByUser> getAll(String code) {
+		return planByUserAPI.findByStateAndTeam_Code(BooleanState.YSE, code, PageRequest.of(0, 50));
+	}
 
 	@Transactional
 	public PlanByUser checkAuthPlanSuccessThenGet(long seq, Users user) {
@@ -47,5 +54,12 @@ public class TeamPlanService {
 		team.addPlan(savePlan);
 		me.addPlan(savePlan);
 		return planByUserAPI.save(savePlan);
+	}
+
+	@Transactional
+	public boolean update(long seq, PlanByUserDTO planByUserDTO) {
+		planByUserDTO.setSeq(seq);
+		planByUserDAO.update(planByUserDTO);
+		return true;
 	}
 }

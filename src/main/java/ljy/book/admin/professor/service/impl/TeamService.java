@@ -31,19 +31,29 @@ public class TeamService {
 	CustomCodeCreator codeCreator;
 
 	@Transactional
+	public boolean checkTeamAuth(Users user, String code) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("id", user.getId());
+		map.put("code", code);
+		if (teamDAO.checkTeamAuth(map).size() != 0)
+			return true;
+		return false;
+	}
+
+	@Transactional
 	public Page<Team> getTeamsFinished(Users user) {
 		List<Team> result = teamDAO.getTeamsFinished(user.getId());
 		return new PageImpl<Team>(result);
 	}
 
 	@Transactional
-	public TeamDTO checkAuthSuccessThenGetTeam(long seq,Users user) {
+	public TeamDTO checkAuthSuccessThenGetTeam(long seq, Users user) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("seq", seq);
 		map.put("id", user.getId());
 		return teamDAO.getTeam(map);
 	}
-	
+
 	@Transactional
 	public Page<Team> getTeamsUnfinished(Users user) {
 		List<Team> result = teamDAO.getTeamsUnfinished(user.getId());

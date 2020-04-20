@@ -11,4 +11,14 @@
 		SET state = 'NO'
 		WHERE seq = #{seq}
 	</update>
+
+	<update id="update" parameterType="PlanByUserDTO">
+		UPDATE `plan_by_user`
+		SET content = #{content}
+		,END = #{end}
+		,START = #{start}
+		, tag = #{tag}
+		WHERE seq = #{seq}
+	</update>
+	
 </mapper>

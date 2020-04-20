@@ -5,7 +5,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +17,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.http.MediaType;
@@ -107,11 +110,13 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 			.andDo(document("create plan",
 				requestFields(fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호").ignored(),
 					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").optional(),
 					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률")),
 				responseFields(fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그"),
@@ -122,6 +127,7 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	}
 
 	@Test
+	@Ignore
 	@Memo("일정을 삭제하는 테스트")
 	public void test_4() throws Exception {
 		super.login("dlwodyd202", "dlwodyd");
@@ -133,5 +139,60 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 				responseFields(fieldWithPath("content").type(JsonFieldType.NUMBER).description(""),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
 					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile"))));
+	}
+
+	@Test
+	@Memo("일정을 수정하는 테스트")
+	public void test_5() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		PlanByUserDTO plan = PlanByUserDTO.builder().tag("수정").content("수정한 콘텐츠").start("2020-10-10").end("2020-10-10").build();
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.put("/api/teamManage/plan/{seq}", 3).header("Authorization", auth)
+				.contentType(MediaType.APPLICATION_JSON).content(objMapper.writeValueAsString(plan)))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("update plan",
+				requestFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호").ignored(),
+					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").ignored(),
+					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률").ignored(),
+					fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그")),
+				responseFields(fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("일정 태그").optional(),
+					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("진행률"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("profile"))));
+	}
+
+	@Test
+	@Memo("팀의 특정 월의 모든 일정을 가져오는 메소드")
+	public void test_6() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc.perform(get("/api/teamManage/plan/{code}","C81E728D2").header("Authorization", auth))
+		.andDo(print())
+		.andExpect(status().isOk())
+		.andDo(document("Get PlanByUserUnFinished",
+			responseFields(
+				fieldWithPath("_embedded.planByUserList").type(JsonFieldType.ARRAY).description(""),
+				fieldWithPath("_embedded.planByUserList[].seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+				fieldWithPath("_embedded.planByUserList[].tag").type(JsonFieldType.STRING).description("일정 태그"),
+				fieldWithPath("_embedded.planByUserList[].content").type(JsonFieldType.STRING).description("일정 설명"),
+				fieldWithPath("_embedded.planByUserList[].start").type(JsonFieldType.STRING).description("일정 시작일"),
+				fieldWithPath("_embedded.planByUserList[].end").type(JsonFieldType.STRING).description("일정 종료일"),
+				fieldWithPath("_embedded.planByUserList[].progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
+				fieldWithPath("_embedded.planByUserList[].teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
+				fieldWithPath("_embedded.planByUserList[].state").type(JsonFieldType.STRING).description("일정 상태"),
+				fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+				fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
+				fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
+				fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
+				fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
+				fieldWithPath("page.number").type(JsonFieldType.NUMBER).description("")
+			)));
 	}
 }
