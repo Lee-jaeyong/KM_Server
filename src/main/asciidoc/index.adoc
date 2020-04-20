@@ -183,3 +183,91 @@ include::{snippets}/create plan/response-fields.adoc[]
 include::{snippets}/delete plan/http-request.adoc[]
 - 응답 ex
 include::{snippets}/delete plan/response-body.adoc[]
+
+=== 수정
+- 요청 ex
+include::{snippets}/update plan/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/update plan/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/update plan/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/update plan/response-fields.adoc[]
+
+=== 일정 가져오기(UnFinished)
+- 요청 ex
+include::{snippets}/update plan/http-request.adoc[]
+- 응답 ex
+include::{snippets}/update plan/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/update plan/response-fields.adoc[]
+
+== 공지사항(Notice)
+=== 등록
+- 요청 ex
+include::{snippets}/create notice/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/create notice/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/create notice/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/create notice/response-fields.adoc[]
+
+=== 수정
+- 요청 ex
+include::{snippets}/update notice/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/update notice/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/update notice/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/update notice/response-fields.adoc[]
+
+=== 삭제
+- 요청 ex
+include::{snippets}/delete notice/http-request.adoc[]
+- 응답 ex
+include::{snippets}/delete notice/response-body.adoc[]
+
+=== 해당 팀 공지사항 가져오기
+- 요청 ex
+include::{snippets}/getAll notice/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getAll notice/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getAll notice/response-fields.adoc[]
+
+=== 해당 팀 공지사항 한건 가져오기
+- 요청 ex
+include::{snippets}/getOne notice/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getOne notice/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getOne notice/response-fields.adoc[]
+
+== 자유게시판(FreeBoard)
+=== 등록
+- 요청 ex
+include::{snippets}/create freeBoard/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/create freeBoard/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/create freeBoard/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/create freeBoard/response-fields.adoc[]
+
+=== 수정
+- 요청 ex
+include::{snippets}/update freeBoard/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/update freeBoard/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/update freeBoard/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/update freeBoard/response-fields.adoc[]
+
+=== 삭제
+- 요청 ex
+include::{snippets}/delete freeBoard/http-request.adoc[]
+- 응답 ex
+include::{snippets}/delete freeBoard/response-body.adoc[]
