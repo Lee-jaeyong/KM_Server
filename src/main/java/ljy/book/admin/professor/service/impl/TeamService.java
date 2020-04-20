@@ -66,10 +66,8 @@ public class TeamService {
 	}
 
 	@Transactional
-	public boolean checkTeamByUserAndCode(String code, Users user) {
-		if (teamAPI.findByCodeAndTeamLeader_Id(code, user.getId()) == null)
-			return false;
-		return true;
+	public Team checkTeamByUserAndCode(String code, Users user) {
+		return teamAPI.findByCodeAndTeamLeader_Id(code, user.getId());
 	}
 
 	@Transactional

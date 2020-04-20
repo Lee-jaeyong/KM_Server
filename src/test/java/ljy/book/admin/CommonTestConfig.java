@@ -26,7 +26,12 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ljy.book.admin.entity.Team;
+import ljy.book.admin.entity.Users;
 import ljy.book.admin.professor.requestDTO.TeamDTO;
+import ljy.book.admin.professor.requestDTO.UserDTO;
+import ljy.book.admin.professor.service.impl.TeamService;
+import ljy.book.admin.security.UsersService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -51,17 +56,36 @@ public class CommonTestConfig {
 	@Autowired
 	public ModelMapper modelMapper;
 
+	@Autowired
+	TeamService teamService;
+
+	@Autowired
+	UsersService userService;
+
 	protected String token;
 	protected String bearer;
 	protected String auth;
 	protected long teamSeq;
 	protected String teamCode = "";
 
-	protected void login(String id,String pass) throws Exception {
+	public Users createUser(String id, String pass, String name, String email) {
+		UserDTO user = new UserDTO();
+		user.setId(id);
+		user.setPass(pass);
+		user.setName(name);
+		user.setEmail(email);
+		return userService.save(user);
+	}
+
+	public Team createTeam(String name, String start, String end, String description, Users user) {
+		TeamDTO team = TeamDTO.builder().name(name).startDate(start).endDate(end).description(description).build();
+		return teamService.save(team, user);
+	}
+
+	protected void login(String id, String pass) throws Exception {
 		Jackson2JsonParser jackson = new Jackson2JsonParser();
-		MockHttpServletResponse response = this.mvc
-			.perform(RestDocumentationRequestBuilders.post("/oauth/token").with(httpBasic(clientId, clientPass))
-				.param("username", id).param("password", pass).param("grant_type", "password"))
+		MockHttpServletResponse response = this.mvc.perform(RestDocumentationRequestBuilders.post("/oauth/token")
+			.with(httpBasic(clientId, clientPass)).param("username", id).param("password", pass).param("grant_type", "password"))
 			.andReturn().getResponse();
 
 		Map<String, Object> jacksonMap = jackson.parseMap(response.getContentAsString());

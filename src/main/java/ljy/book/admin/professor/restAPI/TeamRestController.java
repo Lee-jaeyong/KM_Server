@@ -127,7 +127,7 @@ public class TeamRestController {
 	@PostMapping("/{code}/joinTeam")
 	public ResponseEntity<?> checkTeamByCode(@PathVariable String code, @Current_User Users user) {
 		// 팀장이 자기 자신의 팀에게 승인 요청을 보낼 수 없음
-		if (teamService.checkTeamByUserAndCode(code, user)) {
+		if (teamService.checkTeamByUserAndCode(code, user) != null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		// 이미 신청한 경우
