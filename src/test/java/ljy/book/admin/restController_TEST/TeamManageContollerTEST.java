@@ -15,6 +15,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -22,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.oauth2.common.util.Jackson2JsonParser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.ResultActions;
 
 import ljy.book.admin.CommonTestConfig;
