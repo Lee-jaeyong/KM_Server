@@ -202,6 +202,14 @@ include::{snippets}/update plan/response-body.adoc[]
 - 응답 파라미터 설명 
 include::{snippets}/update plan/response-fields.adoc[]
 
+=== 일정 단건 가져오기(UnFinished)
+- 요청 ex
+include::{snippets}/GetOne PlanByUser/http-request.adoc[]
+- 응답 ex
+include::{snippets}/GetOne PlanByUser/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/GetOne PlanByUser/response-fields.adoc[]
+
 == 공지사항(Notice)
 === 등록
 - 요청 ex
@@ -271,3 +279,62 @@ include::{snippets}/update freeBoard/response-fields.adoc[]
 include::{snippets}/delete freeBoard/http-request.adoc[]
 - 응답 ex
 include::{snippets}/delete freeBoard/response-body.adoc[]
+
+=== 해당 팀 자유게시판 가져오기
+- 요청 ex
+include::{snippets}/getList freeBoard/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getList freeBoard/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getList freeBoard/response-fields.adoc[]
+
+=== 해당 팀 자유게시판 한건 가져오기
+- 요청 ex
+include::{snippets}/getOne freeBoard/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getOne freeBoard/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getOne freeBoard/response-fields.adoc[]
+
+== 참고자료(ReferenceData)
+=== 등록
+- 요청 ex
+include::{snippets}/create referenceData/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/create referenceData/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/create referenceData/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/create referenceData/response-fields.adoc[]
+
+=== 수정
+- 요청 ex
+include::{snippets}/update referenceData/request-body.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/update referenceData/request-fields.adoc[]
+- 응답 ex
+include::{snippets}/update referenceData/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/update referenceData/response-fields.adoc[]
+
+=== 삭제
+- 요청 ex
+include::{snippets}/delete referenceData/http-request.adoc[]
+- 응답 ex
+include::{snippets}/delete referenceData/response-body.adoc[]
+
+=== 해당 팀 자유게시판 가져오기
+- 요청 ex
+include::{snippets}/getList referenceData/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getList referenceData/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getList referenceData/response-fields.adoc[]
+
+=== 해당 팀 자유게시판 한건 가져오기
+- 요청 ex
+include::{snippets}/getOne referenceData/http-request.adoc[]
+- 응답 ex
+include::{snippets}/getOne referenceData/response-body.adoc[]
+- 응답 파라미터 설명 
+include::{snippets}/getOne referenceData/response-fields.adoc[]

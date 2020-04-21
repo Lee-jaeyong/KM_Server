@@ -176,7 +176,7 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 		super.login("dlwodyd202", "dlwodyd");
 		String json = objMapper.writeValueAsString(DateRequestDTO.builder().year("2020").month("10").day("20").build());
 		this.mvc
-			.perform(get("/api/teamManage/plan/{code}", "C81E728D2")
+			.perform(get("/api/teamManage/plan/{code}/all", "C81E728D2")
 				.header("Authorization", auth).contentType(MediaType.APPLICATION_JSON).content(json))
 			.andDo(print()).andExpect(status().isOk())
 			.andDo(document("Get PlanByUserUnFinished",
@@ -195,5 +195,26 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 					fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
 					fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
 					fieldWithPath("page.number").type(JsonFieldType.NUMBER).description(""))));
+	}
+
+	@Test
+	@Memo("일정 상세보기")
+	public void test_7() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/teamManage/plan/{seq}", 3).header(super.AUTHRIZATION, auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("GetOne PlanByUser",
+				responseFields(
+					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+					fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 설명"),
+					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 시작일"),
+					fieldWithPath("end").type(JsonFieldType.STRING).description("일정 종료일"),
+					fieldWithPath("progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
+					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
+					fieldWithPath("state").type(JsonFieldType.STRING).description("일정 상태"),
+					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("")
+				)));
 	}
 }

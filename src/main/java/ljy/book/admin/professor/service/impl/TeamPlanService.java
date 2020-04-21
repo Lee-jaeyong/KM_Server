@@ -26,6 +26,11 @@ public class TeamPlanService {
 	PlanByUserDAO planByUserDAO;
 
 	@Transactional
+	public PlanByUser getOne(long seq) {
+		return planByUserAPI.findBySeqAndState(seq, BooleanState.YSE);
+	}
+
+	@Transactional
 	public Page<PlanByUser> getAll(String code, DateRequestDTO dateRequestDTO) {
 		String[] date = dateRequestDTO.getFirstAndLastDay();
 		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YSE, code, date[0],

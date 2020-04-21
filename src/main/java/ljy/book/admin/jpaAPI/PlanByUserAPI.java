@@ -13,4 +13,6 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	Page<PlanByUser> findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState booleanState, String code,
 		String start, String end, Pageable pageable);
+
+	PlanByUser findBySeqAndState(long seq, BooleanState state);
 }

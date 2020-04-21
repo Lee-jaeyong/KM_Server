@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FreeBoard {
+public class ReferenceData {
 
 	@Id
 	@GeneratedValue
@@ -54,7 +54,7 @@ public class FreeBoard {
 	@JsonIgnore
 	Team team;
 
-	@OneToMany(mappedBy = "freeBoard")
+	@OneToMany(mappedBy = "referenceData")
 	@JsonIgnore
-	List<BoardFileAndImg> fileList = new ArrayList<BoardFileAndImg>();
+	List<ReferenceFileAndImg> fileList = new ArrayList<ReferenceFileAndImg>();
 }

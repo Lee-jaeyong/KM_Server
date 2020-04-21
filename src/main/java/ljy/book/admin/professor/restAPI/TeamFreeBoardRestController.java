@@ -3,12 +3,17 @@ package ljy.book.admin.professor.restAPI;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,6 +41,34 @@ public class TeamFreeBoardRestController {
 
 	@Autowired
 	TeamFreeBoardService teamFreeBoardService;
+
+	@GetMapping("/{seq}")
+	@Memo("자유게시판 단건 조회 메소드")
+	public ResponseEntity<?> getOne(@PathVariable long seq, @Current_User Users user) {
+		FreeBoard checkBoard = teamFreeBoardService.getOne(seq);
+		if (checkBoard == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		if (!teamService.checkTeamAuth(user, checkBoard.getTeam().getCode())) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		EntityModel<FreeBoard> result = new EntityModel<FreeBoard>(checkBoard);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/{code}/all")
+	@Memo("특정 팀의 모든 자유게시판을 가져오는 메소드")
+	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user, Pageable pageable,
+		PagedResourcesAssembler<FreeBoard> assembler) {
+		if (!teamService.checkTeamAuth(user, code)) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		PagedModel<EntityModel<FreeBoard>> result = assembler.toModel(teamFreeBoardService.getList(code, pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
 
 	@PostMapping("/{code}")
 	@Memo("자유 게시판을 등록하는 메소드")
