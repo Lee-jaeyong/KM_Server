@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.customRepository.mybaits.PlanByUserDAO;
 import ljy.book.admin.entity.PlanByUser;
 import ljy.book.admin.entity.Team;
@@ -26,11 +28,13 @@ public class TeamPlanService {
 	PlanByUserDAO planByUserDAO;
 
 	@Transactional
+	@Memo("단건 조회")
 	public PlanByUser getOne(long seq) {
 		return planByUserAPI.findBySeqAndState(seq, BooleanState.YSE);
 	}
 
 	@Transactional
+	@Memo("리스트 조회")
 	public Page<PlanByUser> getAll(String code, DateRequestDTO dateRequestDTO) {
 		String[] date = dateRequestDTO.getFirstAndLastDay();
 		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YSE, code, date[0],
@@ -38,17 +42,20 @@ public class TeamPlanService {
 	}
 
 	@Transactional
+	@Memo("시퀀스를 통해 권한이 있는가를 확인 후 있다면 리턴")
 	public PlanByUser checkAuthPlanSuccessThenGet(long seq, Users user) {
 		return planByUserAPI.findBySeqAndUser_Id(seq, user.getId());
 	}
 
 	@Transactional
+	@Memo("삭제")
 	public boolean delete(long seq) {
 		planByUserDAO.delete(seq);
 		return true;
 	}
 
 	@Transactional
+	@Memo("추가")
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {
 		Team team = new Team();
 		team.setSeq(seq);
@@ -65,9 +72,11 @@ public class TeamPlanService {
 	}
 
 	@Transactional
+	@Memo("수정")
 	public boolean update(long seq, PlanByUserDTO planByUserDTO) {
 		planByUserDTO.setSeq(seq);
 		planByUserDAO.update(planByUserDTO);
 		return true;
 	}
+
 }

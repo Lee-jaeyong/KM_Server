@@ -19,5 +19,10 @@
 		WHERE seq = #{seq}
 	</update>
 
+	<update id="fileDelete" parameterType="hashMap">
+		DELETE FROM notice_file_and_img
+		WHERE NAME = #{fileName} AND notice_seq = #{seq}
+	</update>
+
 
 </mapper>

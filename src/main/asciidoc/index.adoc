@@ -1,5 +1,5 @@
 = Team Management System RESTful API Guide
-Andy Wilkinson;
+LJY & YJW;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs

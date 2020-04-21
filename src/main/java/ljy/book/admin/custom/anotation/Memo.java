@@ -6,6 +6,5 @@ import java.lang.annotation.Target;
 
 @Target(METHOD)
 public @interface Memo {
-
 	String value();
 }

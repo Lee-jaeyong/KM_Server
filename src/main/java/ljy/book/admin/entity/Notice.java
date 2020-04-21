@@ -1,5 +1,8 @@
 package ljy.book.admin.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,8 +10,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.AllArgsConstructor;
@@ -49,4 +54,8 @@ public class Notice {
 	@ManyToOne
 	@JsonIgnore
 	Team team;
+
+	@OneToMany(mappedBy = "notice")
+	@JsonManagedReference
+	List<NoticeFileAndImg> noticeFileAndImg = new ArrayList<NoticeFileAndImg>();
 }

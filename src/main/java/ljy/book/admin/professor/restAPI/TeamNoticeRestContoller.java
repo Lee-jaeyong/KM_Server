@@ -1,14 +1,25 @@
 package ljy.book.admin.professor.restAPI;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +29,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.Notice;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
+import ljy.book.admin.entity.enums.BooleanState;
+import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.professor.requestDTO.NoticeDTO;
 import ljy.book.admin.professor.service.impl.TeamNoticeService;
 import ljy.book.admin.professor.service.impl.TeamService;
@@ -49,10 +64,23 @@ public class TeamNoticeRestContoller {
 		if (!teamService.checkTeamAuth(user, checkNotice.getTeam().getCode())) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
 		EntityModel<Notice> result = new EntityModel<Notice>(checkNotice);
+		ArrayList<byte[]> imgByte = new ArrayList<byte[]>();
+		checkNotice.getNoticeFileAndImg().forEach(c -> {
+			if (c.getType() == FileType.IMG) {
+				try {
+					InputStream in = noticeService.fileDownload(seq, c.getName()).getInputStream();
+					imgByte.add(IOUtils.toByteArray(in));
+				} catch (Exception e) {}
+			}
+		});
+		;
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
-		return ResponseEntity.ok(result);
+		jsonResult.put("data", result);
+		jsonResult.put("image", imgByte);
+		return ResponseEntity.ok(jsonResult);
 	}
 
 	@GetMapping("/{code}/all")
@@ -111,5 +139,49 @@ public class TeamNoticeRestContoller {
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
+	}
+
+	@Memo("공지사항 파일 업로드")
+	@PostMapping("/{seq}/fileUpload/{type}")
+	public ResponseEntity<?> fileUpload(@RequestParam MultipartFile[] files, @PathVariable long seq, @PathVariable FileType type,
+		@Current_User Users user) {
+		Notice checkPlan = noticeService.checkAuthSuccessThenGet(seq, user);
+		if (checkPlan == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		noticeService.fileUpload(files, seq, type);
+		EntityModel<Long> result = new EntityModel<Long>(seq);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("공지사항 파일 삭제")
+	@PostMapping("/{seq}/fileUpload/{fileName:.+}/delete")
+	public ResponseEntity<?> fileDelete(@PathVariable long seq, @PathVariable String fileName, @Current_User Users user) {
+		noticeService.fileDelete(fileName, seq);
+		EntityModel<Long> result = new EntityModel<Long>(seq);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
+		HttpServletRequest request) {
+		Resource resource = noticeService.fileDownload(seq, fileName);
+		if (resource == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+		}
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
 	}
 }

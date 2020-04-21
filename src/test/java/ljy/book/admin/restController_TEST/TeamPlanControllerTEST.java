@@ -7,14 +7,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Map;
-
-import javax.transaction.Transactional;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -204,8 +201,7 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 		this.mvc.perform(RestDocumentationRequestBuilders.get("/api/teamManage/plan/{seq}", 3).header(super.AUTHRIZATION, auth))
 			.andDo(print()).andExpect(status().isOk())
 			.andDo(document("GetOne PlanByUser",
-				responseFields(
-					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+				responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
 					fieldWithPath("tag").type(JsonFieldType.STRING).description("일정 태그"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("일정 설명"),
 					fieldWithPath("start").type(JsonFieldType.STRING).description("일정 시작일"),
@@ -214,7 +210,6 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 					fieldWithPath("teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
 					fieldWithPath("state").type(JsonFieldType.STRING).description("일정 상태"),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
-					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description("")
-				)));
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""))));
 	}
 }
