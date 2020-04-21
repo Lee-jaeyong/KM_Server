@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import ljy.book.admin.common.exception.FileUploadException;
 import ljy.book.admin.common.object.CustomFileUpload;
 import ljy.book.admin.custom.anotation.Memo;
 
@@ -35,7 +34,7 @@ public class CommonFileUpload {
 		try {
 			Files.createDirectories(this.fileLocation);
 		} catch (Exception e) {
-			throw new FileUploadException("파일을 업로드할 디렉토리를 생성하지 못했습니다.", e);
+			e.printStackTrace();
 		}
 	}
 
