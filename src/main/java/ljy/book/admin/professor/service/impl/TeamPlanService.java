@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,20 @@ public class TeamPlanService {
 
 	@Autowired
 	PlanByUserDAO planByUserDAO;
+
+	@Transactional
+	@Memo("자신의 모든 일정 가져오기")
+	public Page<PlanByUser> getMyPlanAllUnFinished(String search, Users user, Pageable pageable) {
+		return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState.YSE,
+			user.getId(), search, search, pageable);
+	}
+
+	@Transactional
+	@Memo("자신의 끝난 모든 일정 가져오기")
+	public Page<PlanByUser> getMyPlanAllFinished(String search, Users user, Pageable pageable) {
+		return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState.NO,
+			user.getId(), search, search, pageable);
+	}
 
 	@Transactional
 	@Memo("단건 조회")

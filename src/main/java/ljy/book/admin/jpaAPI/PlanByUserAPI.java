@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ljy.book.admin.entity.PlanByUser;
 import ljy.book.admin.entity.enums.BooleanState;
-import ljy.book.admin.professor.requestDTO.DateRequestDTO;
 
 public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 	PlanByUser findBySeqAndUser_Id(long seq, String id);
@@ -15,4 +14,7 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 		String start, String end, Pageable pageable);
 
 	PlanByUser findBySeqAndState(long seq, BooleanState state);
+
+	Page<PlanByUser> findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String searchTag, String searchContent,
+		Pageable pageable);
 }

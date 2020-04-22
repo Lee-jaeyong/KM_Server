@@ -10,6 +10,15 @@ import org.junit.Test;
 public class EtcTEST {
 
 	@Test
+	public void fileForm() {
+		String fileName = "abc.txt";
+		int fileFormCheck = fileName.indexOf(".");
+		String fileForm = fileName.substring(fileFormCheck,fileName.length());
+		System.out.println(fileForm);
+	}
+	
+	@Test
+	@Ignore
 	public void getDate() {
 		int year = 2020;
 		int month = 04;

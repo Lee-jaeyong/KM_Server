@@ -212,4 +212,56 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
 					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""))));
 	}
+
+	@Test
+	@Memo("자신의 모든 일정 가져오기")
+	public void test_8() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.get("/api/teamManage/plan/all/unfinished").param("page", "0")
+				.param("size", "10").param("search", "").header(super.AUTHRIZATION, auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("Get MyPlanByUserUnFinished",
+				responseFields(fieldWithPath("_embedded.planByUserList").type(JsonFieldType.ARRAY).description(""),
+					fieldWithPath("_embedded.planByUserList[].seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+					fieldWithPath("_embedded.planByUserList[].tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("_embedded.planByUserList[].content").type(JsonFieldType.STRING).description("일정 설명"),
+					fieldWithPath("_embedded.planByUserList[].start").type(JsonFieldType.STRING).description("일정 시작일"),
+					fieldWithPath("_embedded.planByUserList[].end").type(JsonFieldType.STRING).description("일정 종료일"),
+					fieldWithPath("_embedded.planByUserList[].progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
+					fieldWithPath("_embedded.planByUserList[].teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
+					fieldWithPath("_embedded.planByUserList[].state").type(JsonFieldType.STRING).description("일정 상태"),
+					fieldWithPath("_links.self[].href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.number").type(JsonFieldType.NUMBER).description(""))));
+	}
+
+	@Test
+	@Memo("자신의 모든 끝난 일정 가져오기")
+	public void test_9() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc
+			.perform(RestDocumentationRequestBuilders.get("/api/teamManage/plan/all/finished").param("page", "0")
+				.param("size", "10").param("search", "").header(super.AUTHRIZATION, auth))
+			.andDo(print()).andExpect(status().isOk())
+			.andDo(document("Get MyPlanByUserFinished",
+				responseFields(fieldWithPath("_embedded.planByUserList").type(JsonFieldType.ARRAY).description(""),
+					fieldWithPath("_embedded.planByUserList[].seq").type(JsonFieldType.NUMBER).description("일정 고유 번호"),
+					fieldWithPath("_embedded.planByUserList[].tag").type(JsonFieldType.STRING).description("일정 태그"),
+					fieldWithPath("_embedded.planByUserList[].content").type(JsonFieldType.STRING).description("일정 설명"),
+					fieldWithPath("_embedded.planByUserList[].start").type(JsonFieldType.STRING).description("일정 시작일"),
+					fieldWithPath("_embedded.planByUserList[].end").type(JsonFieldType.STRING).description("일정 종료일"),
+					fieldWithPath("_embedded.planByUserList[].progress").type(JsonFieldType.NUMBER).description("일정 진척도"),
+					fieldWithPath("_embedded.planByUserList[].teamPlan").type(JsonFieldType.STRING).description("팀 일정"),
+					fieldWithPath("_embedded.planByUserList[].state").type(JsonFieldType.STRING).description("일정 상태"),
+					fieldWithPath("_links.self[].href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""),
+					fieldWithPath("page.size").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalElements").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.totalPages").type(JsonFieldType.NUMBER).description(""),
+					fieldWithPath("page.number").type(JsonFieldType.NUMBER).description(""))));
+	}
 }

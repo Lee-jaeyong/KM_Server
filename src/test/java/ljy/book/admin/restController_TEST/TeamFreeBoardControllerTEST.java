@@ -4,6 +4,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,6 +16,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -21,6 +25,7 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.JoinTeam;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
+import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.professor.requestDTO.FreeBoardDTO;
 import ljy.book.admin.professor.service.impl.TeamJoinRequestService;
 
@@ -76,7 +81,6 @@ public class TeamFreeBoardControllerTEST extends CommonTestConfig {
 	}
 
 	@Test
-	@Ignore
 	@Memo("자유 게시판을 삭제하는 테스트")
 	public void test_3() throws Exception {
 		super.login("dlwodyd202", "dlwodyd");
@@ -120,14 +124,40 @@ public class TeamFreeBoardControllerTEST extends CommonTestConfig {
 			.perform(RestDocumentationRequestBuilders.get("/api/teamManage/freeBoard/{seq}", 5).header(super.AUTHRIZATION, auth))
 			.andDo(print()).andExpect(status().isOk())
 			.andDo(document("getOne freeBoard",
-				responseFields(
-					fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호"),
+				responseFields(fieldWithPath("seq").type(JsonFieldType.NUMBER).description("고유번호"),
 					fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("내용"),
 					fieldWithPath("date").type(JsonFieldType.STRING).description("등록일"),
 					fieldWithPath("state").type(JsonFieldType.STRING).description("상태"),
 					fieldWithPath("_links.self.href").type(JsonFieldType.STRING).description(""),
 					fieldWithPath("_links.profile.href").type(JsonFieldType.STRING).description(""))));
+	}
+
+	@Test
+	@Memo("자유게시판 파일 업로드")
+	public void test_6() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		MockMultipartFile file = new MockMultipartFile("files", "test.txt", "text/plain", "hello file".getBytes());
+		this.mvc.perform(multipart("/api/teamManage/freeBoard/{seq}/fileUpload/{type}", 5, FileType.IMG).file(file)
+			.header(super.AUTHRIZATION, auth)).andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@Memo("자유게시판 파일 삭제")
+	public void test_7() throws Exception {
+		super.login("dlwodyd202", "dlwodyd");
+		this.mvc
+			.perform(post("/api/teamManage/freeBoard/{seq}/fileUpload/54de5386-5b14-4d9a-a438-8ecdce0a7214_test.txt/delete", 5)
+				.header(super.AUTHRIZATION, auth))
+			.andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@Memo("파일을 가져오는 테스트")
+	public void test_8() throws Exception {
+		this.login("dbswldnjs202", "dbswldnjs");
+		this.mvc.perform(get("/api/teamManage/freeBoard/{seq}/downloadFile/54de5386-5b14-4d9a-a438-8ecdce0a7214_test.txt", 5)
+			.header(super.AUTHRIZATION, auth)).andDo(print()).andExpect(status().isOk());
 	}
 
 	public void init() throws Exception {
@@ -137,4 +167,5 @@ public class TeamFreeBoardControllerTEST extends CommonTestConfig {
 		JoinTeam request = teamJoinRequestService.saveJoinTeamReq(team, joinRequestUser);
 		teamJoinRequestService.signUpSuccessJoinTeam(request.getSeq());
 	}
+
 }

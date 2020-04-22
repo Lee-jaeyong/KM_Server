@@ -8,16 +8,24 @@
 
 	<update id="update" parameterType="ReferenceDataDTO">
 		UPDATE `reference_data`
-		SET content = #{content},
-		    title = #{title}
+		SET
+		content = #{content},
+		title = #{title}
 		WHERE seq = #{seq}
 	</update>
 
 	<update id="delete" parameterType="long">
 		UPDATE `reference_data`
-		SET state = 'NO'
+		SET
+		state = 'NO'
 		WHERE seq = #{seq}
 	</update>
-
+	
+	<update id="fileDelete" parameterType="hashMap">
+		DELETE FROM
+		`reference_file_and_img`
+		WHERE NAME = #{fileName} AND reference_data_seq =
+		#{seq}
+	</update>
 
 </mapper>

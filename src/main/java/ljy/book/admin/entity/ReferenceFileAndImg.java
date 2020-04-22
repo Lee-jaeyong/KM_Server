@@ -8,7 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import ljy.book.admin.entity.enums.FileType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +21,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReferenceFileAndImg {
 	@Id
 	@GeneratedValue
@@ -29,5 +35,6 @@ public class ReferenceFileAndImg {
 	FileType type;
 
 	@ManyToOne
-	FreeBoard referenceData;
+	@JsonBackReference
+	ReferenceData referenceData;
 }

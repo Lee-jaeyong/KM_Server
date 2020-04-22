@@ -8,16 +8,21 @@
 
 	<update id="update" parameterType="FreeBoardDTO">
 		UPDATE `free_board`
-		SET content = #{content},
-		    title = #{title}
+		SET content
+		= #{content},
+		title = #{title}
 		WHERE seq = #{seq}
 	</update>
 
 	<update id="delete" parameterType="long">
 		UPDATE `free_board`
-		SET state = 'NO'
+		SET state =
+		'NO'
 		WHERE seq = #{seq}
 	</update>
 
-
+	<update id="fileDelete" parameterType="hashMap">
+		DELETE FROM `board_file_and_img`
+		WHERE NAME = #{fileName} AND free_board_seq = #{seq}
+	</update>
 </mapper>

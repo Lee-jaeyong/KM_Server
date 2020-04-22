@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ljy.book.admin.common.object.CustomFileUpload;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.Notice;
 import ljy.book.admin.entity.Team;
@@ -72,7 +73,8 @@ public class TeamNoticeRestContoller {
 				try {
 					InputStream in = noticeService.fileDownload(seq, c.getName()).getInputStream();
 					imgByte.add(IOUtils.toByteArray(in));
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 			}
 		});
 		;
@@ -145,6 +147,10 @@ public class TeamNoticeRestContoller {
 	@PostMapping("/{seq}/fileUpload/{type}")
 	public ResponseEntity<?> fileUpload(@RequestParam MultipartFile[] files, @PathVariable long seq, @PathVariable FileType type,
 		@Current_User Users user) {
+		for (MultipartFile f : files) {
+			if (!CustomFileUpload.fileUploadFilter(f.getOriginalFilename(), type))
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 		Notice checkPlan = noticeService.checkAuthSuccessThenGet(seq, user);
 		if (checkPlan == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -166,6 +172,7 @@ public class TeamNoticeRestContoller {
 		return ResponseEntity.ok(result);
 	}
 
+	@Memo("공지사항 파일 다운로드")
 	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
 		HttpServletRequest request) {

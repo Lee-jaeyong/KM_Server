@@ -3,6 +3,7 @@ package ljy.book.admin.professor.restAPI;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -45,6 +46,28 @@ public class TeamPlanRestController {
 
 	@Autowired
 	DateRequestDTOValid dateRequestValid;
+
+	@Memo("자신의 모든 일정 가져오기(끝난)")
+	@GetMapping("/all/finished")
+	public ResponseEntity<?> getMyPlanAllFinished(@RequestParam(defaultValue = "") String search, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) {
+		PagedModel<EntityModel<PlanByUser>> result = assembler
+			.toModel(teamPlanService.getMyPlanAllFinished(search, user, pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("자신의 모든 일정 가져오기")
+	@GetMapping("/all/unfinished")
+	public ResponseEntity<?> getMyPlanAllUnfinished(@RequestParam(defaultValue = "") String search, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) {
+		PagedModel<EntityModel<PlanByUser>> result = assembler
+			.toModel(teamPlanService.getMyPlanAllUnFinished(search, user, pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
 
 	@Memo("일정 단건 조회")
 	@GetMapping("/{seq}")

@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.AllArgsConstructor;
@@ -55,6 +57,6 @@ public class ReferenceData {
 	Team team;
 
 	@OneToMany(mappedBy = "referenceData")
-	@JsonIgnore
+	@JsonManagedReference
 	List<ReferenceFileAndImg> fileList = new ArrayList<ReferenceFileAndImg>();
 }
