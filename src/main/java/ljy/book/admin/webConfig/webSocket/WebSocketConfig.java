@@ -15,6 +15,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
 	@EnableWebSocketMessageBroker
 	public class ConfigWebSocket implements WebSocketMessageBrokerConfigurer {
+		
 		@Autowired
 		private StompHandler stompHandler;
 
