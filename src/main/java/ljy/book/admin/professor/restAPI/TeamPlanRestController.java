@@ -109,7 +109,7 @@ public class TeamPlanRestController {
 		if (teamService.checkAuthSuccessThenGetTeam(team.getSeq(), user) == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		if (planByUser.getTeamPlan() == BooleanState.YSE && !teamService.checkTeamByUser(team, user)) {
+		if (planByUser.getTeamPlan() == BooleanState.YES && !teamService.checkTeamByUser(team, user)) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		teamPlanService.save(team.getSeq(), planByUser, user);

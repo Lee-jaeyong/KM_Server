@@ -48,11 +48,11 @@ public class TeamReferenceDataService {
 	CommonFileUpload commonFileUpload;
 
 	public ReferenceData getOne(long seq) {
-		return referenceDataAPI.findBySeqAndState(seq, BooleanState.YSE);
+		return referenceDataAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
 	public Page<ReferenceData> getList(String code, Pageable pageable) {
-		return referenceDataAPI.findByTeam_CodeAndState(code, BooleanState.YSE, pageable);
+		return referenceDataAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
 
 	public ReferenceData save(ReferenceDataDTO freeBoard, TeamDTO team, Users user) {
@@ -61,7 +61,7 @@ public class TeamReferenceDataService {
 		Team saveTeam = new Team();
 		saveTeam.setSeq(team.getSeq());
 		ReferenceData saveBoard = ReferenceData.builder().title(freeBoard.getTitle()).content(freeBoard.getContent())
-			.date(CustomDate.getNowDate()).state(BooleanState.YSE).user(saveUser).team(saveTeam).build();
+			.date(CustomDate.getNowDate()).state(BooleanState.YES).user(saveUser).team(saveTeam).build();
 		return referenceDataAPI.save(saveBoard);
 	}
 

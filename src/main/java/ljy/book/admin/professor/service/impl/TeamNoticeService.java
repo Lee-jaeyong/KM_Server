@@ -44,13 +44,13 @@ public class TeamNoticeService {
 	@Transactional
 	@Memo("번호를 통해 공지사항을 가져옴")
 	public Notice getOne(long seq) {
-		return noticeAPI.findBySeqAndState(seq, BooleanState.YSE);
+		return noticeAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
 	@Transactional
 	@Memo("해당 팀의 활성화된 모든 공지사항을 가져옴")
 	public Page<Notice> getAll(String code, Pageable pageable) {
-		return noticeAPI.findByTeam_CodeAndState(code, BooleanState.YSE, pageable);
+		return noticeAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
 
 	@Transactional
@@ -61,7 +61,7 @@ public class TeamNoticeService {
 		Team saveTeam = new Team();
 		saveTeam.setSeq(team.getSeq());
 		Notice notice = Notice.builder().date(CustomDate.getNowDate()).title(noticeDTO.getTitle()).content(noticeDTO.getContent())
-			.user(saveUser).team(saveTeam).state(BooleanState.YSE).build();
+			.user(saveUser).team(saveTeam).state(BooleanState.YES).build();
 		return noticeAPI.save(notice);
 	}
 

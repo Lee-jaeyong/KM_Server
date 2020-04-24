@@ -31,7 +31,7 @@ public class TeamPlanService {
 	@Transactional
 	@Memo("자신의 모든 일정 가져오기")
 	public Page<PlanByUser> getMyPlanAllUnFinished(String search, Users user, Pageable pageable) {
-		return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState.YSE,
+		return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState.YES,
 			user.getId(), search, search, pageable);
 	}
 
@@ -45,14 +45,14 @@ public class TeamPlanService {
 	@Transactional
 	@Memo("단건 조회")
 	public PlanByUser getOne(long seq) {
-		return planByUserAPI.findBySeqAndState(seq, BooleanState.YSE);
+		return planByUserAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
 	@Transactional
 	@Memo("리스트 조회")
 	public Page<PlanByUser> getAll(String code, DateRequestDTO dateRequestDTO) {
 		String[] date = dateRequestDTO.getFirstAndLastDay();
-		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YSE, code, date[0],
+		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YES, code, date[0],
 			date[1], PageRequest.of(0, 50));
 	}
 
@@ -74,10 +74,10 @@ public class TeamPlanService {
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {
 		Team team = new Team();
 		team.setSeq(seq);
-		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YSE).progress((byte) 0).content(planByUserDTO.getContent())
+		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YES).progress((byte) 0).content(planByUserDTO.getContent())
 			.end(planByUserDTO.getEnd()).start(planByUserDTO.getStart()).tag(planByUserDTO.getTag())
 			.teamPlan(planByUserDTO.getTeamPlan() == null || planByUserDTO.getTeamPlan() == BooleanState.NO ? BooleanState.NO
-				: BooleanState.YSE)
+				: BooleanState.YES)
 			.build();
 		Users me = new Users();
 		me.setSeq(user.getSeq());

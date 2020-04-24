@@ -32,6 +32,10 @@ public class UsersService implements UserDetailsService {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
+	public boolean checkDupId(String id) {
+		return userAPI.findById(id).isPresent();
+	}
+
 	public Users findByUserId(String id) {
 		return userAPI.findById(id).get();
 	}
@@ -42,7 +46,7 @@ public class UsersService implements UserDetailsService {
 		saveUser.setName(user.getName());
 		saveUser.setPass(passwordEncoder.encode(user.getPass()));
 		saveUser.setDate("2020-04-16");
-		saveUser.setFlag(BooleanState.YSE);
+		saveUser.setFlag(BooleanState.YES);
 		saveUser.setEmail(user.getEmail());
 		Set<UserRule> rule = new HashSet<UserRule>();
 		rule.add(UserRule.USER);
@@ -54,7 +58,7 @@ public class UsersService implements UserDetailsService {
 		userDAO.update(user);
 		return user;
 	}
-	
+
 	public boolean delete(Users user) {
 		UserDTO deleteUser = new UserDTO();
 		deleteUser.setId(user.getId());

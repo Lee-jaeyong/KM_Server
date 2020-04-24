@@ -50,6 +50,11 @@ public class UsersRestController {
 		return ResponseEntity.ok(model);
 	}
 
+	@GetMapping("/dupId")
+	public boolean checkDupId(String id) {
+		return userService.checkDupId(id);
+	}
+
 	@PostMapping
 	public ResponseEntity<?> join(@RequestBody @Valid UserDTO user, Errors error) {
 		if (error.hasErrors()) {
@@ -66,11 +71,14 @@ public class UsersRestController {
 
 	@GetMapping("/oauth/revoke-token")
 	public ResponseEntity<?> logout(HttpServletRequest request) {
-		String authHeader = request.getHeader("Authorization");
-		if (authHeader != null) {
-			String tokenValue = authHeader.replace("Bearer", "").trim();
-			OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
-			tokenStore.removeAccessToken(accessToken);
+		try {
+			String authHeader = request.getHeader("Authorization");
+			if (authHeader != null) {
+				String tokenValue = authHeader.replace("Bearer", "").trim();
+				OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
+				tokenStore.removeAccessToken(accessToken);
+			}
+		}catch (Exception e) {
 		}
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}

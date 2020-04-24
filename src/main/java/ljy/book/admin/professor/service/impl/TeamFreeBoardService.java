@@ -43,11 +43,11 @@ public class TeamFreeBoardService {
 	CommonFileUpload commonFileUpload;
 
 	public FreeBoard getOne(long seq) {
-		return freeBoardAPI.findBySeqAndState(seq, BooleanState.YSE);
+		return freeBoardAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
 	public Page<FreeBoard> getList(String code, Pageable pageable) {
-		return freeBoardAPI.findByTeam_CodeAndState(code, BooleanState.YSE, pageable);
+		return freeBoardAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
 
 	public FreeBoard save(FreeBoardDTO freeBoard, TeamDTO team, Users user) {
@@ -56,7 +56,7 @@ public class TeamFreeBoardService {
 		Team saveTeam = new Team();
 		saveTeam.setSeq(team.getSeq());
 		FreeBoard saveBoard = FreeBoard.builder().title(freeBoard.getTitle()).content(freeBoard.getContent())
-			.date(CustomDate.getNowDate()).state(BooleanState.YSE).user(saveUser).team(saveTeam).build();
+			.date(CustomDate.getNowDate()).state(BooleanState.YES).user(saveUser).team(saveTeam).build();
 		return freeBoardAPI.save(saveBoard);
 	}
 

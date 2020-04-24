@@ -168,7 +168,7 @@ public class TeamRestController {
 		if (checkAuth == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		if (checkAuth.getState() == BooleanState.YSE) {
+		if (checkAuth.getState() == BooleanState.YES) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		teamJoinRequestService.signUpFaildJoinTeam(seq, reson);
