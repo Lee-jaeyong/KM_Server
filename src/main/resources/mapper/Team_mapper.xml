@@ -80,7 +80,7 @@
 		)
 		)
 		)
-		AND t.start_date <= LEFT(NOW(),10) AND t.end_date >= LEFT(NOW(),10) AND t.flag = 'YSE'
+		AND t.start_date <= LEFT(NOW(),10) AND t.end_date <= LEFT(NOW(),10) AND t.flag = 'YES'
 	]]>
 	</select>
 
@@ -108,7 +108,7 @@
 		)
 		)
 		)
-		AND t.end_date < LEFT(NOW(),10) AND t.flag = 'YSE'
+		AND t.end_date < LEFT(NOW(),10) AND t.flag = 'YES'
 	]]>
 	</select>
 	
