@@ -50,10 +50,8 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("리스트 조회")
-	public Page<PlanByUser> getAll(String code, DateRequestDTO dateRequestDTO) {
-		String[] date = dateRequestDTO.getFirstAndLastDay();
-		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YES, code, date[0],
-			date[1], PageRequest.of(0, 50));
+	public Page<PlanByUser> getAll(String code) {
+		return planByUserAPI.findByStateAndTeam_Code(BooleanState.YES, code, PageRequest.of(0, 100));
 	}
 
 	@Transactional
@@ -74,7 +72,7 @@ public class TeamPlanService {
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {
 		Team team = new Team();
 		team.setSeq(seq);
-		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YES).progress((byte) 0).content(planByUserDTO.getContent())
+		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YES).progress(planByUserDTO.getProgress()).content(planByUserDTO.getContent())
 			.end(planByUserDTO.getEnd()).start(planByUserDTO.getStart()).tag(planByUserDTO.getTag())
 			.teamPlan(planByUserDTO.getTeamPlan() == null || planByUserDTO.getTeamPlan() == BooleanState.NO ? BooleanState.NO
 				: BooleanState.YES)

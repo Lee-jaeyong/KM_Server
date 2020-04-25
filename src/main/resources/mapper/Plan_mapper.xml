@@ -18,6 +18,7 @@
 		,END = #{end}
 		,START = #{start}
 		, tag = #{tag}
+		, progress = #{progress}
 		WHERE seq = #{seq}
 	</update>
 	

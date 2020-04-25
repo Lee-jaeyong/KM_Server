@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,22 +52,28 @@ public class Team {
 	Users teamLeader;
 
 	@OneToMany(mappedBy = "team")
+	@JsonIgnore
 	List<JoinTeam> joinPerson = new ArrayList<JoinTeam>();
 
 	@OneToMany(mappedBy = "team")
+	@JsonIgnore
 	List<PlanByUser> planByUser = new ArrayList<PlanByUser>();
 
 	@OneToMany(mappedBy = "team", targetEntity = Notice.class)
+	@JsonIgnore
 	List<Notice> notice = new ArrayList<Notice>();
 
 	@OneToMany(mappedBy = "team", targetEntity = FreeBoard.class)
+	@JsonIgnore
 	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
 
+	@JsonIgnore
 	public void addJoinPerson(JoinTeam joinTeam) {
 		this.joinPerson.add(joinTeam);
 		joinTeam.setTeam(this);
 	}
 
+	@JsonIgnore
 	public void addPlan(PlanByUser planByUser) {
 		this.planByUser.add(planByUser);
 		planByUser.setTeam(this);

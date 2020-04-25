@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ljy.book.admin.entity.enums.BooleanState;
@@ -56,22 +57,28 @@ public class Users {
 	String img;
 
 	@Enumerated(EnumType.STRING)
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.LAZY)
+	@JsonIgnore
 	Set<UserRule> userRule;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@JsonBackReference
 	List<PlanByUser> plan = new ArrayList<PlanByUser>();
 
 	@OneToMany(mappedBy = "teamLeader")
+	@JsonIgnore
 	List<Team> team = new ArrayList<Team>();
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	List<JoinTeam> joinTeam = new ArrayList<JoinTeam>();
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	List<Notice> notice = new ArrayList<Notice>();
 
 	@OneToMany(mappedBy = "user")
+	@JsonIgnore
 	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
 
 	public void addTeam(Team team) {

@@ -64,9 +64,9 @@ public class TeamService {
 
 	@Transactional
 	@Memo("해당 유저가 해당 팀에 대한 접근 권한이 있는지를 확인")
-	public TeamDTO checkAuthSuccessThenGetTeam(long seq, Users user) {
+	public TeamDTO checkAuthSuccessThenGetTeam(String code, Users user) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("seq", seq);
+		map.put("code", code);
 		map.put("id", user.getId());
 		return teamDAO.getTeam(map);
 	}
@@ -92,11 +92,8 @@ public class TeamService {
 
 	@Transactional
 	@Memo("그 팀의 리더가 맞는지 고유번호를 통해 확인")
-	public boolean checkTeamByUser(TeamDTO team, Users user) {
-		if (teamAPI.findBySeqAndTeamLeader_Id(team.getSeq(), user.getId()) == null) {
-			return false;
-		}
-		return true;
+	public Team checkTeamByUser(String code, Users user) {
+		return teamAPI.findByCodeAndTeamLeader_Id(code, user.getId());
 	}
 
 	@Transactional
@@ -127,16 +124,18 @@ public class TeamService {
 
 	@Transactional
 	@Memo("팀을 삭제")
-	public boolean delete(TeamDTO team) {
-		teamDAO.delete(team);
+	public boolean delete(Team team) {
+		TeamDTO deleteTeam = new TeamDTO();
+		deleteTeam.setSeq(team.getSeq());
+		teamDAO.delete(deleteTeam);
 		return true;
 	}
 
 	@Transactional
 	@Memo("팀의 전체 진척도를 변경")
-	public boolean updateProgress(TeamDTO team, TeamDTO teamContainProgess) {
-		team.setProgress(teamContainProgess.getProgress());
-		teamDAO.updateProgress(team);
+	public boolean updateProgress(String code, TeamDTO teamContainProgess) {
+		teamContainProgess.setCode(code);
+		teamDAO.updateProgress(teamContainProgess);
 		return true;
 	}
 

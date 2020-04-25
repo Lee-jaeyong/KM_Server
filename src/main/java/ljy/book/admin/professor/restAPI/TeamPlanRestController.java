@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.dto.validate.DateRequestDTOValid;
 import ljy.book.admin.entity.PlanByUser;
+import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.professor.requestDTO.DateRequestDTO;
@@ -82,36 +83,32 @@ public class TeamPlanRestController {
 
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
 	@GetMapping("/{code}/all")
-	public ResponseEntity<?> getAll(@PathVariable String code, @RequestBody @Valid DateRequestDTO dateRequestDTO, Errors error,
-		@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler) {
-		if (error.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
-		dateRequestValid.validate(dateRequestDTO, error);
-		if (error.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
+	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler) {
 		if (!teamService.checkTeamAuth(user, code))
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getAll(code, dateRequestDTO));
+		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getAll(code));
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}
 
 	@Memo("일정을 등록하는 메소드")
-	@PostMapping("/{team}")
-	public ResponseEntity<?> save(@PathVariable TeamDTO team, @RequestBody @Valid PlanByUserDTO planByUser, Errors error,
+	@PostMapping("/{code}")
+	public ResponseEntity<?> save(@PathVariable String code, @RequestBody @Valid PlanByUserDTO planByUser, Errors error,
 		@Current_User Users user) {
 		if (error.hasErrors()) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		if (teamService.checkAuthSuccessThenGetTeam(team.getSeq(), user) == null) {
+		TeamDTO checkTeam = teamService.checkAuthSuccessThenGetTeam(code, user);
+		if (checkTeam == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		if (planByUser.getTeamPlan() == BooleanState.YES && !teamService.checkTeamByUser(team, user)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		if (planByUser.getTeamPlan() == BooleanState.YES) {
+			Team team = teamService.checkTeamByUser(code, user);
+			if (team == null)
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		teamPlanService.save(team.getSeq(), planByUser, user);
+		teamPlanService.save(checkTeam.getSeq(), planByUser, user);
 		EntityModel<PlanByUserDTO> result = new EntityModel<PlanByUserDTO>(planByUser);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));

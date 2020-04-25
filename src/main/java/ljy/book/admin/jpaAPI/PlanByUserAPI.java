@@ -10,11 +10,15 @@ import ljy.book.admin.entity.enums.BooleanState;
 public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 	PlanByUser findBySeqAndUser_Id(long seq, String id);
 
-	Page<PlanByUser> findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState booleanState, String code,
-		String start, String end, Pageable pageable);
+	Page<PlanByUser> findByStateAndTeam_Code(BooleanState booleanState, String code, Pageable pageable);
+
+	// Page<PlanByUser>
+	// findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState
+	// booleanState, String code,
+//		String start, String end, Pageable pageable);
 
 	PlanByUser findBySeqAndState(long seq, BooleanState state);
 
-	Page<PlanByUser> findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String searchTag, String searchContent,
-		Pageable pageable);
+	Page<PlanByUser> findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state,
+		String id, String searchTag, String searchContent, Pageable pageable);
 }

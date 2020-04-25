@@ -50,7 +50,7 @@ public class TeamRestController {
 		resultMap.put("profile", ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(resultMap);
 	}
-	
+
 	@Memo("자신이 소속되어있는 모든 팀 정보 가져오기(기간이 만료되지 않은)")
 	@GetMapping
 	public ResponseEntity<?> getJoinTeam(@Current_User Users user) {
@@ -62,13 +62,14 @@ public class TeamRestController {
 	}
 
 	@Memo("팀을 수정하는 메소드")
-	@PutMapping("/{teamseq}")
-	public ResponseEntity<?> updateTeam(@PathVariable TeamDTO teamseq, @RequestBody @Valid TeamDTO team, Errors error,
+	@PutMapping("/{code}")
+	public ResponseEntity<?> updateTeam(@PathVariable String code, @RequestBody @Valid TeamDTO team, Errors error,
 		@Current_User Users user) {
 		if (error.hasErrors()) {
 			return ResponseEntity.badRequest().build();
 		}
-		if (!teamService.checkTeamByUser(teamseq, user)) {
+		Team checkTeam = teamService.checkTeamByUser(code, user);
+		if (checkTeam == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		teamService.update(team);
@@ -95,30 +96,32 @@ public class TeamRestController {
 	}
 
 	@Memo("팀을 삭제하는 메소드")
-	@DeleteMapping("/{team}")
-	public ResponseEntity<?> deleteTeam(@PathVariable TeamDTO team, @Current_User Users user) {
-		if (!teamService.checkTeamByUser(team, user)) {
+	@DeleteMapping("/{code}")
+	public ResponseEntity<?> deleteTeam(@PathVariable String code, @Current_User Users user) {
+		Team checkTeam = teamService.checkTeamByUser(code, user);
+		if (checkTeam == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
-		teamService.delete(team);
-		EntityModel<TeamDTO> result = new EntityModel<TeamDTO>(team);
+		teamService.delete(checkTeam);
+		EntityModel<Team> result = new EntityModel<Team>(checkTeam);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withRel("insert"));
 		return ResponseEntity.ok(result);
 	}
 
 	@Memo("팀의 전체 진척도를 수정하는 메소드")
-	@PatchMapping("/{team}")
-	public ResponseEntity<?> updateCounter(@PathVariable TeamDTO team, @RequestBody TeamDTO teamContainProgess,
+	@PatchMapping("/{code}")
+	public ResponseEntity<?> updateCounter(@PathVariable String code, @RequestBody TeamDTO teamContainProgess,
 		@Current_User Users user) {
-		if (!teamService.checkTeamByUser(team, user)) {
+		Team checkTeam = teamService.checkTeamByUser(code, user);
+		if (checkTeam == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		if (teamContainProgess.getProgress() > 100) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		teamService.updateProgress(team, teamContainProgess);
-		EntityModel<TeamDTO> result = new EntityModel<TeamDTO>(team);
+		teamService.updateProgress(code, teamContainProgess);
+		EntityModel<Team> result = new EntityModel<Team>(checkTeam);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		return ResponseEntity.ok(result);
 	}

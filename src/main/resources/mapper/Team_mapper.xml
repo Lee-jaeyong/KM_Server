@@ -53,7 +53,7 @@
 		)
 		)
 		)
-		AND t.seq = #{seq}
+		AND t.code = #{code}
 	</select>
 	
 	<select id="getTeamsUnfinished" parameterType="string" resultType="hashmap">
@@ -127,7 +127,7 @@
 	<update id="updateProgress" parameterType="TeamDTO">
 		UPDATE team
 		SET progress = #{progress}
-		WHERE seq = #{seq}
+		WHERE code = #{code}
 	</update>
 	
 	<update id="signUpSuccess" parameterType="long">
