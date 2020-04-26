@@ -70,7 +70,7 @@ public class Users {
 	List<Team> team = new ArrayList<Team>();
 
 	@OneToMany(mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	List<JoinTeam> joinTeam = new ArrayList<JoinTeam>();
 
 	@OneToMany(mappedBy = "user")

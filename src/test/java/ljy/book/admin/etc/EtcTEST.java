@@ -10,6 +10,25 @@ import org.junit.Test;
 public class EtcTEST {
 
 	@Test
+	public void parseDate() {
+		int year = Integer.parseInt("2020");
+		int month = Integer.parseInt("04");
+		int day = Integer.parseInt("20");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month - 1, day);
+		String[] result = new String[2];
+		String _month = month / 10 == 1 ? Integer.toString(month) : "0" + month;
+		String firstDay = Integer.toString(cal.getMinimum(Calendar.DAY_OF_MONTH));
+		firstDay = firstDay.length() == 1 ? "0" + firstDay : firstDay;
+		result[0] = year + "-" + _month + "-" + firstDay;
+		result[1] = year + "-" + _month + "-" + Integer.toString(cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		System.out.println(result[0]);
+		System.out.println(result[1]);
+	}
+	
+	@Test
+	@Ignore
 	public void fileForm() {
 		String fileName = "abc.txt";
 		int fileFormCheck = fileName.indexOf(".");

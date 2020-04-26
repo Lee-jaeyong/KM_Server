@@ -5,6 +5,8 @@ import java.util.HashMap;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import ljy.book.admin.common.object.CustomDate;
@@ -20,9 +22,14 @@ public class TeamJoinRequestService {
 
 	@Autowired
 	TeamDAO teamDAO;
-	
+
 	@Autowired
 	TeamJoinRequestAPI teamJoinRequestAPI;
+
+	@Transactional
+	public Page<JoinTeam> getSignUpList(long seq) {
+		return teamJoinRequestAPI.findByStateAndTeam_SeqAndResonIsNull(BooleanState.NO, seq, PageRequest.of(0, 100));
+	}
 
 	@Transactional
 	public boolean checkExistRequest(String code, Users user) {
@@ -51,9 +58,9 @@ public class TeamJoinRequestService {
 		teamDAO.signUpSuccess(seq);
 		return true;
 	}
-	
+
 	@Transactional
-	public boolean signUpFaildJoinTeam(long seq,String reson) {
+	public boolean signUpFaildJoinTeam(long seq, String reson) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("reson", reson);
 		map.put("seq", seq);

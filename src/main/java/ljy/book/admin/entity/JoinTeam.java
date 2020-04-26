@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,8 +36,10 @@ public class JoinTeam {
 	String reson;
 	
 	@ManyToOne
+	@JsonManagedReference
 	Users user;
 
 	@ManyToOne
+	@JsonIgnore
 	Team team;
 }

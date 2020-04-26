@@ -57,6 +57,15 @@ public class TeamPlanService {
 	}
 
 	@Transactional
+	@Memo("특정 달의 리스트 조회")
+	public Page<PlanByUser> getSearchAll(String code, String firstDate, String lastDate) {
+		System.out.println(firstDate);
+		System.out.println(lastDate);
+		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YES, code, firstDate,
+			lastDate, PageRequest.of(0, 100));
+	}
+
+	@Transactional
 	@Memo("시퀀스를 통해 권한이 있는가를 확인 후 있다면 리턴")
 	public PlanByUser checkAuthPlanSuccessThenGet(long seq, Users user) {
 		return planByUserAPI.findBySeqAndUser_Id(seq, user.getId());

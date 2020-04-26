@@ -5,7 +5,9 @@ import java.util.HashMap;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,20 @@ public class TeamRestController {
 
 	@Autowired
 	TeamJoinRequestService teamJoinRequestService;
+
+	@Memo("자신이 팀장이고, 승인요청을 명단 가져오기")
+	@GetMapping("/{code}/signUpList")
+	public ResponseEntity<?> getSignUpList(@PathVariable String code, @Current_User Users user,
+		PagedResourcesAssembler<JoinTeam> assembler) {
+		Team checkTeam = teamService.checkTeamByUser(code, user);
+		if (checkTeam == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		PagedModel<EntityModel<JoinTeam>> result = assembler.toModel(teamJoinRequestService.getSignUpList(checkTeam.getSeq()));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
 
 	@Memo("자신이 소속되어있는 모든 팀 정보 가져오기(기간이 만료된)")
 	@GetMapping("/finished")
