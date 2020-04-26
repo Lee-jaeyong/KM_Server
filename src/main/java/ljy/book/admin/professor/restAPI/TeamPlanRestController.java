@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -126,6 +127,20 @@ public class TeamPlanRestController {
 		}
 		teamPlanService.update(seq, planByUser);
 		EntityModel<PlanByUserDTO> result = new EntityModel<PlanByUserDTO>(planByUser);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("일정에 대한 진척도를 변경하는 메소드")
+	@PatchMapping("/{seq}/updateProgress")
+	public ResponseEntity<?> updateProgress(@PathVariable long seq, int progress, @Current_User Users user) {
+		PlanByUser plan = teamPlanService.checkAuthPlanSuccessThenGet(seq, user);
+		if (plan == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		teamPlanService.updateProgress(seq, progress);
+		EntityModel<Long> result = new EntityModel<Long>(seq);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);

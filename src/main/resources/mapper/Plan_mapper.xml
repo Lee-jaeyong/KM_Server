@@ -22,4 +22,10 @@
 		WHERE seq = #{seq}
 	</update>
 	
+	<update id="updateProgress" parameterType="hashmap">
+		UPDATE `plan_by_user`
+		SET progress = #{progress}
+		WHERE seq = #{seq}
+	</update>
+	
 </mapper>

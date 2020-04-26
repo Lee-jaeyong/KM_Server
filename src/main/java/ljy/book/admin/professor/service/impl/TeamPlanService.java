@@ -1,5 +1,7 @@
 package ljy.book.admin.professor.service.impl;
 
+import java.util.HashMap;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +74,9 @@ public class TeamPlanService {
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {
 		Team team = new Team();
 		team.setSeq(seq);
-		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YES).progress(planByUserDTO.getProgress()).content(planByUserDTO.getContent())
-			.end(planByUserDTO.getEnd()).start(planByUserDTO.getStart()).tag(planByUserDTO.getTag())
+		PlanByUser savePlan = PlanByUser.builder().state(BooleanState.YES).progress(planByUserDTO.getProgress())
+			.content(planByUserDTO.getContent()).end(planByUserDTO.getEnd()).start(planByUserDTO.getStart())
+			.tag(planByUserDTO.getTag())
 			.teamPlan(planByUserDTO.getTeamPlan() == null || planByUserDTO.getTeamPlan() == BooleanState.NO ? BooleanState.NO
 				: BooleanState.YES)
 			.build();
@@ -89,6 +92,16 @@ public class TeamPlanService {
 	public boolean update(long seq, PlanByUserDTO planByUserDTO) {
 		planByUserDTO.setSeq(seq);
 		planByUserDAO.update(planByUserDTO);
+		return true;
+	}
+
+	@Transactional
+	@Memo("일정에 대한 진척도를 변경")
+	public boolean updateProgress(long seq, int progress) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("seq", seq);
+		map.put("progress", progress);
+		planByUserDAO.updateProgress(map);
 		return true;
 	}
 
