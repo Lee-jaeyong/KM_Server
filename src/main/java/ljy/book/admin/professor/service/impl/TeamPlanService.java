@@ -64,10 +64,15 @@ public class TeamPlanService {
 	}
 
 	@Transactional
+	@Memo("특정 일자에 해야하는 일정 가져오기")
+	public Page<PlanByUser> getSearch(String code, String date, Pageable pageable) {
+		return planByUserAPI.findByStateAndTeam_CodeAndEndLessThanEqualAndStartGreaterThanEqual(BooleanState.YES, code, date,
+			date, pageable);
+	}
+
+	@Transactional
 	@Memo("특정 달의 리스트 조회")
 	public Page<PlanByUser> getSearchAll(String code, String firstDate, String lastDate) {
-		System.out.println(firstDate);
-		System.out.println(lastDate);
 		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqual(BooleanState.YES, code, firstDate,
 			PageRequest.of(0, 100));
 	}

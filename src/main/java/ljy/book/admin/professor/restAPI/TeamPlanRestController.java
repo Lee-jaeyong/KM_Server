@@ -97,6 +97,21 @@ public class TeamPlanRestController {
 		return ResponseEntity.ok(result);
 	}
 
+	@Memo("특정 일자에 진행중인 일정을 가져오는 메소드")
+	@GetMapping("/{code}/search")
+	public ResponseEntity<?> getSearch(@PathVariable String code, @Valid DateRequestDTO dateRequest, Errors error,
+		@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) {
+		if (error.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		if (!teamService.checkTeamAuth(user, code))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getSearch(code,
+			dateRequest.getYear() + "-" + dateRequest.getMonth() + "-" + dateRequest.getDay(), pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드(특정 달)")
 	@GetMapping("/{code}/search/all")
 	public ResponseEntity<?> getSearchAll(@PathVariable String code, @Valid DateRequestDTO dateRequest, Errors error,
