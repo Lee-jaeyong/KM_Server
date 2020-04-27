@@ -1,6 +1,7 @@
 package ljy.book.admin.professor.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -29,6 +30,12 @@ public class TeamPlanService {
 
 	@Autowired
 	PlanByUserDAO planByUserDAO;
+
+	@Transactional
+	@Memo("개인별 일정 개수 가져오기")
+	public List<HashMap<String, Object>> getPlanCountGroupByUser(String code) {
+		return planByUserDAO.chartDataByPlan(code);
+	}
 
 	@Transactional
 	@Memo("자신의 모든 일정 가져오기")
@@ -61,8 +68,8 @@ public class TeamPlanService {
 	public Page<PlanByUser> getSearchAll(String code, String firstDate, String lastDate) {
 		System.out.println(firstDate);
 		System.out.println(lastDate);
-		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqualAndEndLessThanEqual(BooleanState.YES, code, firstDate,
-			lastDate, PageRequest.of(0, 100));
+		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqual(BooleanState.YES, code, firstDate,
+			PageRequest.of(0, 100));
 	}
 
 	@Transactional

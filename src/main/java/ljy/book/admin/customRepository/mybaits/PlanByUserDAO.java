@@ -1,6 +1,7 @@
 package ljy.book.admin.customRepository.mybaits;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,4 +14,6 @@ public interface PlanByUserDAO {
 	void update(PlanByUserDTO planByUser);
 
 	void updateProgress(HashMap<String, Object> map);
+
+	List<HashMap<String, Object>> chartDataByPlan(String code);
 }

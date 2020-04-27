@@ -5,7 +5,7 @@
 
 <mapper
 	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
-	
+
 	<select id="checkTeamAuth" parameterType="hashmap" resultType="TeamDTO">
 		SELECT team.*
 		FROM team
@@ -80,7 +80,7 @@
 		)
 		)
 		)
-		AND t.start_date <= LEFT(NOW(),10) AND t.end_date <= LEFT(NOW(),10) AND t.flag = 'YES'
+		AND t.start_date <= LEFT(NOW(),10) AND t.end_date >= LEFT(NOW(),10) AND t.flag = 'YES'
 	]]>
 	</select>
 
@@ -114,8 +114,8 @@
 	
 	<update id="update" parameterType="TeamDTO">
 		UPDATE team
-		SET name = #{name}, start_Date = #{startDate}, end_Date = #{endDate}
-		WHERE seq = #{seq}
+		SET start_Date = #{startDate}, end_Date = #{endDate} , progress = #{progress}, description = #{description}
+		WHERE code = #{code}
 	</update>
 	
 	<update id="delete" parameterType="TeamDTO">

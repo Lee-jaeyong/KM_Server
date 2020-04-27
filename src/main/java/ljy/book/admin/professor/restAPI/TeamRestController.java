@@ -43,6 +43,20 @@ public class TeamRestController {
 	@Autowired
 	TeamJoinRequestService teamJoinRequestService;
 
+	@Memo("코드를 통해 팀의 상세 정보를 가져옴")
+	@GetMapping("/{code}")
+	public ResponseEntity<?> getTeamInfo(@PathVariable String code, @Current_User Users user) {
+		TeamDTO checkTeam = teamService.checkAuthSuccessThenGetTeam(code, user);
+		if (checkTeam == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		Team _checkTeam = teamService.getTeamByCode(checkTeam.getCode());
+		EntityModel<Team> result = new EntityModel<Team>(_checkTeam);
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
 	@Memo("자신이 팀장이고, 승인요청을 명단 가져오기")
 	@GetMapping("/{code}/signUpList")
 	public ResponseEntity<?> getSignUpList(@PathVariable String code, @Current_User Users user,
@@ -88,6 +102,7 @@ public class TeamRestController {
 		if (checkTeam == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
+		team.setCode(code);
 		teamService.update(team);
 		EntityModel<TeamDTO> result = new EntityModel<TeamDTO>(team);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());

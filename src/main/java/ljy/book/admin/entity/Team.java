@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import ljy.book.admin.entity.enums.BooleanState;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class Team {
 	Users teamLeader;
 
 	@OneToMany(mappedBy = "team")
-	@JsonIgnore
+	@JsonManagedReference
 	List<JoinTeam> joinPerson = new ArrayList<JoinTeam>();
 
 	@OneToMany(mappedBy = "team")

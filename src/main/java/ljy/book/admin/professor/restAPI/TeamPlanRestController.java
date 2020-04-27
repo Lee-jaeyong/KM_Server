@@ -1,6 +1,10 @@
 package ljy.book.admin.professor.restAPI;
 
+import java.util.HashMap;
+import java.util.List;
+
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +51,17 @@ public class TeamPlanRestController {
 
 	@Autowired
 	DateRequestDTOValid dateRequestValid;
+
+	@Memo("개인별 일정 개수 가져오기")
+	@GetMapping("/{code}/group-by-user")
+	public ResponseEntity<?> getChartDataGroupByUser(@PathVariable String code, @Current_User Users user) {
+		TeamDTO checkTeam = teamService.checkAuthSuccessThenGetTeam(code, user);
+		if (checkTeam == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		List<HashMap<String, Object>> chartDataList = teamPlanService.getPlanCountGroupByUser(code);
+		return ResponseEntity.ok(chartDataList);
+	}
 
 	@Memo("자신의 모든 일정 가져오기(끝난)")
 	@GetMapping("/all/finished")

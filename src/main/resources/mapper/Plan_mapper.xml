@@ -6,6 +6,13 @@
 <mapper
 	namespace="ljy.book.admin.customRepository.mybaits.PlanByUserDAO">
 	
+	<select id="chartDataByPlan" parameterType="string" resultType="hashmap">
+		SELECT users.name,COUNT(users.seq) AS 'count'
+		FROM team,plan_by_user,users
+		WHERE team.seq = plan_by_user.team_seq AND plan_by_user.user_seq = users.seq AND CODE = #{code}
+		GROUP BY user_seq
+	</select>
+	
 	<update id="delete" parameterType="long">
 		UPDATE `plan_by_user`
 		SET state = 'NO'
