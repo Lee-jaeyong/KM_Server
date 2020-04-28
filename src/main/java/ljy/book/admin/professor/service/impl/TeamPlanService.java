@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.web.multipart.MultipartFile;
 
+import ljy.book.admin.common.object.CustomDate;
 import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.customRepository.mybaits.PlanByUserDAO;
 import ljy.book.admin.entity.PlanByUser;
@@ -35,6 +37,19 @@ public class TeamPlanService {
 	@Memo("개인별 일정 개수 가져오기")
 	public List<HashMap<String, Object>> getPlanCountGroupByUser(String code) {
 		return planByUserDAO.chartDataByPlan(code);
+	}
+
+	@Transactional
+	@Memo("자신의 해야하는 일정 개수 가져오기")
+	public long getMyPlanCountUnFinished(String code, String date) {
+		return planByUserAPI.countByStateAndTeam_CodeAndEndGreaterThanEqualAndStartLessThanEqual(BooleanState.YES, code, date,
+			date);
+	}
+
+	@Transactional
+	@Memo("특정 팀의 마감된 일정의 개수를 가져오기")
+	public long getMyPlanCountFinished(String code) {
+		return planByUserAPI.countByStateAndTeam_CodeAndEndLessThan(BooleanState.YES, code, CustomDate.getNowDate());
 	}
 
 	@Transactional
@@ -64,9 +79,15 @@ public class TeamPlanService {
 	}
 
 	@Transactional
+	@Memo("특정 팀의 마감된 일정 가져오기")
+	public Page<PlanByUser> getSearchFinished(String code, Pageable pageable) {
+		return planByUserAPI.findByStateAndTeam_CodeAndEndLessThan(BooleanState.YES, code, CustomDate.getNowDate(), pageable);
+	}
+
+	@Transactional
 	@Memo("특정 일자에 해야하는 일정 가져오기")
 	public Page<PlanByUser> getSearch(String code, String date, Pageable pageable) {
-		return planByUserAPI.findByStateAndTeam_CodeAndEndLessThanEqualAndStartGreaterThanEqual(BooleanState.YES, code, date,
+		return planByUserAPI.findByStateAndTeam_CodeAndEndGreaterThanEqualAndStartLessThanEqual(BooleanState.YES, code, date,
 			date, pageable);
 	}
 

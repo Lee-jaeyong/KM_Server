@@ -97,6 +97,42 @@ public class TeamPlanRestController {
 		return ResponseEntity.ok(result);
 	}
 
+	@Memo("특정 팀의 마감된 일정을 가져오는 메소드")
+	@GetMapping("/{code}/search/finished")
+	public ResponseEntity<?> getSearchFinished(@PathVariable String code, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) {
+		if (!teamService.checkTeamAuth(user, code))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		PagedModel<EntityModel<PlanByUser>> result = assembler.toModel(teamPlanService.getSearchFinished(code, pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("특점 팀의 마감된 일정의 개수를 가져오는 메소드")
+	@GetMapping("/{code}/search/finished/count")
+	public ResponseEntity<?> getCount(@PathVariable String code, @Current_User Users user) {
+		if (!teamService.checkTeamAuth(user, code))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		EntityModel<Long> result = new EntityModel<Long>(teamPlanService.getMyPlanCountFinished(code));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("특정 일자에 진행중인 일정의 개수를 가져오는 메소드")
+	@GetMapping("/{code}/search/count")
+	public ResponseEntity<?> getCount(@PathVariable String code, @Valid DateRequestDTO dateRequest, Errors error,
+		@Current_User Users user) {
+		if (error.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		if (!teamService.checkTeamAuth(user, code))
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		EntityModel<Long> result = new EntityModel<Long>(teamPlanService.getMyPlanCountUnFinished(code,
+			dateRequest.getYear() + "-" + dateRequest.getMonth() + "-" + dateRequest.getDay()));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
 	@Memo("특정 일자에 진행중인 일정을 가져오는 메소드")
 	@GetMapping("/{code}/search")
 	public ResponseEntity<?> getSearch(@PathVariable String code, @Valid DateRequestDTO dateRequest, Errors error,
