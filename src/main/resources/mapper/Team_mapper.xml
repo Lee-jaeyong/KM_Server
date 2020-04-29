@@ -7,7 +7,7 @@
 	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
 
 	<select id="checkTeamAuth" parameterType="hashmap" resultType="TeamDTO">
-		SELECT team.*
+		SELECT DISTINCT team.*
 		FROM team
 		WHERE
 		team.code = #{code} AND 
@@ -31,7 +31,7 @@
 	</select>
 	
 	<select id="getTeam" resultType="TeamDTO" parameterType="hashmap">
-		SELECT t.*
+		SELECT DISTINCT t.*
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -58,7 +58,7 @@
 	
 	<select id="getTeamsUnfinished" parameterType="string" resultType="hashmap">
 	<![CDATA[
-		SELECT t.*
+		SELECT DISTINCT t.*
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -86,7 +86,7 @@
 
 	<select id="getTeamsFinished" parameterType="string" resultType="hashmap">
 	<![CDATA[
-		SELECT t.*
+		SELECT DISTINCT t.*
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE

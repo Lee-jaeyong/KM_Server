@@ -1,7 +1,5 @@
 package ljy.book.admin;
 
-import javax.transaction.Transactional;
-
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -25,7 +23,6 @@ public class KmReportAdminApplication implements ApplicationRunner {
 	}
 
 	@Override
-	@Transactional
 	public void run(ApplicationArguments args) throws Exception {
 	}
 
