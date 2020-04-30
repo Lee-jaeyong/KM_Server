@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,7 +37,6 @@ import ljy.book.admin.custom.anotation.Memo;
 import ljy.book.admin.entity.Notice;
 import ljy.book.admin.entity.Team;
 import ljy.book.admin.entity.Users;
-import ljy.book.admin.entity.enums.BooleanState;
 import ljy.book.admin.entity.enums.FileType;
 import ljy.book.admin.professor.requestDTO.NoticeDTO;
 import ljy.book.admin.professor.service.impl.TeamNoticeService;
@@ -93,6 +91,18 @@ public class TeamNoticeRestContoller {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		PagedModel<EntityModel<Notice>> result = assembler.toModel(noticeService.getAll(code, pageable));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/{code}/count")
+	@Memo("팀의 모든 공지사항 갯수를 가져오는 메소드 ")
+	public ResponseEntity<?> getCount(@PathVariable String code, @Current_User Users user) {
+		if (!teamService.checkTeamAuth(user, code)) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		EntityModel<Long> result = new EntityModel<Long>(noticeService.getCount(code));
+		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}

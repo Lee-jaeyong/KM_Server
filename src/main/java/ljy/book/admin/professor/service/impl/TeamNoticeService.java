@@ -54,6 +54,12 @@ public class TeamNoticeService {
 	}
 
 	@Transactional
+	@Memo("해당 팀의 활성화된 모든 공지사항의 갯수를 가져옴")
+	public long getCount(String code) {
+		return noticeAPI.countByTeam_CodeAndState(code, BooleanState.YES);
+	}
+
+	@Transactional
 	@Memo("해당 팀의 공지사항을 등록")
 	public Notice save(NoticeDTO noticeDTO, Team team, Users user) {
 		Users saveUser = new Users();

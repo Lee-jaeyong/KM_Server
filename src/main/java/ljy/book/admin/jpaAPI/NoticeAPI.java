@@ -12,5 +12,7 @@ public interface NoticeAPI extends JpaRepository<Notice, Long> {
 
 	Page<Notice> findByTeam_CodeAndState(String code, BooleanState booleanState, Pageable pageable);
 
+	long countByTeam_CodeAndState(String code, BooleanState booleanState);
+
 	Notice findBySeqAndState(long seq, BooleanState booleanState);
 }

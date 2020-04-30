@@ -48,7 +48,7 @@ public class Notice {
 	BooleanState state;
 
 	@ManyToOne
-	@JsonIgnore
+	@JsonManagedReference
 	Users user;
 
 	@ManyToOne

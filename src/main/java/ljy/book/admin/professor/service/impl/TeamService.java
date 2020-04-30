@@ -111,7 +111,7 @@ public class TeamService {
 		saveTeam.setDescription(team.getDescription());
 		saveTeam.setStartDate(team.getStartDate());
 		saveTeam.setEndDate(team.getEndDate());
-		saveTeam.setProgress((byte) 0);
+		saveTeam.setProgress(team.getProgress());
 		saveTeam.setFlag(BooleanState.YES);
 		Users belongUser = new Users();
 		belongUser.setSeq(user.getSeq());

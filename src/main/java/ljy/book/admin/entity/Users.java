@@ -74,7 +74,7 @@ public class Users {
 	List<JoinTeam> joinTeam = new ArrayList<JoinTeam>();
 
 	@OneToMany(mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	List<Notice> notice = new ArrayList<Notice>();
 
 	@OneToMany(mappedBy = "user")
