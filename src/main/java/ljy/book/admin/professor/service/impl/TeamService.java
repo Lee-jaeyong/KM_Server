@@ -6,6 +6,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class TeamService {
 
 	@Transactional
 	@Memo("팀 코드를 통해 해당 유저가 접근 권한이 있는가를 판단함")
+	@Cacheable(key = "#user.id.toString() + #code.toString()", value = "teamAuthByCode")
 	public boolean checkTeamAuth(Users user, String code) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("id", user.getId());
@@ -56,15 +59,10 @@ public class TeamService {
 	}
 
 	@Transactional
-	@Memo("만료된 팀을 가져옴")
-	public Page<Team> getTeamsFinished(Users user) {
-		List<Team> result = teamDAO.getTeamsFinished(user.getId());
-		return new PageImpl<Team>(result);
-	}
-
-	@Transactional
 	@Memo("해당 유저가 해당 팀에 대한 접근 권한이 있는지를 확인")
+	@Cacheable(key = "#user.id.toString() + #code.toString()", value = "teamAuthByUserAndCode")
 	public TeamDTO checkAuthSuccessThenGetTeam(String code, Users user) {
+		System.out.println("asanksga");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("code", code);
 		map.put("id", user.getId());
@@ -72,7 +70,15 @@ public class TeamService {
 	}
 
 	@Transactional
+	@Memo("만료된 팀을 가져옴")
+	public Page<Team> getTeamsFinished(Users user) {
+		List<Team> result = teamDAO.getTeamsFinished(user.getId());
+		return new PageImpl<Team>(result);
+	}
+
+	@Transactional
 	@Memo("기간이 만료되지 않은 팀을 모두 가져옴")
+	@Cacheable(key = "#user.id", value = "team")
 	public Page<Team> getTeamsUnfinished(Users user) {
 		List<Team> result = teamDAO.getTeamsUnfinished(user.getId());
 		return new PageImpl<Team>(result);
@@ -92,12 +98,14 @@ public class TeamService {
 
 	@Transactional
 	@Memo("그 팀의 리더가 맞는지 고유번호를 통해 확인")
+	@Cacheable(key = "#user.id.toString() + #code.toString()", value = "teamLeaderCheck")
 	public Team checkTeamByUser(String code, Users user) {
 		return teamAPI.findByCodeAndTeamLeader_Id(code, user.getId());
 	}
 
 	@Transactional
 	@Memo("팀을 수정")
+	@CacheEvict(value = "teamInfo", key = "#team.code")
 	public boolean update(TeamDTO team) {
 		teamDAO.update(team);
 		return true;
@@ -105,6 +113,7 @@ public class TeamService {
 
 	@Transactional
 	@Memo("팀을 추가")
+	@CacheEvict(value = "team", allEntries = true)
 	public Team save(TeamDTO team, Users user) {
 		Team saveTeam = new Team();
 		saveTeam.setName(team.getName());
@@ -124,6 +133,7 @@ public class TeamService {
 
 	@Transactional
 	@Memo("팀을 삭제")
+	@CacheEvict(value = "team", allEntries = true)
 	public boolean delete(Team team) {
 		TeamDTO deleteTeam = new TeamDTO();
 		deleteTeam.setSeq(team.getSeq());
@@ -133,6 +143,7 @@ public class TeamService {
 
 	@Transactional
 	@Memo("팀의 전체 진척도를 변경")
+	@CacheEvict(value = "teamInfo", key = "#team.code")
 	public boolean updateProgress(String code, TeamDTO teamContainProgess) {
 		teamContainProgess.setCode(code);
 		teamDAO.updateProgress(teamContainProgess);

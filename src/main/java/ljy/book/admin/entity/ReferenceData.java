@@ -49,7 +49,7 @@ public class ReferenceData {
 	BooleanState state;
 
 	@ManyToOne
-	@JsonIgnore
+	@JsonManagedReference
 	Users user;
 
 	@ManyToOne

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -54,6 +56,7 @@ public class TeamJoinRequestService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "team", allEntries = true)
 	public boolean signUpSuccessJoinTeam(long seq) {
 		teamDAO.signUpSuccess(seq);
 		return true;

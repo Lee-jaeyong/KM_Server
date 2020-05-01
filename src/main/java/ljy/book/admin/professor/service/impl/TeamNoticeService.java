@@ -7,6 +7,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,7 @@ public class TeamNoticeService {
 
 	@Transactional
 	@Memo("해당 팀의 활성화된 모든 공지사항을 가져옴")
+	@Cacheable(key = "#code", value = "noticeList")
 	public Page<Notice> getAll(String code, Pageable pageable) {
 		return noticeAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
@@ -61,6 +64,7 @@ public class TeamNoticeService {
 
 	@Transactional
 	@Memo("해당 팀의 공지사항을 등록")
+	@CacheEvict(key = "#team.code", value = "noticeList")
 	public Notice save(NoticeDTO noticeDTO, Team team, Users user) {
 		Users saveUser = new Users();
 		saveUser.setSeq(user.getSeq());
@@ -73,6 +77,7 @@ public class TeamNoticeService {
 
 	@Transactional
 	@Memo("공지사항을 수정")
+	@CacheEvict(value = "noticeList", allEntries = true)
 	public boolean update(long seq, NoticeDTO noticeDTO) {
 		noticeDTO.setSeq(seq);
 		noticeDAO.update(noticeDTO);
@@ -87,6 +92,7 @@ public class TeamNoticeService {
 
 	@Transactional
 	@Memo("공지사항을 삭제")
+	@CacheEvict(value = "noticeList", allEntries = true)
 	public boolean delete(long seq) {
 		noticeDAO.delete(seq);
 		return true;

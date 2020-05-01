@@ -78,8 +78,12 @@ public class Users {
 	List<Notice> notice = new ArrayList<Notice>();
 
 	@OneToMany(mappedBy = "user")
-	@JsonIgnore
+	@JsonBackReference
 	List<FreeBoard> freeBoard = new ArrayList<FreeBoard>();
+
+	@OneToMany(mappedBy = "user")
+	@JsonBackReference
+	List<ReferenceData> referenceData = new ArrayList<ReferenceData>();
 
 	public void addTeam(Team team) {
 		this.team.add(team);

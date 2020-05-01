@@ -6,6 +6,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("개인별 일정 개수 가져오기")
+	@Cacheable(key = "#code", value = "groupCount")
 	public List<HashMap<String, Object>> getPlanCountGroupByUser(String code) {
 		return planByUserDAO.chartDataByPlan(code);
 	}
@@ -68,14 +71,16 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("단건 조회")
+	@Cacheable(key = "#seq", value = "planInfo")
 	public PlanByUser getOne(long seq) {
 		return planByUserAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
 	@Transactional
 	@Memo("리스트 조회")
+	@Cacheable(key = "#code", value = "planList")
 	public Page<PlanByUser> getAll(String code) {
-		return planByUserAPI.findByStateAndTeam_Code(BooleanState.YES, code, PageRequest.of(0, 100));
+		return planByUserAPI.findByStateAndTeam_Code(BooleanState.YES, code, PageRequest.of(0, 300));
 	}
 
 	@Transactional
@@ -93,6 +98,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("특정 달의 리스트 조회")
+	@Cacheable(key = "#code.toString() + #firstDate.toString() + #lastDate.toString()", value = "searchPlan")
 	public Page<PlanByUser> getSearchAll(String code, String firstDate, String lastDate) {
 		return planByUserAPI.findByStateAndTeam_CodeAndStartGreaterThanEqual(BooleanState.YES, code, firstDate,
 			PageRequest.of(0, 100));
@@ -106,6 +112,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("삭제")
+	@CacheEvict(value = { "searchPlan", "planList", "planInfo", "groupCount" }, allEntries = true)
 	public boolean delete(long seq) {
 		planByUserDAO.delete(seq);
 		return true;
@@ -113,6 +120,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("추가")
+	@CacheEvict(value = { "searchPlan", "planList", "planInfo", "groupCount" }, allEntries = true)
 	public PlanByUser save(long seq, PlanByUserDTO planByUserDTO, Users user) {
 		Team team = new Team();
 		team.setSeq(seq);
@@ -131,6 +139,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("수정")
+	@CacheEvict(value = { "searchPlan", "planList", "planInfo", "groupCount" }, allEntries = true)
 	public boolean update(long seq, PlanByUserDTO planByUserDTO) {
 		planByUserDTO.setSeq(seq);
 		planByUserDAO.update(planByUserDTO);
@@ -139,6 +148,7 @@ public class TeamPlanService {
 
 	@Transactional
 	@Memo("일정에 대한 진척도를 변경")
+	@CacheEvict(value = { "searchPlan", "planList", "planInfo", "groupCount" }, allEntries = true)
 	public boolean updateProgress(long seq, int progress) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("seq", seq);

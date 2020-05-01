@@ -1,10 +1,14 @@
 package ljy.book.admin.professor.restAPI;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import ljy.book.admin.common.object.CustomFileUpload;
 import ljy.book.admin.custom.anotation.Memo;
-import ljy.book.admin.entity.FreeBoard;
 import ljy.book.admin.entity.ReferenceData;
 import ljy.book.admin.entity.Users;
 import ljy.book.admin.entity.enums.FileType;
@@ -60,10 +63,24 @@ public class TeamReferenceDataRestController {
 		if (!teamService.checkTeamAuth(user, checkBoard.getTeam().getCode())) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
 		EntityModel<ReferenceData> result = new EntityModel<ReferenceData>(checkBoard);
+		ArrayList<byte[]> imgByte = new ArrayList<byte[]>();
+		checkBoard.getFileList().forEach(c -> {
+			if (c.getType() == FileType.IMG) {
+				try {
+					InputStream in = teamReferenceDataService.fileDownload(seq, c.getName()).getInputStream();
+					imgByte.add(IOUtils.toByteArray(in));
+				} catch (Exception e) {
+				}
+			}
+		});
+		;
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
-		return ResponseEntity.ok(result);
+		jsonResult.put("data", result);
+		jsonResult.put("image", imgByte);
+		return ResponseEntity.ok(jsonResult);
 	}
 
 	@GetMapping("/{code}/all")

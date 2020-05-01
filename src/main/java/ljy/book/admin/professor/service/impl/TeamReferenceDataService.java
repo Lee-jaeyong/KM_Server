@@ -7,6 +7,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,10 +53,12 @@ public class TeamReferenceDataService {
 		return referenceDataAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
+	@Cacheable(key = "#code", value = "referenceDataList")
 	public Page<ReferenceData> getList(String code, Pageable pageable) {
 		return referenceDataAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
 
+	@CacheEvict(key = "#team.code", value = "noticeList")
 	public ReferenceData save(ReferenceDataDTO freeBoard, TeamDTO team, Users user) {
 		Users saveUser = new Users();
 		saveUser.setSeq(user.getSeq());
@@ -65,11 +69,13 @@ public class TeamReferenceDataService {
 		return referenceDataAPI.save(saveBoard);
 	}
 
+	@CacheEvict(value = "noticeList", allEntries = true)
 	public boolean update(ReferenceDataDTO referenceData) {
 		referenceDataDAO.update(referenceData);
 		return true;
 	}
 
+	@CacheEvict(value = "noticeList", allEntries = true)
 	public boolean delete(long seq) {
 		referenceDataDAO.delete(seq);
 		return true;

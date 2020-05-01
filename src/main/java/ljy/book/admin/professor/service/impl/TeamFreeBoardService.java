@@ -7,6 +7,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,10 +48,12 @@ public class TeamFreeBoardService {
 		return freeBoardAPI.findBySeqAndState(seq, BooleanState.YES);
 	}
 
+	@Cacheable(key = "#code", value = "freeBoardList")
 	public Page<FreeBoard> getList(String code, Pageable pageable) {
 		return freeBoardAPI.findByTeam_CodeAndState(code, BooleanState.YES, pageable);
 	}
 
+	@CacheEvict(key = "#team.code", value = "freeBoardList")
 	public FreeBoard save(FreeBoardDTO freeBoard, TeamDTO team, Users user) {
 		Users saveUser = new Users();
 		saveUser.setSeq(user.getSeq());
@@ -60,11 +64,13 @@ public class TeamFreeBoardService {
 		return freeBoardAPI.save(saveBoard);
 	}
 
+	@CacheEvict(value = "freeBoardList", allEntries = true)
 	public boolean update(FreeBoardDTO freeBoard) {
 		freeBoardDAO.update(freeBoard);
 		return true;
 	}
 
+	@CacheEvict(value = "freeBoardList", allEntries = true)
 	public boolean delete(long seq) {
 		freeBoardDAO.delete(seq);
 		return true;

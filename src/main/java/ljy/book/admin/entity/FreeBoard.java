@@ -48,7 +48,7 @@ public class FreeBoard {
 	BooleanState state;
 
 	@ManyToOne
-	@JsonIgnore
+	@JsonManagedReference
 	Users user;
 
 	@ManyToOne
