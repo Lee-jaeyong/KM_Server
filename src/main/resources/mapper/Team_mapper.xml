@@ -4,7 +4,42 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ljy.book.admin.customRepository.mybaits.TeamDAO">
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.TeamDAO">
+
+	<resultMap id="teamResult" type="Team">
+	  <association property="teamLeader" column="seq" javaType="Users" select="selectTeamLeader"/>
+	</resultMap>
+
+	<select id="selectTeamLeader" resultType="Users">
+		SELECT u.name,u.id,u.email
+		FROM users u
+		WHERE u.seq = #{seq}
+	</select>
+
+	<select id="checkTeamAuthBool" parameterType="hashmap" resultType="boolean">
+		SELECT IF(COUNT(team.seq) >= 1,'true','false')
+		FROM team
+		WHERE
+		team.code = #{code} AND 
+		(
+			team.team_leader_seq = (
+						SELECT seq
+						FROM users
+						WHERE id = #{id}
+			)
+			OR
+			team.seq IN (
+				SELECT team_seq
+				FROM join_team
+				WHERE state = 'YES' AND user_seq IN (
+									SELECT seq
+									FROM users
+									WHERE id = #{id}
+				)
+			)
+		)
+	</select>
+
 
 	<select id="checkTeamAuth" parameterType="hashmap" resultType="TeamDTO">
 		SELECT DISTINCT team.*
@@ -29,7 +64,7 @@
 			)
 		)
 	</select>
-	
+
 	<select id="getTeam" resultType="TeamDTO" parameterType="hashmap">
 		SELECT DISTINCT t.*
 		FROM team t
@@ -56,9 +91,9 @@
 		AND t.code = #{code}
 	</select>
 	
-	<select id="getTeamsUnfinished" parameterType="string" resultType="hashmap">
+	<select id="getTeamsUnfinished" parameterType="string" resultMap="teamResult">
 	<![CDATA[
-		SELECT DISTINCT t.*
+		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.progress,t.start_date as "startDate", t.team_leader_seq seq
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -84,9 +119,9 @@
 	]]>
 	</select>
 
-	<select id="getTeamsFinished" parameterType="string" resultType="hashmap">
+	<select id="getTeamsFinished" parameterType="string" resultMap="teamResult">
 	<![CDATA[
-		SELECT DISTINCT t.*
+		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.progress,t.start_date as "startDate", t.team_leader_seq seq
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -112,19 +147,19 @@
 	]]>
 	</select>
 	
-	<update id="update" parameterType="TeamDTO">
+	<update id="update" parameterType="Team">
 		UPDATE team
 		SET start_Date = #{startDate}, end_Date = #{endDate} , progress = #{progress}, description = #{description}
 		WHERE code = #{code}
 	</update>
 	
-	<update id="delete" parameterType="TeamDTO">
+	<update id="delete" parameterType="string">
 		UPDATE team
 		SET flag = 'NO'
-		WHERE seq = #{seq}
+		WHERE code = #{code}
 	</update>
 	
-	<update id="updateProgress" parameterType="TeamDTO">
+	<update id="updateProgress" parameterType="Team">
 		UPDATE team
 		SET progress = #{progress}
 		WHERE code = #{code}

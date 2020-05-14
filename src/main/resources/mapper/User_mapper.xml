@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ljy.book.admin.customRepository.mybaits.UserDAO">
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.UserDAO">
 	<update id="update" parameterType="UserDTO">
 		UPDATE `users`
 		SET NAME = #{name}, img = #{img}, email = #{email}

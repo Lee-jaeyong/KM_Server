@@ -4,9 +4,9 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ljy.book.admin.customRepository.mybaits.ReferenceDataDAO">
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.ReferenceDataDAO">
 
-	<update id="update" parameterType="ReferenceDataDTO">
+	<update id="update" parameterType="ReferenceData">
 		UPDATE `reference_data`
 		SET
 		content = #{content},

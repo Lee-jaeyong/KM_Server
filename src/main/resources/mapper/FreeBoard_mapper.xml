@@ -4,9 +4,9 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ljy.book.admin.customRepository.mybaits.FreeBoardDAO">
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.FreeBoardDAO">
 
-	<update id="update" parameterType="FreeBoardDTO">
+	<update id="update" parameterType="FreeBoard">
 		UPDATE `free_board`
 		SET content
 		= #{content},

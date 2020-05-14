@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ljy.book.admin.customRepository.mybaits.PlanByUserDAO">
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.PlanByUserDAO">
 	
 	<select id="chartDataByPlan" parameterType="string" resultType="hashmap">
 		SELECT users.name,COUNT(users.seq) AS 'count'
@@ -19,7 +19,7 @@
 		WHERE seq = #{seq}
 	</update>
 
-	<update id="update" parameterType="PlanByUserDTO">
+	<update id="update" parameterType="PlanByUser">
 		UPDATE `plan_by_user`
 		SET content = #{content}
 		,END = #{end}

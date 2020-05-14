@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <wiringPi.h>
+//600 1500 2100
+int main(){
+	const int servo_pin = 1;
+	wiringPiSetup();
+
+	pinMode(servo_pin,PWM_OUTPUT);
+
+	pwmSetClock(19);
+	pwmSetMode(PWM_MODE_MS);
+
+	pwmSetRange(20000);
+
+	while(1){
+		char flag = getchar();
+		if(flag == 'q')
+			pwmWrite(servo_pin,600);
+		else if(flag == 'w')
+			pwmWrite(servo_pin,1500);
+		else if(flag == 'e')
+			pwmWrite(servo_pin,2100);
+	}	
+}
