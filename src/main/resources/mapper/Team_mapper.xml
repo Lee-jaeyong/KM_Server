@@ -93,7 +93,7 @@
 	
 	<select id="getTeamsUnfinished" parameterType="string" resultMap="teamResult">
 	<![CDATA[
-		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.progress,t.start_date as "startDate", t.team_leader_seq seq
+		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.start_date as "startDate", t.team_leader_seq seq
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -121,7 +121,7 @@
 
 	<select id="getTeamsFinished" parameterType="string" resultMap="teamResult">
 	<![CDATA[
-		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.progress,t.start_date as "startDate", t.team_leader_seq seq
+		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.start_date as "startDate", t.team_leader_seq seq
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -149,19 +149,13 @@
 	
 	<update id="update" parameterType="Team">
 		UPDATE team
-		SET start_Date = #{startDate}, end_Date = #{endDate} , progress = #{progress}, description = #{description}
+		SET start_Date = #{startDate}, end_Date = #{endDate} , description = #{description}
 		WHERE code = #{code}
 	</update>
 	
 	<update id="delete" parameterType="string">
 		UPDATE team
 		SET flag = 'NO'
-		WHERE code = #{code}
-	</update>
-	
-	<update id="updateProgress" parameterType="Team">
-		UPDATE team
-		SET progress = #{progress}
 		WHERE code = #{code}
 	</update>
 	

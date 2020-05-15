@@ -45,23 +45,15 @@ public class TeamDTO {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	String description;
 
-	byte progress;
-
 	public Team parseThis2Team(Users user) {
 		return Team.builder().name(this.name).code(this.code).startDate(CustomDate.LocalDate2Date(this.startDate))
-			.progress(this.progress).endDate(CustomDate.LocalDate2Date(this.endDate)).description(this.description)
-			.teamLeader(user).flag(BooleanState.YES).build();
+			.endDate(CustomDate.LocalDate2Date(this.endDate)).description(this.description).teamLeader(user)
+			.flag(BooleanState.YES).build();
 	}
 
 	public void isAfter() throws CheckInputValidException {
 		if (this.startDate.isAfter(this.endDate)) {
 			throw new CheckInputValidException("시작일은 종료일보다 작아야합니다.");
-		}
-	}
-
-	public void checkProgress() throws CheckInputValidException {
-		if (this.progress > 100 || this.progress < 0) {
-			throw new CheckInputValidException("진척도는 0 이상 100 이하로 입력해주세요");
 		}
 	}
 }

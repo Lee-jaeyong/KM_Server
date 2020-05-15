@@ -19,11 +19,4 @@ public class TeamOneUpdateService {
 		teamDAO.update(team);
 		return team;
 	}
-
-	@Transactional
-	public Team updateProgress(String code, byte progress) {
-		Team team = Team.builder().code(code).progress(progress).build();
-		teamDAO.updateProgress(team);
-		return team;
-	}
 }

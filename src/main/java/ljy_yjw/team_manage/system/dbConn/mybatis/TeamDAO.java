@@ -15,8 +15,6 @@ public interface TeamDAO {
 
 	void delete(String code);
 
-	void updateProgress(Team team);
-
 	void signUpSuccess(long seq);
 
 	void signUpFaild(HashMap<String, Object> map);

@@ -58,9 +58,6 @@ public class Team {
 	@Column(nullable = false)
 	String description;
 
-	@ColumnDefault("0")
-	byte progress;
-
 	@Enumerated(EnumType.STRING)
 	@JsonIgnore
 	BooleanState flag;

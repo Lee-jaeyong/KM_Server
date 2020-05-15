@@ -9,7 +9,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -133,7 +132,6 @@ public class TeamRestController {
 			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
 		team.isAfter();
-		team.checkProgress();
 		Team saveTeam = teamOneInsertService.insertTeam(team.parseThis2Team(user));
 		CustomEntityModel<Team> result = new CustomEntityModel<>(saveTeam, this, saveTeam.getCode(), Link.ALL);
 		return ResponseEntity.ok(result);
@@ -141,22 +139,10 @@ public class TeamRestController {
 
 	@Memo("팀을 수정하는 메소드")
 	@PutMapping("/{code}")
-	public ResponseEntity<?> updateTeam(@PathVariable String code, @RequestParam(required = false) Byte progress,
-		@RequestBody(required = false) @Valid TeamDTO team, Errors error, @Current_User Users user)
+	public ResponseEntity<?> updateTeam(@PathVariable String code, @RequestBody @Valid TeamDTO team, Errors error,
+		@Current_User Users user)
 		throws InputValidException, NotTeamLeaderException, OtherInputValidException, CheckInputValidException {
-		if (team == null && progress == null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
 		teamAuthService.checkTeamLeader(user, code);
-		// 팀의 진척도만 변경하는 경우
-		if (progress != null) {
-			team = new TeamDTO();
-			team.setProgress(progress);
-			team.checkProgress();
-			Team updateTeam = teamOneUpdateService.updateProgress(code, team.getProgress());
-			CustomEntityModel<Team> result = new CustomEntityModel<Team>(updateTeam, this, "", Link.NOT_INCLUDE);
-			return ResponseEntity.ok(result);
-		}
 		team.isAfter();
 		if (error.hasErrors()) {
 			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
