@@ -45,10 +45,9 @@ public class PlanReadService {
 				pageable);
 		}
 		if (code == null)
-			return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(
-				BooleanState.YES, id, search, search, pageable);
-		return planByUserAPI.findByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(
-			BooleanState.YES, id, code, search, search, pageable);
+			return planByUserAPI.findByStateAndUser_IdAndTagContainsIgnoreCaseOrderBySeq(BooleanState.YES, id, search, pageable);
+		return planByUserAPI.findByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState.YES, id, code,
+			search, pageable);
 	}
 
 	@Memo("자신의 모든 일정 개수 가져오기")
@@ -57,10 +56,9 @@ public class PlanReadService {
 			return planByUserAPI.countByStateAndUser_IdAndTeam_CodeAndEndLessThan(BooleanState.YES, id, code, new Date());
 		}
 		if (code == null)
-			return planByUserAPI.countByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(
-				BooleanState.YES, id, search, search);
-		return planByUserAPI.countByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(
-			BooleanState.YES, id, code, search, search);
+			return planByUserAPI.countByStateAndUser_IdAndTagContainsIgnoreCaseOrderBySeq(BooleanState.YES, id, search);
+		return planByUserAPI.countByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState.YES, id, code,
+			search);
 	}
 
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")

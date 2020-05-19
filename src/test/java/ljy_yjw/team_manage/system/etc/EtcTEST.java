@@ -1,38 +1,34 @@
 package ljy_yjw.team_manage.system.etc;
 
-import java.util.HashMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import ljy_yjw.team_manage.system.dbConn.mybatis.TeamDAO;
+import ljy_yjw.team_manage.system.domain.entity.Team;
+import ljy_yjw.team_manage.system.service.insert.team.TeamOneInsertService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class EtcTEST {
 
-	@Autowired
-	TeamDAO teamDAO;
+	@MockBean
+	TeamOneInsertService teamOneInsertService;
 
 	@Test
 	public void test() {
-		teamDAO.checkTeamAuthBool(new HashMap<String, Object>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put("id", "dlwodyd202");
-				put("code", "dsadsa");
-			}
-		});
-		teamDAO.checkTeamAuthBool(new HashMap<String, Object>() {
-			private static final long serialVersionUID = 1L;
-			{
-				put("id", "dlwodyd202");
-				put("code", "dsadsa");
-			}
-		});
+		Team team = mock(Team.class);
+		when(team.getName()).thenReturn("bb");
+		assertThat("bb".equals(team.getName())).isTrue();
+		List<Team> teamList = new ArrayList<Team>();
 	}
 
 }

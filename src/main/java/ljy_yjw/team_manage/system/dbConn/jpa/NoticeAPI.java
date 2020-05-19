@@ -18,7 +18,7 @@ public interface NoticeAPI extends JpaRepository<Notice, Long> {
 
 	Notice findBySeqAndUser_Id(long seq, String id);
 
-	@EntityGraph(attributePaths = { "user", "noticeFileAndImg" }, type = EntityGraphType.LOAD)
+	@EntityGraph(attributePaths = { "user" }, type = EntityGraphType.FETCH)
 	List<Notice> findByTeam_CodeAndState(String code, BooleanState booleanState, Pageable pageable);
 
 	long countByTeam_CodeAndState(String code, BooleanState booleanState);

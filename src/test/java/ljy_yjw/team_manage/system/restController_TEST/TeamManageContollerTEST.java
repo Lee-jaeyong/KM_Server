@@ -23,16 +23,15 @@ import ljy_yjw.team_manage.system.domain.dto.TeamDTO;
 public class TeamManageContollerTEST extends CommonTestConfig {
 
 	@Test
-	@Ignore
 	@Memo("팀을 등록하는 테스트")
 	public void test_10() throws Exception {
-		createUser("dlwodyd202", "a", "이재용", "wodyd202@naver.com");
-		createUser("dbswldnjs", "a", "윤지원", "wodyd202@naver.com");
+//		createUser("dlwodyd202", "a", "이재용", "wodyd202@naver.com");
+//		createUser("dbswldnjs", "a", "윤지원", "wodyd202@naver.com");
 		super.login("dlwodyd202", "a");
 		TeamDTO team = TeamDTO.builder().name("<script>alert('xss attack!!')</script>").description("").startDate(LocalDate.of(2020, 2, 11))
 			.endDate(LocalDate.of(2020, 12, 12)).build();
 		mvc.perform(post("/api/teamManage").header(AUTHRIZATION, auth).contentType(MediaType.APPLICATION_JSON)
-			.content(objMapper.writeValueAsString(team))).andExpect(status().isOk());
+			.content(objMapper.writeValueAsString(team))).andDo(print()).andExpect(status().isOk());
 	}
 
 	@Test
@@ -87,14 +86,6 @@ public class TeamManageContollerTEST extends CommonTestConfig {
 	public void test_17() throws Exception {
 		super.login("dlwodyd202", "a");
 		mvc.perform(delete("/api/teamManage/{code}", "ECCBC87E").header(AUTHRIZATION, auth)).andDo(print())
-			.andExpect(status().isOk());
-	}
-
-	@Test
-	@Memo("팀의 진척도를 변경하는 테스트")
-	public void test_18() throws Exception {
-		super.login("dlwodyd202", "a");
-		mvc.perform(put("/api/teamManage/{code}", "ECCBC87E").param("progress", "100").header(AUTHRIZATION, auth)).andDo(print())
 			.andExpect(status().isOk());
 	}
 

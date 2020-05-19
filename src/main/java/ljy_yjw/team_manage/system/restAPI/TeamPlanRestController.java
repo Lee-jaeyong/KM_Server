@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -190,30 +189,12 @@ public class TeamPlanRestController {
 		}
 		teamAuthService.checkTeamAuth(user, code);
 		planByUser.isAfter();
-		planByUser.checkProgress();
 		if (error.hasErrors()) {
 			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
 		PlanByUser savePlan = planByUserOneInsertService
 			.insertPlanByUser(planByUser.parseThis2PlanByUser(planByUser, team, user));
 		var result = new CustomEntityModel<>(savePlan, this, Long.toString(savePlan.getSeq()), Link.ALL);
-		return ResponseEntity.ok(result);
-	}
-
-	@Memo("일정의 진척도만 변경하는 메소드")
-	@PutMapping("/{seq}/progress")
-	public ResponseEntity<?> updateProgress(@PathVariable long seq, @RequestParam Byte progress, @Current_User Users user)
-		throws PlanByUserNotAuthException, CheckInputValidException, InputValidException {
-		if (progress == null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
-		CustomEntityModel<PlanByUser> result = null;
-		PlanByUserDTO planByUser = new PlanByUserDTO();
-		planByUser.setProgress(progress);
-		planByUser.checkProgress();
-		planAuthService.checkAuth(seq, user);
-		PlanByUser updateProgressPlan = planByUserOneUpdateService.updateProgress(seq, progress);
-		result = new CustomEntityModel<>(updateProgressPlan, this, Long.toString(seq), Link.ALL);
 		return ResponseEntity.ok(result);
 	}
 
@@ -225,7 +206,6 @@ public class TeamPlanRestController {
 			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
 		planByUser.isAfter();
-		planByUser.checkProgress();
 		planAuthService.checkAuth(seq, user);
 		PlanByUser updatePlan = planByUser.parseThis2PlanByUser(planByUser, null, null);
 		updatePlan.setSeq(seq);

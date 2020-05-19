@@ -4,6 +4,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javassist.NotFoundException;
@@ -24,6 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionHandler {
+
+	@org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<?> teamCodeNotFound(HttpMessageNotReadableException ex) {
+		log.error("-- teamCodeNotFound Exception!!!");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+
+	@org.springframework.web.bind.annotation.ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+	public ResponseEntity<?> teamCodeNotFound(HttpMediaTypeNotSupportedException ex) {
+		log.error("-- teamCodeNotFound Exception!!!");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
 
 	@org.springframework.web.bind.annotation.ExceptionHandler(TeamCodeNotFountException.class)
 	public ResponseEntity<?> teamCodeNotFound(TeamCodeNotFountException ex) {
@@ -115,7 +129,7 @@ public class ExceptionHandler {
 		result.add(WebMvcLinkBuilder.linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	}
-	
+
 	@org.springframework.web.bind.annotation.ExceptionHandler(FileUploadException.class)
 	public ResponseEntity<?> fileUpload(FileUploadException ex) {
 		log.error("-- CAN_NOT_PERFORM Exception!!!");

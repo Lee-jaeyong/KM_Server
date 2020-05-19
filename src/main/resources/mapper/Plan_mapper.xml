@@ -10,7 +10,7 @@
 		SELECT users.name,COUNT(users.seq) AS 'count'
 		FROM team,plan_by_user,users
 		WHERE team.seq = plan_by_user.team_seq AND plan_by_user.user_seq = users.seq AND CODE = #{code}
-		GROUP BY user_seq
+		GROUP BY users.name
 	</select>
 	
 	<update id="delete" parameterType="long">
@@ -21,17 +21,9 @@
 
 	<update id="update" parameterType="PlanByUser">
 		UPDATE `plan_by_user`
-		SET content = #{content}
-		,END = #{end}
+		SET END = #{end}
 		,START = #{start}
 		, tag = #{tag}
-		, progress = #{progress}
-		WHERE seq = #{seq}
-	</update>
-	
-	<update id="updateProgress" parameterType="hashmap">
-		UPDATE `plan_by_user`
-		SET progress = #{progress}
 		WHERE seq = #{seq}
 	</update>
 	

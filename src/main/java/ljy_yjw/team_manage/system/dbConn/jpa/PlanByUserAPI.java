@@ -21,7 +21,7 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	long countByStateAndTeam_Code(BooleanState booleanState, String code);
 
-	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
+	@EntityGraph(attributePaths = {"user","todoList"}, type = EntityGraphType.FETCH)
 	List<PlanByUser> findByStateAndTeam_CodeAndEndLessThan(BooleanState booleanState, String code, Date start, Pageable pageable);
 
 	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
@@ -50,15 +50,14 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	PlanByUser findBySeqAndState(long seq, BooleanState state);
 
-	List<PlanByUser> findByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(
-		BooleanState state, String id, String code, String searchTag, String searchContent, Pageable pageable);
+	List<PlanByUser> findByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id,
+		String code, String searchTag, Pageable pageable);
 
-	long countByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state,
-		String id, String code, String searchTag, String searchContent);
+	long countByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String code,
+		String searchTag);
 
-	List<PlanByUser> findByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state,
-		String id, String searchTag, String searchContent, Pageable pageable);
+	List<PlanByUser> findByStateAndUser_IdAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String searchTag,
+		Pageable pageable);
 
-	long countByStateAndUser_IdAndTagContainsIgnoreCaseOrContentContainsIgnoreCaseOrderBySeq(BooleanState state, String id,
-		String searchTag, String searchContent);
+	long countByStateAndUser_IdAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String searchTag);
 }

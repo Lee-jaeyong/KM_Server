@@ -1,6 +1,5 @@
 package ljy_yjw.team_manage.system.security;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import ljy_yjw.team_manage.system.dbConn.jpa.UsersAPI;
 import ljy_yjw.team_manage.system.dbConn.mybatis.UserDAO;
 import ljy_yjw.team_manage.system.domain.dto.UserDTO;
 import ljy_yjw.team_manage.system.domain.entity.Users;
-import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 import ljy_yjw.team_manage.system.domain.enums.UserRule;
 
 @Service

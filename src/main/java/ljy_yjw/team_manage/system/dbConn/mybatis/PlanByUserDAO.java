@@ -13,7 +13,5 @@ public interface PlanByUserDAO {
 
 	void update(PlanByUser planByUser);
 
-	void updateProgress(HashMap<String, Object> map);
-
 	List<HashMap<String, Object>> chartDataByPlan(String code);
 }

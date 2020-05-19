@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.ibatis.type.Alias;
+import org.hibernate.annotations.BatchSize;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -44,21 +45,26 @@ public class Notice {
 	long seq;
 
 	@Column(nullable = false)
+	@JsonInclude(value = Include.NON_NULL)
 	String title;
 
 	@Column(nullable = false)
+	@JsonInclude(value = Include.NON_NULL)
 	String content;
 
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
+	@JsonInclude(value = Include.NON_NULL)
 	Date date;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
+	@JsonInclude(value = Include.NON_NULL)
 	BooleanState state;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonManagedReference
+	@JsonInclude(value = Include.NON_NULL)
 	Users user;
 
 	@ManyToOne
