@@ -1,4 +1,4 @@
-package ljy_yjw.team_manage.system.dbConn.jpa.auth;
+package ljy_yjw.team_manage.system.dbConn.jpa;
 
 import java.util.List;
 

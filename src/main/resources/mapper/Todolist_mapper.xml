@@ -27,8 +27,8 @@
 
 	<update id="update" parameterType="TodoList">
 		UPDATE `todo_list`
-		SET tag =
-		#{tag}
+		SET title =
+		#{title}
 		WHERE seq = #{seq}
 	</update>
 

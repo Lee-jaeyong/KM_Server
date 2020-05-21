@@ -1,5 +1,6 @@
 package ljy_yjw.team_manage.system.service.delete.notice;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.transaction.Transactional;
@@ -28,7 +29,7 @@ public class NoticeOneDeleteService {
 
 	@Memo("파일 삭제")
 	@Transactional
-	public boolean fileDelete(String fileName, long seq) {
+	public boolean fileDelete(String fileName, long seq) throws IOException {
 		if (commonFileUpload.deleteFile(seq, "notice", fileName)) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("fileName", fileName);

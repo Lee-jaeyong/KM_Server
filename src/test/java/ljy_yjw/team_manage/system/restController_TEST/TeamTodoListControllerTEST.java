@@ -67,7 +67,7 @@ public class TeamTodoListControllerTEST extends CommonTestConfig {
 	public void test_14() throws Exception {
 		super.login("dlwodyd202", "a");
 		TodoListDTO todoList = new TodoListDTO();
-		todoList.setTag("테스트 todolist");
+		todoList.setTitle("테스트 todolist");
 		mvc.perform(post("/api/teamManage/todoList/{seq}", "5").contentType(MediaType.APPLICATION_JSON)
 			.content(objMapper.writeValueAsString(todoList)).header(AUTHRIZATION, auth)).andDo(print())
 			.andExpect(status().isOk());
@@ -79,7 +79,7 @@ public class TeamTodoListControllerTEST extends CommonTestConfig {
 	public void test_15() throws Exception {
 		super.login("dlwodyd202", "a");
 		TodoListDTO todoList = new TodoListDTO();
-		todoList.setTag("테스트 todolistaaaaaa");
+		todoList.setTitle("테스트 todolistaaaaaa");
 		mvc.perform(put("/api/teamManage/todoList/{seq}", "12").contentType(MediaType.APPLICATION_JSON)
 			.content(objMapper.writeValueAsString(todoList)).header(AUTHRIZATION, auth)).andDo(print())
 			.andExpect(status().isOk());

@@ -40,6 +40,10 @@ public class PlanReadService {
 
 	@Memo("자신의 모든 일정 가져오기")
 	public List<PlanByUser> getPlanByMy(String id, String search, String code, Pageable pageable, GetType type) {
+		if (search == null && code == null) {
+			return planByUserAPI.findByStateAndUser_Id(BooleanState.YES, id, pageable);
+		}
+
 		if (type == GetType.FINISHED) {
 			return planByUserAPI.findByStateAndUser_IdAndTeam_CodeAndEndLessThan(BooleanState.YES, id, code, new Date(),
 				pageable);
@@ -52,6 +56,10 @@ public class PlanReadService {
 
 	@Memo("자신의 모든 일정 개수 가져오기")
 	public long countPlanByMy(String id, String search, String code, GetType type) {
+		if (search == null && code == null) {
+			return planByUserAPI.countByStateAndUser_Id(BooleanState.YES, id);
+		}
+
 		if (type == GetType.FINISHED) {
 			return planByUserAPI.countByStateAndUser_IdAndTeam_CodeAndEndLessThan(BooleanState.YES, id, code, new Date());
 		}

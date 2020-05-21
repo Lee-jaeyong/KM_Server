@@ -17,12 +17,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TodoListDTO {
 
-	@NotNull(message = "태그를 입력해주세요.")
-	String tag;
+	@NotNull(message = "타이틀을 입력해주세요.")
+	String title;
 
 	BooleanState ing;
 
 	public TodoList parseThis2TodoList(PlanByUser plan, Users user) {
-		return TodoList.builder().user(user).ing(BooleanState.NO).state(BooleanState.YES).planByUser(plan).tag(this.tag).build();
+		return TodoList.builder().user(user).ing(BooleanState.NO).state(BooleanState.YES).planByUser(plan).title(this.title).build();
 	}
 }

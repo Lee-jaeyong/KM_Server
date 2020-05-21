@@ -2,11 +2,16 @@ package ljy_yjw.team_manage.system.restAPI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +30,7 @@ import javassist.NotFoundException;
 import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel.Link;
+import ljy_yjw.team_manage.system.dbConn.jpa.TeamJoinRequestAPI;
 import ljy_yjw.team_manage.system.domain.dto.TeamDTO;
 import ljy_yjw.team_manage.system.domain.entity.JoinTeam;
 import ljy_yjw.team_manage.system.domain.entity.Team;
@@ -40,6 +46,7 @@ import ljy_yjw.team_manage.system.exception.exceptions.team.NotTeamLeaderExcepti
 import ljy_yjw.team_manage.system.exception.exceptions.team.TeamCodeNotFountException;
 import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import ljy_yjw.team_manage.system.security.Current_User;
+import ljy_yjw.team_manage.system.security.UsersService;
 import ljy_yjw.team_manage.system.service.auth.joinTeam.JoinTeamAuthService;
 import ljy_yjw.team_manage.system.service.auth.team.TeamAuthService;
 import ljy_yjw.team_manage.system.service.delete.team.TeamOneDeleteService;
@@ -82,17 +89,45 @@ public class TeamRestController {
 	@Autowired
 	TeamOneDeleteService teamOneDeleteService;
 
+	@Autowired
+	UsersService userService;
+
 	@Memo("코드를 통해 팀의 상세 정보를 가져옴")
 	@GetMapping("/{code}")
-	public ResponseEntity<?> getTeamInfo(@PathVariable String code, @Current_User Users user) throws TeamCodeNotFountException {
+	public ResponseEntity<?> getTeamInfo(@PathVariable String code, @Current_User Users user)
+		throws TeamCodeNotFountException, IOException {
 		teamAuthService.checkTeamAuth(user, code); // 팀 코드가 존재하지 않으면 TeamCodeNotFoundException 발생
 		Team team = teamReadService.getTeamByCode(code);
+		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
+		ArrayList<byte[]> images = new ArrayList<byte[]>();
+		team.getJoinPerson().forEach(c -> {
+			if (c.getUser().getImg() == null)
+				images.add(null);
+			else {
+				InputStream in;
+				try {
+					in = userService.fileDownload(c.getUser().getSeq(), c.getUser().getImg()).getInputStream();
+					images.add(IOUtils.toByteArray(in));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		Users leader = team.getTeamLeader();
+		if (leader.getImg() != null) {
+			InputStream in = userService.fileDownload(leader.getSeq(), leader.getImg()).getInputStream();
+			images.add(IOUtils.toByteArray(in));
+		} else {
+			images.add(null);
+		}
 		Link link = Link.NOT_INCLUDE;
 		if (team.getTeamLeader().getId().equals(user.getId())) {
 			link = Link.ALL;
 		}
-		CustomEntityModel<Team> result = new CustomEntityModel<Team>(team, this, code, link);
-		return ResponseEntity.ok(result);
+		var result = new CustomEntityModel<Team>(team, this, code, link);
+		jsonResult.put("data", result);
+		jsonResult.put("images", images);
+		return ResponseEntity.ok(jsonResult);
 	}
 
 	@Memo("자신이 팀장이고, 승인요청을 명단 가져오기")
@@ -160,6 +195,21 @@ public class TeamRestController {
 		Team deleteTeam = teamOneDeleteService.deleteTeam(code);
 		CustomEntityModel<Team> result = new CustomEntityModel<Team>(deleteTeam, this, "", Link.NOT_INCLUDE);
 		return ResponseEntity.ok(result);
+	}
+
+	@Memo("팀을 탈퇴하는 메소드")
+	@DeleteMapping("/{code}/out")
+	public ResponseEntity<?> outTeam(@PathVariable String code, @Current_User Users user)
+		throws TeamCodeNotFountException, CanNotPerformException {
+		try {
+			teamAuthService.checkTeamLeader(user, code);
+			throw new CanNotPerformException("팀장은 자신의 팀을 탈퇴할 수 없습니다.");
+		} catch (NotTeamLeaderException e) {
+			teamAuthService.checkTeamAuth(user, code);
+			Team outTeam = teamOneDeleteService.outTeam(code, user.getId());
+			var result = new CustomEntityModel<>(outTeam, this, code, Link.NOT_INCLUDE);
+			return ResponseEntity.ok(result);
+		}
 	}
 
 	@Memo("코드 번호를 통해 팀의 유무를 확인 후 있다면 그 팀의 팀장에게 승인요청을 보내는 메소드")

@@ -17,7 +17,7 @@ public class CustomFileUpload {
 	@JsonIgnore
 	public static boolean fileUploadFilter(String fileName, FileType type) {
 		int fileFormCheck = fileName.indexOf(".");
-		String fileForm = fileName.substring(fileFormCheck, fileName.length());
+		String fileForm = fileName.substring(fileFormCheck, fileName.length()).toLowerCase();
 		if (type == FileType.FILE) {
 			if (fileForm.equals(".jsp") || fileForm.equals(".asp") || fileForm.equals(".html") || fileForm.equals(".cer")
 				|| fileForm.equals(".cdx") || fileForm.equals(".htm") || fileForm.equals(".php3") || fileForm.equals(".exe")

@@ -158,6 +158,13 @@
 		SET flag = 'NO'
 		WHERE code = #{code}
 	</update>
+
+	<update id="outTeam" parameterType="hashMap">
+		UPDATE join_team
+		SET state='NO', reson='탈퇴'
+		WHERE team_seq = (SELECT seq FROM team WHERE CODE = #{code})
+		AND user_seq = (SELECT seq FROM users WHERE id = #{id})
+	</update>
 	
 	<update id="signUpSuccess" parameterType="long">
 		UPDATE `join_team`

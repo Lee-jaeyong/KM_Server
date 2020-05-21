@@ -21,18 +21,18 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	long countByStateAndTeam_Code(BooleanState booleanState, String code);
 
-	@EntityGraph(attributePaths = {"user","todoList"}, type = EntityGraphType.FETCH)
+	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
 	List<PlanByUser> findByStateAndTeam_CodeAndEndLessThan(BooleanState booleanState, String code, Date start, Pageable pageable);
 
 	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
 	List<PlanByUser> findByStateAndUser_IdAndTeam_CodeAndEndLessThan(BooleanState booleanState, String id, String code,
 		Date start, Pageable pageable);
 
-	@Memo("지난 TodoList 가져오기")
+	@Memo("지난 일정 가져오기")
 	List<PlanByUser> findByStateAndTeam_CodeAndEndLessThan(BooleanState booleanState, String code, String date,
 		Pageable pageable);
 
-	@Memo("TodoList 가져오기")
+	@Memo("일정 가져오기")
 	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
 	List<PlanByUser> findByStateAndTeam_CodeAndEndGreaterThanEqualAndStartLessThanEqual(BooleanState booleanState, String code,
 		Date date1, Date date2, Pageable pageable);
@@ -52,6 +52,13 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	List<PlanByUser> findByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id,
 		String code, String searchTag, Pageable pageable);
+
+	@Memo("자신의 모든 일정 가져오기")
+	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
+	List<PlanByUser> findByStateAndUser_Id(BooleanState state, String id, Pageable pageable);
+
+	@Memo("자신의 모든 일정 개수 가져오기")
+	long countByStateAndUser_Id(BooleanState state, String id);
 
 	long countByStateAndUser_IdAndTeam_CodeAndTagContainsIgnoreCaseOrderBySeq(BooleanState state, String id, String code,
 		String searchTag);

@@ -1,7 +1,6 @@
 package ljy_yjw.team_manage.system.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,20 +55,11 @@ public class CommonFileUpload {
 		return this.customFileSave(file, uploadType, idx);
 	}
 
-	public File a() throws FileNotFoundException {
-		String resultfilePath = "\\professor\\downloadList\\classInfoExcel\\1.png";
-		File file = new File(this.fileLocation.toString() + resultfilePath);
-		if (file.exists()) {
-			System.out.println("fdsjkhfsdjkhfjskd");
-		}
-		return file;
-	}
-
-	public boolean deleteFile(long idx, String deleteType, String fileName) {
+	public boolean deleteFile(long idx, String deleteType, String fileName) throws IOException {
 		return this.customFileDelete(idx, deleteType, fileName);
 	}
 
-	public boolean customFileDelete(long seq, String deleteType, String fileName) {
+	public boolean customFileDelete(long seq, String deleteType, String fileName) throws IOException {
 		String resultfilePath = "\\" + deleteType + "\\" + seq + "\\" + fileName;
 		File deleteFile = new File(this.fileLocation.toString() + resultfilePath);
 		if (deleteFile.exists()) {

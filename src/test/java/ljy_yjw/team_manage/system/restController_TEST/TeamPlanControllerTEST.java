@@ -23,6 +23,7 @@ import ljy_yjw.team_manage.system.domain.dto.PlanByUserDTO;
 public class TeamPlanControllerTEST extends CommonTestConfig {
 
 	@Test
+	@Ignore
 	@Memo("개인별 일정의 개수를 가져오는 테스트")
 	public void test_10() throws Exception {
 		super.login("dlwodyd202", "a");
@@ -72,12 +73,11 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	}
 
 	@Test
-	@Ignore
 	@Memo("해당 팀의 일정을 가져오는 테스트")
 	public void test_15() throws Exception {
 		super.login("dlwodyd202", "a");
 		mvc.perform(
-			get("/api/teamManage/plan/{code}/all", "ECCBC87E").param("size", "10").param("page", "0").header(AUTHRIZATION, auth))
+			get("/api/teamManage/plan/{code}/all", "C81E728D").param("size", "10").param("page", "0").header(AUTHRIZATION, auth))
 			.andDo(print()).andExpect(status().isOk());
 	}
 

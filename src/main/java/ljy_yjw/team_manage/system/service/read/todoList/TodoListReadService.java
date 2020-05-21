@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ljy_yjw.team_manage.system.dbConn.jpa.auth.TodoListAPI;
+import ljy_yjw.team_manage.system.dbConn.jpa.TodoListAPI;
 import ljy_yjw.team_manage.system.domain.entity.TodoList;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 

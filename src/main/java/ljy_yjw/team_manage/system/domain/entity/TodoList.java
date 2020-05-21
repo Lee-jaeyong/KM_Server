@@ -35,7 +35,7 @@ public class TodoList {
 	long seq;
 
 	@Column(nullable = false)
-	String tag;
+	String title;
 
 	@Enumerated(EnumType.STRING)
 	@JsonIgnore

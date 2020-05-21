@@ -32,7 +32,9 @@ import ljy_yjw.team_manage.system.custom.object.CustomEntityModel.Link;
 import ljy_yjw.team_manage.system.domain.dto.PlanByUserDTO;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.entity.Team;
+import ljy_yjw.team_manage.system.domain.entity.TodoList;
 import ljy_yjw.team_manage.system.domain.entity.Users;
+import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 import ljy_yjw.team_manage.system.exception.exceptions.CheckInputValidException;
 import ljy_yjw.team_manage.system.exception.exceptions.InputValidException;
 import ljy_yjw.team_manage.system.exception.exceptions.plan.PlanByUserNotAuthException;
@@ -80,6 +82,17 @@ public class TeamPlanRestController {
 		throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
 		var result = new CollectionModel<>(planReadService.getPlanCountGroupByUser(code));
+		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
+	@Memo("자신의 모든 일정 가져오기")
+	@GetMapping("/all")
+	public ResponseEntity<?> getPlanAll(@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler,
+		Pageable pageable) {
+		List<PlanByUser> planList = planReadService.getPlanByMy(user.getId(), null, null, pageable, null);
+		long planCount = planReadService.countPlanByMy(user.getId(), null, null, null);
+		var result = assembler.toModel(new PageImpl<PlanByUser>(planList, pageable, planCount));
 		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}
@@ -170,6 +183,16 @@ public class TeamPlanRestController {
 		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, null, GetType.NON);
+		for (int i = 0; i < resultPlanList.size(); i++) {
+			List<TodoList> todoList = resultPlanList.get(i).getTodoList();
+			int todoListLenght = todoList.size();
+			for (int j = 0; j < todoListLenght; j++) {
+				if (todoList.get(j).getState() == BooleanState.NO) {
+					todoList.remove(j--);
+					todoListLenght--;
+				}
+			}
+		}
 		long totalCount = planReadService.getPlanCount(code, null, GetType.NON);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));

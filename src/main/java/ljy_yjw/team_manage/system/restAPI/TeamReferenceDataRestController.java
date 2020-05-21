@@ -173,7 +173,7 @@ public class TeamReferenceDataRestController {
 	@Memo("자유게시판 파일 삭제")
 	@PostMapping("/{seq}/fileUpload/{fileName:.+}/delete")
 	public ResponseEntity<?> fileDelete(@PathVariable long seq, @PathVariable String fileName, @Current_User Users user)
-		throws NotFoundException {
+		throws NotFoundException, IOException {
 		referenceDataAuthService.boardAuthCheck(seq, user.getId());
 		referenceDataOneDeleteService.fileDelete(fileName, seq);
 		EntityModel<Long> result = new EntityModel<Long>(seq);

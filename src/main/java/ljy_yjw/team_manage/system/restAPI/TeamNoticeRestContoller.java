@@ -173,7 +173,8 @@ public class TeamNoticeRestContoller {
 
 	@Memo("공지사항 파일 삭제")
 	@PostMapping("/{seq}/fileUpload/{fileName:.+}/delete")
-	public ResponseEntity<?> fileDelete(@PathVariable long seq, @PathVariable String fileName, @Current_User Users user) {
+	public ResponseEntity<?> fileDelete(@PathVariable long seq, @PathVariable String fileName, @Current_User Users user)
+		throws IOException {
 		noticeOneDeleteService.fileDelete(fileName, seq);
 		EntityModel<Long> result = new EntityModel<Long>(seq);
 		result.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
