@@ -100,26 +100,16 @@ public class TeamRestController {
 		Team team = teamReadService.getTeamByCode(code);
 		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
 		ArrayList<byte[]> images = new ArrayList<byte[]>();
-		team.getJoinPerson().forEach(c -> {
-			if (c.getUser().getImg() == null)
-				images.add(null);
-			else {
-				InputStream in;
-				try {
-					in = userService.fileDownload(c.getUser().getSeq(), c.getUser().getImg()).getInputStream();
-					images.add(IOUtils.toByteArray(in));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		List<JoinTeam> joinPerson = JoinTeam.getRealJoinPerson(team.getJoinPerson());
+		joinPerson.forEach(c -> {
+			try {
+				images.add(c.getUser().getImageByte(userService));
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		});
 		Users leader = team.getTeamLeader();
-		if (leader.getImg() != null) {
-			InputStream in = userService.fileDownload(leader.getSeq(), leader.getImg()).getInputStream();
-			images.add(IOUtils.toByteArray(in));
-		} else {
-			images.add(null);
-		}
+		images.add(leader.getImageByte(userService));
 		Link link = Link.NOT_INCLUDE;
 		if (team.getTeamLeader().getId().equals(user.getId())) {
 			link = Link.ALL;

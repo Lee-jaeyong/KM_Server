@@ -1,5 +1,7 @@
 package ljy_yjw.team_manage.system.domain.entity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.type.Alias;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 import ljy_yjw.team_manage.system.domain.enums.UserRule;
+import ljy_yjw.team_manage.system.security.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -112,5 +115,13 @@ public class Users {
 	public void addPlan(PlanByUser plan) {
 		this.plan.add(plan);
 		plan.setUser(this);
+	}
+
+	public byte[] getImageByte(UsersService userService) throws IOException {
+		if (this.getImg() == null) {
+			return null;
+		}
+		InputStream in = userService.fileDownload(this.getSeq(), this.getImg()).getInputStream();
+		return IOUtils.toByteArray(in);
 	}
 }

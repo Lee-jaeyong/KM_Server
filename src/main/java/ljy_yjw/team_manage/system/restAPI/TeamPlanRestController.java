@@ -170,7 +170,8 @@ public class TeamPlanRestController {
 		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @Current_User Users user,
 		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
-		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, date, GetType.NON);
+		List<PlanByUser> resultPlanList = PlanByUser.getMyPlanList(
+			PlanByUser.getPlanList_TodoListSuccess(planReadService.getPlanList(code, pageable, date, GetType.NON)), user);
 		long totalCount = planReadService.getPlanCount(code, date, GetType.NON);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));

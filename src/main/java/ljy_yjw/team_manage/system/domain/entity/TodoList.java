@@ -1,5 +1,8 @@
 package ljy_yjw.team_manage.system.domain.entity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import org.apache.ibatis.type.Alias;
-import org.junit.Ignore;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,4 +53,9 @@ public class TodoList {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	Users user;
+
+	@JsonIgnore
+	public static List<TodoList> stateYesFilter(List<TodoList> list) {
+		return list.stream().filter(c -> c.getState() == BooleanState.YES).collect(Collectors.toList());
+	}
 }

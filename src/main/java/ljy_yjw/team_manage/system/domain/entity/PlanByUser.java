@@ -3,6 +3,7 @@ package ljy_yjw.team_manage.system.domain.entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -74,8 +75,22 @@ public class PlanByUser {
 	@JsonIgnore
 	@JsonInclude(value = Include.NON_NULL)
 	Team team;
-	
+
 	@OneToMany(mappedBy = "planByUser")
 	@JsonInclude(value = Include.NON_NULL)
 	List<TodoList> todoList = new ArrayList<TodoList>();
+
+	public static List<PlanByUser> getPlanList_TodoListSuccess(List<PlanByUser> list) {
+		ArrayList<PlanByUser> result = new ArrayList<PlanByUser>();
+		list.forEach(c -> {
+			PlanByUser p = c;
+			p.setTodoList(TodoList.stateYesFilter(c.getTodoList()));
+			result.add(p);
+		});
+		return result;
+	}
+
+	public static List<PlanByUser> getMyPlanList(List<PlanByUser> list, Users user) {
+		return list.stream().filter(c -> c.getUser().getId().equals(user.getId())).collect(Collectors.toList());
+	}
 }

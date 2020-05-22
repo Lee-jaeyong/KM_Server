@@ -1,6 +1,8 @@
 package ljy_yjw.team_manage.system.domain.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,7 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.mapping.Array;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -54,4 +59,15 @@ public class JoinTeam {
 	@ManyToOne
 	@JsonBackReference
 	Team team;
+
+	@JsonIgnore
+	public static List<JoinTeam> getRealJoinPerson(List<JoinTeam> joinPerson) {
+		List<JoinTeam> returnList = new ArrayList<JoinTeam>();
+		for (int i = 0; i < joinPerson.size(); i++) {
+			JoinTeam person = joinPerson.get(i);
+			if (person.state == BooleanState.YES)
+				returnList.add(person);
+		}
+		return returnList;
+	}
 }
