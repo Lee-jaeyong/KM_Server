@@ -71,9 +71,9 @@ public class PlanByUser {
 	@JsonInclude(value = Include.NON_NULL)
 	Users user;
 
-	@ManyToOne
-	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonInclude(value = Include.NON_NULL)
+	@JsonIgnore
 	Team team;
 
 	@OneToMany(mappedBy = "planByUser")

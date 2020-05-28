@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.JoinTeamDAO">
+
+	<resultMap id="joinTeamResult" type="JoinTeam">
+	  <association property="team" column="seq" javaType="Team" select="selectTeam"/>
+	</resultMap>
+	
+	<select id="selectTeam" resultType="Team">
+		SELECT u.name,u.id,u.email
+		FROM users u
+		WHERE u.seq = #{seq}
+	</select>
+	
+	<select id="findByUser_Id" resultMap="joinTeamResult" parameterType="string">
+		SELECT j.*, j.team_seq seq
+		FROM `join_team` j, `team` t
+		WHERE j.team_seq = t.seq
+		AND j.user_seq IN (SELECT u.seq FROM users u WHERE id = #{id})
+	</select>
+	
+</mapper>

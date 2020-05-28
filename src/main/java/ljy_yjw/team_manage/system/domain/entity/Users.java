@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.type.Alias;
@@ -66,6 +67,9 @@ public class Users {
 	@Column(nullable = false)
 	String email;
 
+	@Transient
+	byte[] myImg;
+
 	@JsonIgnore
 	@Temporal(TemporalType.DATE)
 	@CreatedDate
@@ -107,16 +111,19 @@ public class Users {
 	@JsonBackReference
 	List<ReferenceData> referenceData = new ArrayList<ReferenceData>();
 
+	@JsonIgnore
 	public void addTeam(Team team) {
 		this.team.add(team);
 		team.setTeamLeader(this);
 	}
 
+	@JsonIgnore
 	public void addPlan(PlanByUser plan) {
 		this.plan.add(plan);
 		plan.setUser(this);
 	}
 
+	@JsonIgnore
 	public byte[] getImageByte(UsersService userService) throws IOException {
 		if (this.getImg() == null) {
 			return null;

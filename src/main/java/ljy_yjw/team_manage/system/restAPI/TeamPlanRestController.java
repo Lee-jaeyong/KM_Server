@@ -2,6 +2,7 @@ package ljy_yjw.team_manage.system.restAPI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +42,7 @@ import ljy_yjw.team_manage.system.exception.exceptions.plan.PlanByUserNotAuthExc
 import ljy_yjw.team_manage.system.exception.exceptions.team.TeamCodeNotFountException;
 import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import ljy_yjw.team_manage.system.security.Current_User;
+import ljy_yjw.team_manage.system.security.UsersService;
 import ljy_yjw.team_manage.system.service.auth.plan.PlanAuthService;
 import ljy_yjw.team_manage.system.service.auth.team.TeamAuthService;
 import ljy_yjw.team_manage.system.service.delete.plan.PlanByUserOneDeleteService;
@@ -54,6 +56,9 @@ import lombok.var;
 @RestController
 @RequestMapping("/api/teamManage/plan")
 public class TeamPlanRestController {
+
+	@Autowired
+	UsersService userSerivce;
 
 	@Autowired
 	TeamAuthService teamAuthService;
@@ -181,7 +186,7 @@ public class TeamPlanRestController {
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
 	@GetMapping("/{code}/all")
 	public ResponseEntity<?> getAll(@PathVariable String code, @Current_User Users user,
-		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException {
+		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException, IOException {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, null, GetType.NON);
 		for (int i = 0; i < resultPlanList.size(); i++) {
@@ -193,6 +198,12 @@ public class TeamPlanRestController {
 					todoListLenght--;
 				}
 			}
+		}
+		for (int i = 0; i < resultPlanList.size(); i++) {
+			PlanByUser updatePlan = resultPlanList.get(i);
+			Users planUser = updatePlan.getUser();
+			planUser.setMyImg(planUser.getImageByte(userSerivce));
+			updatePlan.setUser(planUser);
 		}
 		long totalCount = planReadService.getPlanCount(code, null, GetType.NON);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));

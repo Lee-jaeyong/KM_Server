@@ -41,7 +41,7 @@ public class PlanReadService {
 	@Memo("자신의 모든 일정 가져오기")
 	public List<PlanByUser> getPlanByMy(String id, String search, String code, Pageable pageable, GetType type) {
 		if (search == null && code == null) {
-			return planByUserAPI.findByStateAndUser_Id(BooleanState.YES, id, pageable);
+			return planByUserAPI.findByStateAndUser_IdOrderByTeam_CodeDesc(BooleanState.YES, id, pageable);
 		}
 
 		if (type == GetType.FINISHED) {
@@ -81,7 +81,7 @@ public class PlanReadService {
 		}
 
 		if (date == null)
-			return planByUserAPI.findByStateAndTeam_Code(BooleanState.YES, code, pageable);
+			return planByUserAPI.findByStateAndTeam_CodeOrderByUser_IdDesc(BooleanState.YES, code, pageable);
 		else {
 			return planByUserAPI.findByStateAndTeam_CodeAndEndGreaterThanEqualAndStartLessThanEqual(BooleanState.YES, code, date,
 				date, pageable);

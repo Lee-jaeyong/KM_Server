@@ -14,7 +14,7 @@ public interface TeamDAO {
 	void update(Team team);
 
 	void delete(String code);
-	
+
 	void outTeam(HashMap<String, Object> map);
 
 	void signUpSuccess(long seq);
@@ -28,6 +28,8 @@ public interface TeamDAO {
 	List<Team> getTeamsFinished(String id);
 
 	List<TeamDTO> checkTeamAuth(HashMap<String, Object> map);
+
+	List<Team> getMySignUpList(String id);
 
 	boolean checkTeamAuthBool(HashMap<String, Object> map);
 }

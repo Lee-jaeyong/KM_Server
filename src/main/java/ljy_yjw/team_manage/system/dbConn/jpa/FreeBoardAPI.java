@@ -15,7 +15,7 @@ public interface FreeBoardAPI extends JpaRepository<FreeBoard, Long> {
 	@EntityGraph(attributePaths = { "user", "fileList" }, type = EntityGraphType.FETCH)
 	FreeBoard findBySeqAndState(long seq, BooleanState state);
 
-	@EntityGraph(attributePaths = { "user" }, type = EntityGraphType.FETCH)
+	@EntityGraph(attributePaths = { "user", "fileList" }, type = EntityGraphType.FETCH)
 	List<FreeBoard> findByTeam_CodeAndState(String code, BooleanState state, Pageable pageable);
 
 	long countByTeam_CodeAndState(String code, BooleanState state);

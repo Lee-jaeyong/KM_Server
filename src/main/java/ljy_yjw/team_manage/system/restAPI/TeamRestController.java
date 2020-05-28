@@ -3,7 +3,6 @@ package ljy_yjw.team_manage.system.restAPI;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +29,7 @@ import javassist.NotFoundException;
 import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel.Link;
-import ljy_yjw.team_manage.system.dbConn.jpa.TeamJoinRequestAPI;
+import ljy_yjw.team_manage.system.dbConn.jpa.projections.MyJoinTeam;
 import ljy_yjw.team_manage.system.domain.dto.TeamDTO;
 import ljy_yjw.team_manage.system.domain.entity.JoinTeam;
 import ljy_yjw.team_manage.system.domain.entity.Team;
@@ -120,13 +119,22 @@ public class TeamRestController {
 		return ResponseEntity.ok(jsonResult);
 	}
 
+	@Memo("자신이 신청한 팀 정보 가져오기")
+	@GetMapping("/signUpList")
+	public ResponseEntity<?> getMySignUpList(@Current_User Users user) {
+		List<MyJoinTeam> joinTeamList = joinTeamReadService.getMyJoinTeam(user.getId());
+		var result = new CollectionModel<>(joinTeamList);
+		result.add(WebMvcLinkBuilder.linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
+		return ResponseEntity.ok(result);
+	}
+
 	@Memo("자신이 팀장이고, 승인요청을 명단 가져오기")
 	@GetMapping("/{code}/signUpList")
 	public ResponseEntity<?> getSignUpList(@PathVariable String code, @Current_User Users user) throws NotTeamLeaderException {
 		teamAuthService.checkTeamLeader(user, code);
-		List<CustomEntityModel<JoinTeam>> joinTeamList = joinTeamReadService.getJoinTeamList(code).stream()
-			.map(c -> new CustomEntityModel<>(c, this, Long.toString(c.getSeq()), Link.NOT_INCLUDE)).collect(Collectors.toList());
-		CollectionModel<CustomEntityModel<JoinTeam>> result = new CollectionModel<>(joinTeamList);
+		List<JoinTeam> joinTeamList = joinTeamReadService.getJoinTeamList(code).stream()
+			.filter(c -> c.getState() == BooleanState.NO && c.getReson() == null).collect(Collectors.toList());
+		var result = new CollectionModel<>(joinTeamList);
 		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}

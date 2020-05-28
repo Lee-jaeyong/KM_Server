@@ -14,7 +14,7 @@ public interface ReferenceDataAPI extends JpaRepository<ReferenceData, Long> {
 	@EntityGraph(attributePaths = { "user", "fileList" }, type = EntityGraphType.FETCH)
 	ReferenceData findBySeqAndState(long seq, BooleanState state);
 
-	@EntityGraph(attributePaths = { "user" }, type = EntityGraphType.FETCH)
+	@EntityGraph(attributePaths = { "user", "fileList" }, type = EntityGraphType.FETCH)
 	List<ReferenceData> findByTeam_CodeAndState(String code, BooleanState state, Pageable pageable);
 
 	long countByTeam_CodeAndState(String code, BooleanState state);

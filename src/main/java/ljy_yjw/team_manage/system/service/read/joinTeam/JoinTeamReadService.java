@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.dbConn.jpa.TeamJoinRequestAPI;
+import ljy_yjw.team_manage.system.dbConn.jpa.projections.MyJoinTeam;
+import ljy_yjw.team_manage.system.dbConn.mybatis.TeamDAO;
 import ljy_yjw.team_manage.system.domain.entity.JoinTeam;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
@@ -15,6 +17,9 @@ public class JoinTeamReadService {
 
 	@Autowired
 	TeamJoinRequestAPI teamJoinRequestAPI;
+
+	@Autowired
+	TeamDAO teamDAO;
 
 	@Memo("해당 시퀀스의 승인요청을 가져오는 메소드")
 	public JoinTeam getJoinTeam(long seq) {
@@ -25,4 +30,10 @@ public class JoinTeamReadService {
 	public List<JoinTeam> getJoinTeamList(String code) {
 		return teamJoinRequestAPI.findByStateAndTeam_CodeAndResonIsNull(BooleanState.NO, code);
 	}
+
+	@Memo("자신이 신청한 팀 정보 가져오기")
+	public List<MyJoinTeam> getMyJoinTeam(String id) {
+		return teamJoinRequestAPI.findByUser_Id(id);
+	}
+
 }

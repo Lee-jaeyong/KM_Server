@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.repository.query.Param;
 
+import ljy_yjw.team_manage.system.dbConn.jpa.projections.MyJoinTeam;
 import ljy_yjw.team_manage.system.domain.entity.JoinTeam;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
 public interface TeamJoinRequestAPI extends JpaRepository<JoinTeam, Long> {
 	boolean existsByTeam_CodeAndUser_Id(String code, String id);
+
+	List<MyJoinTeam> findByUser_Id(String id);
 
 	@EntityGraph(attributePaths = "team", type = EntityGraphType.FETCH)
 	JoinTeam findBySeq(long seq);

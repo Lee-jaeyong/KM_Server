@@ -16,8 +16,8 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
 	PlanByUser findBySeq(long seq);
 
-	@EntityGraph(attributePaths = "user", type = EntityGraphType.FETCH)
-	List<PlanByUser> findByStateAndTeam_Code(BooleanState booleanState, String code, Pageable pageable);
+	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
+	List<PlanByUser> findByStateAndTeam_CodeOrderByUser_IdDesc(BooleanState booleanState, String code, Pageable pageable);
 
 	long countByStateAndTeam_Code(BooleanState booleanState, String code);
 
@@ -55,7 +55,7 @@ public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
 	@Memo("자신의 모든 일정 가져오기")
 	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
-	List<PlanByUser> findByStateAndUser_Id(BooleanState state, String id, Pageable pageable);
+	List<PlanByUser> findByStateAndUser_IdOrderByTeam_CodeDesc(BooleanState state, String id, Pageable pageable);
 
 	@Memo("자신의 모든 일정 개수 가져오기")
 	long countByStateAndUser_Id(BooleanState state, String id);

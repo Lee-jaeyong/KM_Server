@@ -9,7 +9,7 @@
 	<resultMap id="teamResult" type="Team">
 	  <association property="teamLeader" column="seq" javaType="Users" select="selectTeamLeader"/>
 	</resultMap>
-
+	
 	<select id="selectTeamLeader" resultType="Users">
 		SELECT u.name,u.id,u.email
 		FROM users u
