@@ -7,10 +7,25 @@
 	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.PlanByUserDAO">
 	
 	<select id="chartDataByPlan" parameterType="string" resultType="hashmap">
-		SELECT users.name,COUNT(users.seq) AS 'count'
+		SELECT users.id,users.name,COUNT(users.seq) AS 'count'
 		FROM team,plan_by_user,users
-		WHERE team.seq = plan_by_user.team_seq AND plan_by_user.user_seq = users.seq AND CODE = #{code}
-		GROUP BY users.name
+		WHERE team.seq = plan_by_user.team_seq AND plan_by_user.user_seq = users.seq AND CODE = #{code} AND state='YES'
+		GROUP BY users.id
+	</select>
+	
+	<select id="chartDataByTodo" parameterType="string" resultType="hashmap">
+		SELECT u.id,u.name,COUNT(l.seq) AS 'count'
+		FROM todo_list l,plan_by_user p,team t,users u
+		WHERE l.plan_by_user_seq = p.seq AND p.team_seq = t.seq AND u.seq = l.user_seq AND l.state = 'YES'
+		AND t.code = #{code}
+		GROUP BY u.id
+	</select>
+
+	<select id="chartDataBySuccessTodo" parameterType="string" resultType="hashmap">
+		SELECT users.id,users.name,COUNT(users.seq) AS 'count'
+		FROM team,plan_by_user,users,todo_list
+		WHERE team.seq = plan_by_user.team_seq AND plan_by_user.user_seq = users.seq AND plan_by_user.seq = todo_list.plan_by_user_seq AND CODE = #{code} AND todo_list.ing = 'YES' AND todo_list.state='YES'
+		GROUP BY users.id;
 	</select>
 	
 	<update id="delete" parameterType="long">

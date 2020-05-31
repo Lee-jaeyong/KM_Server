@@ -1,5 +1,6 @@
 package ljy_yjw.team_manage.system.service.read.plan;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,33 @@ public class PlanReadService {
 
 	@Memo("각각의 일정 개수를 가져오는 메소드")
 	public List<HashMap<String, Object>> getPlanCountGroupByUser(String code) {
-		return planByUserDAO.chartDataByPlan(code);
+		List<HashMap<String, Object>> result = new ArrayList<>();
+		List<HashMap<String, Object>> todoChart = planByUserDAO.chartDataByTodo(code);
+		List<HashMap<String, Object>> planChart = planByUserDAO.chartDataByPlan(code);
+		List<HashMap<String, Object>> successTodoChart = planByUserDAO.chartDataBySuccessTodo(code);
+		planChart.forEach(c -> {
+			HashMap<String, Object> user = new HashMap<>();
+			user.put("name", c.get("name").toString());
+			user.put("planCount", c.get("count").toString());
+			for (int i = 0; i < todoChart.size(); i++) {
+				if (todoChart.get(i).get("id") != null && todoChart.get(i).get("id").equals(c.get("id"))) {
+					user.put("todoCount", todoChart.get(i).get("count").toString());
+					for (int j = 0; j < successTodoChart.size(); j++) {
+						if (successTodoChart.get(j).get("id").equals(c.get("id"))) {
+							user.put("successTodoCount", successTodoChart.get(j).get("count").toString());
+							break;
+						} else {
+							user.put("successTodoCount", null);
+						}
+					}
+					break;
+				} else {
+					user.put("todoCount", null);
+				}
+			}
+			result.add(user);
+		});
+		return result;
 	}
 
 	@Memo("자신의 모든 일정 가져오기")

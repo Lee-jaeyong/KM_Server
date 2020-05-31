@@ -14,4 +14,8 @@ public interface PlanByUserDAO {
 	void update(PlanByUser planByUser);
 
 	List<HashMap<String, Object>> chartDataByPlan(String code);
+
+	List<HashMap<String, Object>> chartDataByTodo(String code);
+
+	List<HashMap<String, Object>> chartDataBySuccessTodo(String code);
 }

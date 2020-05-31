@@ -1,15 +1,12 @@
 package ljy_yjw.team_manage.system.restAPI;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageImpl;
@@ -48,6 +45,7 @@ import ljy_yjw.team_manage.system.exception.exceptions.team.NotTeamLeaderExcepti
 import ljy_yjw.team_manage.system.exception.exceptions.team.TeamCodeNotFountException;
 import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import ljy_yjw.team_manage.system.security.Current_User;
+import ljy_yjw.team_manage.system.security.UsersService;
 import ljy_yjw.team_manage.system.service.auth.notice.NoticeAuthService;
 import ljy_yjw.team_manage.system.service.auth.team.TeamAuthService;
 import ljy_yjw.team_manage.system.service.delete.notice.NoticeOneDeleteService;
@@ -59,6 +57,9 @@ import lombok.var;
 @RestController
 @RequestMapping("/api/teamManage/notice")
 public class TeamNoticeRestContoller {
+
+	@Autowired
+	UsersService userService;
 
 	@Autowired
 	TeamAuthService teamAuthService;
@@ -81,29 +82,23 @@ public class TeamNoticeRestContoller {
 	@GetMapping("/{seq}")
 	@Memo("해당 공지사항을 가져오는 메소드")
 	public ResponseEntity<?> get(@PathVariable long seq, @Current_User Users user)
-		throws NotFoundException, TeamCodeNotFountException {
+		throws NotFoundException, TeamCodeNotFountException, IOException {
 		Notice notice = noticeAuthService.getNoticeObject(seq);
 		teamAuthService.checkTeamAuth(user, notice.getTeam().getCode());
-		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
+		notice.getUser().setMyImg(notice.getUser().getImageByte(userService));
 		CustomEntityModel<Notice> result = null;
 		if (notice.getUser().getId().equals(user.getId()))
 			result = new CustomEntityModel<Notice>(notice, this, Long.toString(notice.getSeq()), Link.ALL);
 		else
 			result = new CustomEntityModel<Notice>(notice, this, Long.toString(notice.getSeq()), Link.NOT_INCLUDE);
-		ArrayList<byte[]> imgByte = new ArrayList<byte[]>();
 		notice.getNoticeFileAndImg().forEach(c -> {
-			if (c.getType() == FileType.IMG) {
-				try {
-					InputStream in = noticeReadService.fileDownload(seq, c.getName()).getInputStream();
-					imgByte.add(IOUtils.toByteArray(in));
-				} catch (Exception e) {
-				}
+			try {
+				c.getImgByte(noticeReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		});
-		;
-		jsonResult.put("data", result);
-		jsonResult.put("image", imgByte);
-		return ResponseEntity.ok(jsonResult);
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/{code}/all")
