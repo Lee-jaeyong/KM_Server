@@ -1,15 +1,11 @@
 package ljy_yjw.team_manage.system.restAPI;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageImpl;
@@ -49,6 +45,7 @@ import ljy_yjw.team_manage.system.exception.exceptions.InputValidException;
 import ljy_yjw.team_manage.system.exception.exceptions.team.TeamCodeNotFountException;
 import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import ljy_yjw.team_manage.system.security.Current_User;
+import ljy_yjw.team_manage.system.security.UsersService;
 import ljy_yjw.team_manage.system.service.auth.freeBoard.FreeBoardAuthService;
 import ljy_yjw.team_manage.system.service.auth.team.TeamAuthService;
 import ljy_yjw.team_manage.system.service.delete.freeBoard.FreeBoardOneDeleteService;
@@ -60,6 +57,9 @@ import lombok.var;
 @RestController
 @RequestMapping("/api/teamManage/freeBoard")
 public class TeamFreeBoardRestController {
+
+	@Autowired
+	UsersService userService;
 
 	@Autowired
 	TeamAuthService teamAuthService;
@@ -82,29 +82,23 @@ public class TeamFreeBoardRestController {
 	@GetMapping("/{seq}")
 	@Memo("자유게시판 단건 조회 메소드")
 	public ResponseEntity<?> getOne(@PathVariable long seq, @Current_User Users user)
-		throws NotFoundException, TeamCodeNotFountException {
+		throws NotFoundException, TeamCodeNotFountException, IOException {
 		FreeBoard freeBoard = freeBoardReadService.getFreeBoard(seq);
+		freeBoard.getUser().setMyImg(freeBoard.getUser().getImageByte(userService));
 		teamAuthService.checkTeamAuth(user, freeBoard.getTeam().getCode());
-		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
 		CustomEntityModel<FreeBoard> result = null;
 		if (freeBoard.getUser().getId().equals(user.getId()))
 			result = new CustomEntityModel<>(freeBoard, this, Long.toString(freeBoard.getSeq()), Link.ALL);
 		else
 			result = new CustomEntityModel<>(freeBoard, this, Long.toString(freeBoard.getSeq()), Link.NOT_INCLUDE);
-		ArrayList<byte[]> imgByte = new ArrayList<byte[]>();
 		freeBoard.getFileList().forEach(c -> {
-			if (c.getType() == FileType.IMG) {
-				try {
-					InputStream in = freeBoardReadService.fileDownload(seq, c.getName()).getInputStream();
-					imgByte.add(IOUtils.toByteArray(in));
-				} catch (Exception e) {
-				}
+			try {
+				c.getImgByte(freeBoardReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		});
-		;
-		jsonResult.put("data", result);
-		jsonResult.put("image", imgByte);
-		return ResponseEntity.ok(jsonResult);
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/{code}/all")
@@ -188,12 +182,40 @@ public class TeamFreeBoardRestController {
 	@Memo("자유게시판 파일 다운로드")
 	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
-		HttpServletRequest request) throws CanNotPerformException {
+		HttpServletRequest request, @Current_User Users user) throws CanNotPerformException, NotFoundException {
+		freeBoardAuthService.boardAuthCheck(seq, user.getId());
 		Resource resource = freeBoardReadService.fileDownload(seq, fileName);
 		if (resource == null) {
 			throw new CanNotPerformException("죄송합니다. 잠시 에러가 발생했습니다. 잠시후에 다시 시도해주세요.");
 		}
 		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+		}
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+	}
+
+	@Memo("자유게시판 알집 다운로드")
+	@GetMapping("/{seq}/downloadFile/all")
+	public ResponseEntity<Resource> downloadFileAll(@PathVariable long seq, @Current_User Users user, HttpServletRequest request)
+		throws NotFoundException, TeamCodeNotFountException, IOException {
+		freeBoardAuthService.boardAuthCheck(seq, user.getId());
+		FreeBoard freeboard = freeBoardReadService.getFreeBoard(seq);
+		teamAuthService.checkTeamAuth(user, freeboard.getTeam().getCode());
+		freeboard.getFileList().forEach(c -> {
+			try {
+				c.getImgByte(freeBoardReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		String contentType = "";
+		Resource resource = freeBoardReadService.zipFileDownload(freeboard.getFileList(), freeboard);
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {

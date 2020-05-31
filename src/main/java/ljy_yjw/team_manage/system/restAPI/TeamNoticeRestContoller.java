@@ -1,7 +1,6 @@
 package ljy_yjw.team_manage.system.restAPI;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -91,7 +90,7 @@ public class TeamNoticeRestContoller {
 			result = new CustomEntityModel<Notice>(notice, this, Long.toString(notice.getSeq()), Link.ALL);
 		else
 			result = new CustomEntityModel<Notice>(notice, this, Long.toString(notice.getSeq()), Link.NOT_INCLUDE);
-		notice.getNoticeFileAndImg().forEach(c -> {
+		notice.getFileList().forEach(c -> {
 			try {
 				c.getImgByte(noticeReadService);
 			} catch (IOException e) {
@@ -188,6 +187,32 @@ public class TeamNoticeRestContoller {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+		}
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+	}
+
+	@Memo("공지사항 알집 다운로드")
+	@GetMapping("/{seq}/downloadFile/all")
+	public ResponseEntity<Resource> downloadFileAll(@PathVariable long seq, @Current_User Users user, HttpServletRequest request)
+		throws NotFoundException, TeamCodeNotFountException, IOException {
+		Notice notice = noticeAuthService.getNoticeObject(seq);
+		teamAuthService.checkTeamAuth(user, notice.getTeam().getCode());
+		notice.getFileList().forEach(c -> {
+			try {
+				c.getImgByte(noticeReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		String contentType = "";
+		Resource resource = noticeReadService.zipFileDownload(notice.getFileList(), notice);
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {

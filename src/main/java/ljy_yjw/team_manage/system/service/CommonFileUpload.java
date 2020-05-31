@@ -1,12 +1,17 @@
 package ljy_yjw.team_manage.system.service;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -35,6 +40,30 @@ public class CommonFileUpload {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Memo("ZIP파일 다운로드")
+	public Resource zipFileDownload(List<HashMap<String, Object>> fileList, String zipFileName, String type, long idx)
+		throws IOException {
+		FileOutputStream zipFileOutputStream = new FileOutputStream(
+			this.fileLocation.resolve(this.fileLocation + "/" + type + "/" + idx + "\\" + zipFileName + ".zip").toString());
+		ZipOutputStream zipOutputStream = new ZipOutputStream(zipFileOutputStream);
+
+		fileList.forEach(c -> {
+			ZipEntry zipEntry = new ZipEntry(c.get("fileName").toString());
+			try {
+				zipOutputStream.putNextEntry(zipEntry);
+				zipOutputStream.write((byte[]) c.get("fileByte"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		zipOutputStream.close();
+		zipFileOutputStream.close();
+		Path filePath = this.fileLocation.resolve(this.fileLocation + "//" + type + "//" + idx + "//" + zipFileName + ".zip")
+			.normalize();
+		Resource resource = new UrlResource(filePath.toUri());
+		return resource;
 	}
 
 	public Resource loadFileAsResource(long seq, String type, String fileName) {

@@ -17,7 +17,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.ibatis.type.Alias;
-import org.hibernate.annotations.BatchSize;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -74,5 +73,5 @@ public class Notice {
 	@OneToMany(mappedBy = "notice")
 	@JsonManagedReference
 	@JsonInclude(value = Include.NON_EMPTY)
-	List<NoticeFileAndImg> noticeFileAndImg = new ArrayList<NoticeFileAndImg>();
+	List<NoticeFileAndImg> fileList = new ArrayList<NoticeFileAndImg>();
 }

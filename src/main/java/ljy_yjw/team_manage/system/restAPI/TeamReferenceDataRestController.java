@@ -1,15 +1,11 @@
 package ljy_yjw.team_manage.system.restAPI;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageImpl;
@@ -49,6 +45,7 @@ import ljy_yjw.team_manage.system.exception.exceptions.InputValidException;
 import ljy_yjw.team_manage.system.exception.exceptions.team.TeamCodeNotFountException;
 import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import ljy_yjw.team_manage.system.security.Current_User;
+import ljy_yjw.team_manage.system.security.UsersService;
 import ljy_yjw.team_manage.system.service.auth.referenceData.ReferenceDataAuthService;
 import ljy_yjw.team_manage.system.service.auth.team.TeamAuthService;
 import ljy_yjw.team_manage.system.service.delete.referenceData.ReferenceDataOneDeleteService;
@@ -60,6 +57,9 @@ import lombok.var;
 @RestController
 @RequestMapping("/api/teamManage/referenceData")
 public class TeamReferenceDataRestController {
+
+	@Autowired
+	UsersService userService;
 
 	@Autowired
 	TeamAuthService teamAuthService;
@@ -82,25 +82,23 @@ public class TeamReferenceDataRestController {
 	@GetMapping("/{seq}")
 	@Memo("참고자료 단건 조회 메소드")
 	public ResponseEntity<?> getOne(@PathVariable long seq, @Current_User Users user)
-		throws NotFoundException, TeamCodeNotFountException {
+		throws NotFoundException, TeamCodeNotFountException, IOException {
 		ReferenceData refereneceData = referenceDataReadService.getReferenceData(seq);
 		teamAuthService.checkTeamAuth(user, refereneceData.getTeam().getCode());
-		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
-		EntityModel<ReferenceData> result = new EntityModel<ReferenceData>(refereneceData);
-		ArrayList<byte[]> imgByte = new ArrayList<byte[]>();
+		refereneceData.getUser().setMyImg(refereneceData.getUser().getImageByte(userService));
+		CustomEntityModel<ReferenceData> result = null;
+		if (refereneceData.getUser().getId().equals(user.getId()))
+			result = new CustomEntityModel<>(refereneceData, this, Long.toString(refereneceData.getSeq()), Link.ALL);
+		else
+			result = new CustomEntityModel<>(refereneceData, this, Long.toString(refereneceData.getSeq()), Link.NOT_INCLUDE);
 		refereneceData.getFileList().forEach(c -> {
-			if (c.getType() == FileType.IMG) {
-				try {
-					InputStream in = referenceDataReadService.fileDownload(seq, c.getName()).getInputStream();
-					imgByte.add(IOUtils.toByteArray(in));
-				} catch (Exception e) {
-				}
+			try {
+				c.getImgByte(referenceDataReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		});
-		;
-		jsonResult.put("data", result);
-		jsonResult.put("image", imgByte);
-		return ResponseEntity.ok(jsonResult);
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/{code}/all")
@@ -154,7 +152,7 @@ public class TeamReferenceDataRestController {
 		return ResponseEntity.ok(result);
 	}
 
-	@Memo("자유게시판 파일 업로드")
+	@Memo("참고자료 파일 업로드")
 	@PostMapping("/{seq}/fileUpload/{type}")
 	public ResponseEntity<?> fileUpload(@RequestParam MultipartFile[] files, @PathVariable long seq, @PathVariable FileType type,
 		@Current_User Users user) throws FileUploadException, NotFoundException {
@@ -170,7 +168,7 @@ public class TeamReferenceDataRestController {
 		return ResponseEntity.ok(result);
 	}
 
-	@Memo("자유게시판 파일 삭제")
+	@Memo("참고자료 파일 삭제")
 	@PostMapping("/{seq}/fileUpload/{fileName:.+}/delete")
 	public ResponseEntity<?> fileDelete(@PathVariable long seq, @PathVariable String fileName, @Current_User Users user)
 		throws NotFoundException, IOException {
@@ -185,12 +183,40 @@ public class TeamReferenceDataRestController {
 	@Memo("참고자료 파일 다운로드")
 	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
-		HttpServletRequest request) throws CanNotPerformException {
+		HttpServletRequest request, @Current_User Users user) throws CanNotPerformException, NotFoundException {
+		referenceDataAuthService.boardAuthCheck(seq, user.getId());
 		Resource resource = referenceDataReadService.fileDownload(seq, fileName);
 		if (resource == null) {
 			throw new CanNotPerformException("죄송합니다. 잠시 에러가 발생했습니다. 잠시후에 다시 시도해주세요.");
 		}
 		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+		}
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+	}
+
+	@Memo("자유게시판 알집 다운로드")
+	@GetMapping("/{seq}/downloadFile/all")
+	public ResponseEntity<Resource> downloadFileAll(@PathVariable long seq, @Current_User Users user, HttpServletRequest request)
+		throws NotFoundException, TeamCodeNotFountException, IOException {
+		referenceDataAuthService.boardAuthCheck(seq, user.getId());
+		ReferenceData referenceData = referenceDataReadService.getReferenceData(seq);
+		teamAuthService.checkTeamAuth(user, referenceData.getTeam().getCode());
+		referenceData.getFileList().forEach(c -> {
+			try {
+				c.getImgByte(referenceDataReadService);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+		String contentType = "";
+		Resource resource = referenceDataReadService.zipFileDownload(referenceData.getFileList(), referenceData);
 		try {
 			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 		} catch (IOException ex) {
