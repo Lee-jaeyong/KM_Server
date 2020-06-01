@@ -10,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -41,9 +42,11 @@ public class ReferenceData {
 	long seq;
 
 	@Column(nullable = false)
+	@Lob
 	String title;
 
 	@Column(nullable = false)
+	@Lob
 	String content;
 
 	@Column(nullable = false)

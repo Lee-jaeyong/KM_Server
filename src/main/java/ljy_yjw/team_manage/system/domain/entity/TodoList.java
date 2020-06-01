@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import org.apache.ibatis.type.Alias;
@@ -37,6 +38,7 @@ public class TodoList {
 	long seq;
 
 	@Column(nullable = false)
+	@Lob
 	String title;
 
 	@Enumerated(EnumType.STRING)

@@ -96,6 +96,9 @@ public class TeamPlanRestController {
 	public ResponseEntity<?> getPlanAll(@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler,
 		Pageable pageable) {
 		List<PlanByUser> planList = planReadService.getPlanByMy(user.getId(), null, null, pageable, null);
+		for (int i = 0; i < planList.size(); i++) {
+			planList.get(i).setTodoList(TodoList.stateYesFilter(planList.get(i).getTodoList()));
+		}
 		long planCount = planReadService.countPlanByMy(user.getId(), null, null, null);
 		var result = assembler.toModel(new PageImpl<PlanByUser>(planList, pageable, planCount));
 		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
@@ -109,6 +112,9 @@ public class TeamPlanRestController {
 		throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> planByUserList = planReadService.getPlanByMy(user.getId(), search, code, pageable, GetType.FINISHED);
+		for (int i = 0; i < planByUserList.size(); i++) {
+			planByUserList.get(i).setTodoList(TodoList.stateYesFilter(planByUserList.get(i).getTodoList()));
+		}
 		long totalCount = planReadService.countPlanByMy(user.getId(), search, code, GetType.FINISHED);
 		var result = assembler.toModel(new PageImpl<>(planByUserList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
@@ -123,6 +129,9 @@ public class TeamPlanRestController {
 		if (code != null)
 			teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> planByUserList = planReadService.getPlanByMy(user.getId(), search, code, pageable, GetType.NON);
+		for (int i = 0; i < planByUserList.size(); i++) {
+			planByUserList.get(i).setTodoList(TodoList.stateYesFilter(planByUserList.get(i).getTodoList()));
+		}
 		long totalCount = planReadService.countPlanByMy(user.getId(), search, code, GetType.NON);
 		var result = assembler.toModel(new PageImpl<>(planByUserList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
@@ -132,9 +141,12 @@ public class TeamPlanRestController {
 	@Memo("일정 단건 조회")
 	@GetMapping("/{seq}")
 	public ResponseEntity<?> getOne(@PathVariable long seq, @Current_User Users user)
-		throws PlanByUserNotAuthException, NotFoundException {
-		planAuthService.checkAuth(seq, user);
+		throws PlanByUserNotAuthException, NotFoundException, ljy_yjw.team_manage.system.exception.exceptions.NotFoundException,
+		TeamCodeNotFountException, IOException {
+		planAuthService.checkPlanAuth(seq, user);
 		PlanByUser resultPlan = planReadService.getPlanByUser(seq);
+		resultPlan.setTodoList(TodoList.stateYesFilter(resultPlan.getTodoList()));
+		resultPlan.getUser().setMyImg(resultPlan.getUser().getImageByte(userSerivce));
 		CustomEntityModel<PlanByUser> result = null;
 		if (resultPlan.getUser().getId().equals(user.getId())) {
 			result = new CustomEntityModel<PlanByUser>(resultPlan, this, Long.toString(resultPlan.getSeq()), Link.ALL);
@@ -150,6 +162,9 @@ public class TeamPlanRestController {
 		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, null, GetType.FINISHED);
+		for (int i = 0; i < resultPlanList.size(); i++) {
+			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
+		}
 		long totalCount = planReadService.getPlanCount(code, null, GetType.FINISHED);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
@@ -163,6 +178,9 @@ public class TeamPlanRestController {
 		throws TeamCodeNotFountException {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, date, GetType.SEARCH);
+		for (int i = 0; i < resultPlanList.size(); i++) {
+			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
+		}
 		long totalCount = planReadService.getPlanCount(code, date, GetType.SEARCH);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
@@ -177,6 +195,9 @@ public class TeamPlanRestController {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = PlanByUser.getMyPlanList(
 			PlanByUser.getPlanList_TodoListSuccess(planReadService.getPlanList(code, pageable, date, GetType.NON)), user);
+		for (int i = 0; i < resultPlanList.size(); i++) {
+			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
+		}
 		long totalCount = planReadService.getPlanCount(code, date, GetType.NON);
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
@@ -190,14 +211,7 @@ public class TeamPlanRestController {
 		teamAuthService.checkTeamAuth(user, code);
 		List<PlanByUser> resultPlanList = planReadService.getPlanList(code, pageable, null, GetType.NON);
 		for (int i = 0; i < resultPlanList.size(); i++) {
-			List<TodoList> todoList = resultPlanList.get(i).getTodoList();
-			int todoListLenght = todoList.size();
-			for (int j = 0; j < todoListLenght; j++) {
-				if (todoList.get(j).getState() == BooleanState.NO) {
-					todoList.remove(j--);
-					todoListLenght--;
-				}
-			}
+			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
 		}
 		for (int i = 0; i < resultPlanList.size(); i++) {
 			PlanByUser updatePlan = resultPlanList.get(i);

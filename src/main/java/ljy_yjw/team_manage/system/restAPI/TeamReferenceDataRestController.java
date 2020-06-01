@@ -184,7 +184,6 @@ public class TeamReferenceDataRestController {
 	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
 		HttpServletRequest request, @Current_User Users user) throws CanNotPerformException, NotFoundException {
-		referenceDataAuthService.boardAuthCheck(seq, user.getId());
 		Resource resource = referenceDataReadService.fileDownload(seq, fileName);
 		if (resource == null) {
 			throw new CanNotPerformException("죄송합니다. 잠시 에러가 발생했습니다. 잠시후에 다시 시도해주세요.");
@@ -205,7 +204,6 @@ public class TeamReferenceDataRestController {
 	@GetMapping("/{seq}/downloadFile/all")
 	public ResponseEntity<Resource> downloadFileAll(@PathVariable long seq, @Current_User Users user, HttpServletRequest request)
 		throws NotFoundException, TeamCodeNotFountException, IOException {
-		referenceDataAuthService.boardAuthCheck(seq, user.getId());
 		ReferenceData referenceData = referenceDataReadService.getReferenceData(seq);
 		teamAuthService.checkTeamAuth(user, referenceData.getTeam().getCode());
 		referenceData.getFileList().forEach(c -> {

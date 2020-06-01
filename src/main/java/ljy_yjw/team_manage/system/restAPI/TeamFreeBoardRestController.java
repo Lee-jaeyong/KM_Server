@@ -183,7 +183,6 @@ public class TeamFreeBoardRestController {
 	@GetMapping("/{seq}/downloadFile/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable long seq, @PathVariable String fileName,
 		HttpServletRequest request, @Current_User Users user) throws CanNotPerformException, NotFoundException {
-		freeBoardAuthService.boardAuthCheck(seq, user.getId());
 		Resource resource = freeBoardReadService.fileDownload(seq, fileName);
 		if (resource == null) {
 			throw new CanNotPerformException("죄송합니다. 잠시 에러가 발생했습니다. 잠시후에 다시 시도해주세요.");
@@ -204,7 +203,6 @@ public class TeamFreeBoardRestController {
 	@GetMapping("/{seq}/downloadFile/all")
 	public ResponseEntity<Resource> downloadFileAll(@PathVariable long seq, @Current_User Users user, HttpServletRequest request)
 		throws NotFoundException, TeamCodeNotFountException, IOException {
-		freeBoardAuthService.boardAuthCheck(seq, user.getId());
 		FreeBoard freeboard = freeBoardReadService.getFreeBoard(seq);
 		teamAuthService.checkTeamAuth(user, freeboard.getTeam().getCode());
 		freeboard.getFileList().forEach(c -> {
