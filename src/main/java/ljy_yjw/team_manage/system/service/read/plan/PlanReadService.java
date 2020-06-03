@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import ljy_yjw.team_manage.system.dbConn.jpa.PlanByUserAPI;
 import ljy_yjw.team_manage.system.dbConn.mybatis.PlanByUserDAO;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
+import ljy_yjw.team_manage.system.service.CommonFileUpload;
 
 @Service
 public class PlanReadService {
@@ -24,6 +26,9 @@ public class PlanReadService {
 
 	@Autowired
 	PlanByUserDAO planByUserDAO;
+
+	@Autowired
+	CommonFileUpload commonFileUpload;
 
 	@Memo("해당 번호의 일정을 가져오는 메소드")
 	public PlanByUser getPlanByUser(long seq) throws NotFoundException {
@@ -96,6 +101,16 @@ public class PlanReadService {
 			search);
 	}
 
+	@Memo("해당 코드의 팀 일정 중 내 일정만 가져오는 메소드")
+	public List<PlanByUser> getMyPlanFromTeam(String code, String id, Pageable pageable) {
+		return planByUserAPI.findByStateAndTeam_CodeAndUser_IdOrderByUser_IdDesc(BooleanState.YES, code, id, pageable);
+	}
+
+	@Memo("해당 코드의 팀 일정 중 내 일정의 개수를 모두 가져오는 메소드")
+	public long getMyPlanCountFromTeam(String code, String id) {
+		return planByUserAPI.countByStateAndTeam_CodeAndUser_Id(BooleanState.YES, code, id);
+	}
+
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
 	public List<PlanByUser> getPlanList(String code, Pageable pageable, Date date, GetType type) {
 		if (type == GetType.SEARCH) {
@@ -130,6 +145,11 @@ public class PlanReadService {
 			return planByUserAPI.countByStateAndTeam_CodeAndEndGreaterThanEqualAndStartLessThanEqual(BooleanState.YES, code, date,
 				date);
 		}
+	}
+
+	@Memo("엑셀 양식 다운로드")
+	public Resource excelFormDown() {
+		return commonFileUpload.excelDown();
 	}
 
 	public enum GetType {

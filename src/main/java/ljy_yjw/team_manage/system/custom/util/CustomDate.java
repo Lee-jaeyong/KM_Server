@@ -17,4 +17,8 @@ public class CustomDate {
 		ZoneId defaultZoneId = ZoneId.systemDefault();
 		return Date.from(date.atStartOfDay(defaultZoneId).toInstant());
 	}
+
+	public static LocalDate dateToLocalDate(Date dateToConvert) {
+		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
 }

@@ -66,6 +66,20 @@ public class CommonFileUpload {
 		return resource;
 	}
 
+	public Resource excelDown() {
+		try {
+			Path filePath = this.fileLocation.resolve(this.fileLocation + "//excelForm.xlsx").normalize();
+			Resource resource = new UrlResource(filePath.toUri());
+			if (resource.exists()) {
+				return resource;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Resource loadFileAsResource(long seq, String type, String fileName) {
 		try {
 			Path filePath = this.fileLocation.resolve(this.fileLocation + "//" + type + "//" + seq + "//" + fileName).normalize();
@@ -74,6 +88,7 @@ public class CommonFileUpload {
 				return resource;
 			} else {
 				return null;
+				
 			}
 		} catch (Exception e) {
 			return null;

@@ -13,8 +13,15 @@ import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
 public interface PlanByUserAPI extends JpaRepository<PlanByUser, Long> {
+
 	@EntityGraph(attributePaths = { "user", "team" }, type = EntityGraphType.FETCH)
 	PlanByUser findBySeq(long seq);
+
+	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
+	List<PlanByUser> findByStateAndTeam_CodeAndUser_IdOrderByUser_IdDesc(BooleanState booleanState, String code, String id,
+		Pageable pageable);
+
+	long countByStateAndTeam_CodeAndUser_Id(BooleanState booleanState, String code, String id);
 
 	@EntityGraph(attributePaths = { "user", "todoList" }, type = EntityGraphType.FETCH)
 	List<PlanByUser> findByStateAndTeam_CodeOrderByUser_IdDesc(BooleanState booleanState, String code, Pageable pageable);

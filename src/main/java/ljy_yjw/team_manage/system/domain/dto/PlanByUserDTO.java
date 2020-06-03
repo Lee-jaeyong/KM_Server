@@ -41,13 +41,13 @@ public class PlanByUserDTO {
 
 	public PlanByUser parseThis2PlanByUser(PlanByUserDTO planByUser, Team team, Users user) {
 		return PlanByUser.builder().tag(this.tag).start(CustomDate.LocalDate2Date(this.start))
-			.end(CustomDate.LocalDate2Date(this.end)).state(BooleanState.YES).teamPlan(BooleanState.NO)
-			.team(team).user(user).build();
+			.end(CustomDate.LocalDate2Date(this.end)).state(BooleanState.YES).teamPlan(BooleanState.NO).team(team).user(user)
+			.build();
 	}
 
-	public void isAfter() throws CheckInputValidException {
+	public void isAfter(String message) throws CheckInputValidException {
 		if (this.start.isAfter(this.end)) {
-			throw new CheckInputValidException("시작일은 종료일보다 작아야합니다.");
+			throw new CheckInputValidException(message);
 		}
 	}
 }

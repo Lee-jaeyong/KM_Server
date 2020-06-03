@@ -58,8 +58,6 @@ public class JoinTeamControllerTEST extends CommonTestConfig {
 
 		TeamDTO saveTeam = new TeamDTO();
 		saveTeam.setName("자바 프로젝트");
-//		saveTeam.setStartDate("2020-04-14");
-//		saveTeam.setEndDate("2020-10-10");
 		saveTeam.setDescription("aaaaa목표");
 
 	}

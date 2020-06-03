@@ -28,7 +28,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	@Autowired
 	AuthenticationManager authenticationManager;
-
+	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.passwordEncoder(passwordEncoder).checkTokenAccess("isAuthenticated()").tokenKeyAccess("permitAll()");

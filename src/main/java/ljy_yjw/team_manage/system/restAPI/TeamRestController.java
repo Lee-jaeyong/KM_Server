@@ -3,7 +3,6 @@ package ljy_yjw.team_manage.system.restAPI;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,25 +97,24 @@ public class TeamRestController {
 		teamAuthService.checkTeamAuth(user, code); // 팀 코드가 존재하지 않으면 TeamCodeNotFoundException 발생
 		Team team = teamReadService.getTeamByCode(code);
 		HashMap<String, Object> jsonResult = new HashMap<String, Object>();
-		ArrayList<byte[]> images = new ArrayList<byte[]>();
 		List<JoinTeam> joinPerson = JoinTeam.getRealJoinPerson(team.getJoinPerson());
 		joinPerson.forEach(c -> {
 			try {
-				images.add(c.getUser().getImageByte(userService));
+				c.getUser().setMyImg(c.getUser().getImageByte(userService));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		});
 		Users leader = team.getTeamLeader();
-		images.add(leader.getImageByte(userService));
+		leader.setMyImg(leader.getImageByte(userService));
+		team.setJoinPerson(joinPerson);
+		team.setTeamLeader(leader);
 		Link link = Link.NOT_INCLUDE;
 		if (team.getTeamLeader().getId().equals(user.getId())) {
 			link = Link.ALL;
 		}
 		var result = new CustomEntityModel<Team>(team, this, code, link);
-		jsonResult.put("data", result);
-		jsonResult.put("images", images);
-		return ResponseEntity.ok(jsonResult);
+		return ResponseEntity.ok(team);
 	}
 
 	@Memo("자신이 신청한 팀 정보 가져오기")
@@ -134,6 +132,13 @@ public class TeamRestController {
 		teamAuthService.checkTeamLeader(user, code);
 		List<JoinTeam> joinTeamList = joinTeamReadService.getJoinTeamList(code).stream()
 			.filter(c -> c.getState() == BooleanState.NO && c.getReson() == null).collect(Collectors.toList());
+		joinTeamList.forEach(c -> {
+			try {
+				c.getUser().setMyImg(c.getUser().getImageByte(userService));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		var result = new CollectionModel<>(joinTeamList);
 		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
