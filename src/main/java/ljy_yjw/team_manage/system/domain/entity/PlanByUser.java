@@ -13,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,6 +40,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Alias("PlanByUser")
+@NamedEntityGraph(name = "getTodoList", attributeNodes = { @NamedAttributeNode("todoList"), @NamedAttributeNode("user") })
 public class PlanByUser {
 
 	@Id

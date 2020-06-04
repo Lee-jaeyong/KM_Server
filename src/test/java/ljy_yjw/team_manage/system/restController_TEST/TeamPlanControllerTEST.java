@@ -23,6 +23,17 @@ import ljy_yjw.team_manage.system.domain.dto.PlanByUserDTO;
 public class TeamPlanControllerTEST extends CommonTestConfig {
 
 	@Test
+	@Memo("자신의 일정을 검색하는 테스트")
+	public void test_9() throws Exception {
+		super.login("dlwodyd202", "a");
+		this.mvc
+			.perform(
+				get("/api/teamManage/plan/{code}/all/my", "55B37C5C").param("size", "6").param("page", "0").param("title", "")
+					.param("tag", "").param("start", "2020-06-01").param("end", "2020-06-03").header(AUTHRIZATION, auth))
+			.andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
 	@Ignore
 	@Memo("개인별 일정의 개수를 가져오는 테스트")
 	public void test_10() throws Exception {
@@ -36,8 +47,8 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	@Memo("일정을 등록하는 테스트")
 	public void test_11() throws Exception {
 		super.login("dlwodyd202", "a");
-		PlanByUserDTO plan = PlanByUserDTO.builder().tag("태그").start(LocalDate.of(2020, 1, 1))
-			.end(LocalDate.of(2020, 10, 10)).build();
+		PlanByUserDTO plan = PlanByUserDTO.builder().tag("태그").start(LocalDate.of(2020, 1, 1)).end(LocalDate.of(2020, 10, 10))
+			.build();
 		mvc.perform(post("/api/teamManage/plan/{code}", "ECCBC87E").header(AUTHRIZATION, auth)
 			.contentType(MediaType.APPLICATION_JSON).content(objMapper.writeValueAsString(plan))).andDo(print())
 			.andExpect(status().isOk());
@@ -48,8 +59,8 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	@Memo("일정을 수정하는 테스트")
 	public void test_12() throws Exception {
 		super.login("dlwodyd202", "a");
-		PlanByUserDTO plan = PlanByUserDTO.builder().tag("수정 테스트").start(LocalDate.of(2020, 1, 1))
-			.end(LocalDate.of(2020, 10, 10)).build();
+		PlanByUserDTO plan = PlanByUserDTO.builder().tag("수정 테스트").start(LocalDate.of(2020, 1, 1)).end(LocalDate.of(2020, 10, 10))
+			.build();
 		mvc.perform(put("/api/teamManage/plan/{seq}", "8").header(AUTHRIZATION, auth).contentType(MediaType.APPLICATION_JSON)
 			.content(objMapper.writeValueAsString(plan))).andDo(print()).andExpect(status().isOk());
 	}
@@ -73,6 +84,7 @@ public class TeamPlanControllerTEST extends CommonTestConfig {
 	}
 
 	@Test
+	@Ignore
 	@Memo("해당 팀의 일정을 가져오는 테스트")
 	public void test_15() throws Exception {
 		super.login("dlwodyd202", "a");

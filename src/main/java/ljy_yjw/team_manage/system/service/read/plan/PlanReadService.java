@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javassist.NotFoundException;
 import ljy_yjw.team_manage.system.custom.anotation.Memo;
-import ljy_yjw.team_manage.system.dbConn.jpa.PlanByUserAPI;
+import ljy_yjw.team_manage.system.dbConn.jpa.plan.PlanByUserAPI;
 import ljy_yjw.team_manage.system.dbConn.mybatis.PlanByUserDAO;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;

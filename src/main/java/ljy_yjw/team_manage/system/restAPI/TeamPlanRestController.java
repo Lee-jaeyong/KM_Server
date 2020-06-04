@@ -56,6 +56,7 @@ import ljy_yjw.team_manage.system.service.insert.plan.PlanByUserExcelInsertServi
 import ljy_yjw.team_manage.system.service.insert.plan.PlanByUserOneInsertService;
 import ljy_yjw.team_manage.system.service.read.plan.PlanExcelReadService;
 import ljy_yjw.team_manage.system.service.read.plan.PlanReadService;
+import ljy_yjw.team_manage.system.service.read.plan.PlanSearchService;
 import ljy_yjw.team_manage.system.service.read.plan.PlanReadService.GetType;
 import ljy_yjw.team_manage.system.service.read.team.TeamReadService;
 import ljy_yjw.team_manage.system.service.update.plan.PlanByUserOneUpdateService;
@@ -84,6 +85,9 @@ public class TeamPlanRestController {
 
 	@Autowired
 	PlanExcelReadService planExcelReadService;
+
+	@Autowired
+	PlanSearchService planSearchService;
 
 	/////////////////////////////////////////////////////////////////
 
@@ -163,16 +167,21 @@ public class TeamPlanRestController {
 	}
 
 	@Memo("자신의 모든 일정 가져오기")
-	@GetMapping("/all")
-	public ResponseEntity<?> getPlanAll(@Current_User Users user, PagedResourcesAssembler<PlanByUser> assembler,
-		Pageable pageable) {
-		List<PlanByUser> planList = planReadService.getPlanByMy(user.getId(), null, null, pageable, null);
+	@GetMapping("/{code}/all/my")
+	public ResponseEntity<?> getPlanAll(@PathVariable String code,
+		@RequestParam(defaultValue = "", required = false) String title,
+		@RequestParam(defaultValue = "", required = false) String tag,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
+		@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date end, @Current_User Users user,
+		PagedResourcesAssembler<PlanByUser> assembler, Pageable pageable) throws TeamCodeNotFountException {
+		teamAuthService.checkTeamAuth(user, code);
+		List<PlanByUser> planList = planSearchService.searchMyPlan(code, user.getId(), tag, title, start, end, pageable);
+		long totalCount = planSearchService.searchMyPlanCount(code, user.getId(), tag, title, start, end);
 		for (int i = 0; i < planList.size(); i++) {
 			planList.get(i).setTodoList(TodoList.stateYesFilter(planList.get(i).getTodoList()));
 		}
-		long planCount = planReadService.countPlanByMy(user.getId(), null, null, null);
-		var result = assembler.toModel(new PageImpl<PlanByUser>(planList, pageable, planCount));
-		result.add(linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
+		var result = assembler.toModel(new PageImpl<>(planList, pageable, totalCount));
+		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);
 	}
 
@@ -270,27 +279,6 @@ public class TeamPlanRestController {
 			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
 		}
 		long totalCount = planReadService.getPlanCount(code, date, GetType.NON);
-		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
-		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
-		return ResponseEntity.ok(result);
-	}
-
-	@Memo("해당 코드의 팀일정 중 나의 일정만 가져오는 메소드")
-	@GetMapping("/{code}/all/my")
-	public ResponseEntity<?> getMyPlanFromTeam(@PathVariable String code, @Current_User Users user, Pageable pageable,
-		PagedResourcesAssembler<PlanByUser> assembler) throws TeamCodeNotFountException, IOException {
-		teamAuthService.checkTeamAuth(user, code);
-		List<PlanByUser> resultPlanList = planReadService.getMyPlanFromTeam(code, user.getId(), pageable);
-		long totalCount = planReadService.getMyPlanCountFromTeam(code, user.getId());
-		for (int i = 0; i < resultPlanList.size(); i++) {
-			resultPlanList.get(i).setTodoList(TodoList.stateYesFilter(resultPlanList.get(i).getTodoList()));
-		}
-		for (int i = 0; i < resultPlanList.size(); i++) {
-			PlanByUser updatePlan = resultPlanList.get(i);
-			Users planUser = updatePlan.getUser();
-			planUser.setMyImg(planUser.getImageByte(userSerivce));
-			updatePlan.setUser(planUser);
-		}
 		var result = assembler.toModel(new PageImpl<>(resultPlanList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 		return ResponseEntity.ok(result);

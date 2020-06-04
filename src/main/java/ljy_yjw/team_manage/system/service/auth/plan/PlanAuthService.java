@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ljy_yjw.team_manage.system.custom.anotation.Memo;
-import ljy_yjw.team_manage.system.dbConn.jpa.PlanByUserAPI;
 import ljy_yjw.team_manage.system.dbConn.jpa.auth.AuthPlanByUserAPI;
+import ljy_yjw.team_manage.system.dbConn.jpa.plan.PlanByUserAPI;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.entity.Users;
 import ljy_yjw.team_manage.system.exception.exceptions.NotFoundException;
