@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -154,6 +155,17 @@ public class TeamPlanRestController {
 		});
 		joinUser.add(user);
 		return ResponseEntity.ok(planByUserExcelInsertService.excelFileUpload(file, joinUser, team));
+	}
+
+	@Memo("팀의 월별 일정률 가져오기")
+	@GetMapping("/{code}/progress-all")
+	public ResponseEntity<?> getChartDataProgress(@PathVariable String code, @Current_User Users user)
+		throws TeamCodeNotFountException {
+		teamAuthService.checkTeamAuth(user, code);
+		HashMap<String, Object> resultChartData = new HashMap<String, Object>();
+		resultChartData.put("end", planReadService.getPlanCountByEndDate(code));
+		resultChartData.put("start", planReadService.getPlanCountByStartDate(code));
+		return ResponseEntity.ok(resultChartData);
 	}
 
 	@Memo("개인별 일정 개수 가져오기")

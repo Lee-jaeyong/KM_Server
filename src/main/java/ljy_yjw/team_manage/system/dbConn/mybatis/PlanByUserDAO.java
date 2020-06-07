@@ -18,4 +18,8 @@ public interface PlanByUserDAO {
 	List<HashMap<String, Object>> chartDataByTodo(String code);
 
 	List<HashMap<String, Object>> chartDataBySuccessTodo(String code);
+
+	List<HashMap<String, Object>> chartDataByPlanStart(String code);
+
+	List<HashMap<String, Object>> chartDataByPlanEnd(String code);
 }

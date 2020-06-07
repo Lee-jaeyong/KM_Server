@@ -6,6 +6,20 @@
 <mapper
 	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.PlanByUserDAO">
 	
+	<select id="chartDataByPlanStart" parameterType="string" resultType="hashmap">
+		SELECT CONCAT(LEFT(p.start,7),'-01') AS DATE,COUNT(p.seq) AS 'count'
+		FROM `plan_by_user` p, `team` t
+		WHERE p.team_seq = t.seq AND t.code = #{code} AND state='YES'
+		GROUP BY LEFT(p.start,7)
+	</select>
+	
+	<select id="chartDataByPlanEnd" parameterType="string" resultType="hashmap">
+		SELECT CONCAT(LEFT(p.end,7),'-01') AS DATE,COUNT(p.seq) AS 'count'
+		FROM `plan_by_user` p, `team` t
+		WHERE p.team_seq = t.seq AND t.code = #{code} AND state='YES'
+		GROUP BY LEFT(p.end,7)
+	</select>
+	
 	<select id="chartDataByPlan" parameterType="string" resultType="hashmap">
 		SELECT users.id,users.name,COUNT(users.seq) AS 'count'
 		FROM team,plan_by_user,users

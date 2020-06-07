@@ -39,6 +39,16 @@ public class PlanReadService {
 		return resultPlan;
 	}
 
+	@Memo("해당 팀의 월별 일정률을 가져오는 메소드(마감일자)")
+	public List<HashMap<String, Object>> getPlanCountByEndDate(String code) {
+		return planByUserDAO.chartDataByPlanEnd(code);
+	}
+
+	@Memo("해당 팀의 월별 일정률을 가져오는 메소드(진행일자)")
+	public List<HashMap<String, Object>> getPlanCountByStartDate(String code) {
+		return planByUserDAO.chartDataByPlanStart(code);
+	}
+
 	@Memo("각각의 일정 개수를 가져오는 메소드")
 	public List<HashMap<String, Object>> getPlanCountGroupByUser(String code) {
 		List<HashMap<String, Object>> result = new ArrayList<>();
