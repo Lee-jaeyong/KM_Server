@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,19 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import ljy_yjw.team_manage.system.webConfig.converter.TeamConverter;
-
-@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
 
 	private static final String[] RESOURCE_LOCATIONS = { "classpath:/static/" };
-
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addFormatter(new TeamConverter());
-	}
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {

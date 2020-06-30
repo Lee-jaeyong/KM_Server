@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.dbConn.jpa.plan.GetListPlanByUserAPI;
+import ljy_yjw.team_manage.system.dbConn.queryDsl.plan.PlanQueryDsl;
+import ljy_yjw.team_manage.system.domain.dto.plan.SearchDTO;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
@@ -16,6 +19,19 @@ public class PlanSearchService {
 
 	@Autowired
 	GetListPlanByUserAPI getListPlanByUserAPI;
+
+	@Autowired
+	PlanQueryDsl planQueryDsl;
+
+	@Memo("특정 일부터 특정 일까지 해야하는 일정 리스트 가져오기")
+	public List<PlanByUser> findAllByCodeAndCheckDate(String code, SearchDTO searchDTO, Pageable pageable) {
+		return planQueryDsl.findAllByCodeAndMonth(code, searchDTO, pageable);
+	}
+
+	@Memo("특정 일부터 특정 일까지 해야하는 일정의 개수 가져오기")
+	public long countAllByCodeAndCheckDate(String code, SearchDTO searchDTO) {
+		return planQueryDsl.countAllByCodeAndMonth(code, searchDTO);
+	}
 
 	public List<PlanByUser> searchMyPlan(String code, String id, String tag, String title, Date start, Date end,
 		Pageable pageable) {

@@ -2,6 +2,8 @@ package ljy_yjw.team_manage.system.service.delete.team;
 
 import java.util.HashMap;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,8 @@ public class TeamOneDeleteService {
 	@Autowired
 	TeamDAO teamDAO;
 
-	public Team deleteTeam(String code) {
+	@Transactional
+	public Team deleteTeam(String code, String id) {
 		Team team = Team.builder().code(code).build();
 		teamDAO.delete(code);
 		return team;

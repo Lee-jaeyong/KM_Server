@@ -21,4 +21,8 @@ public class CustomDate {
 	public static LocalDate dateToLocalDate(Date dateToConvert) {
 		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
+
+	public static String dateToString(Date date) {
+		return s.format(date);
+	}
 }

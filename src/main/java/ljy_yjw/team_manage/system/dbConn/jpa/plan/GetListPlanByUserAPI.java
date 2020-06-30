@@ -14,6 +14,15 @@ import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
 public interface GetListPlanByUserAPI extends JpaRepository<PlanByUser, Long> {
 
+	@Memo("특정 월에 해야하는 일정 리스트 가져오기")
+	@EntityGraph(value = "getTodoList", type = EntityGraphType.FETCH)
+	List<PlanByUser> findByTeam_CodeAndStateAndStartLessThanEqualAndEndGreaterThanEqualOrderBySeqDesc(String code, BooleanState state,
+		Date start, Date end, Pageable pageable);
+
+	@Memo("특정 월에 해야하는 일정 리스트 개수 가져오기")
+	long countByTeam_CodeAndStateAndStartLessThanEqualAndEndGreaterThanEqual(String code, BooleanState state, Date start,
+		Date end);
+
 	@Memo("날짜 입력 X 타이틀 X")
 	@EntityGraph(value = "getTodoList", type = EntityGraphType.FETCH)
 	List<PlanByUser> findByTeam_CodeAndUser_IdAndStateAndTagContainingOrderBySeqDesc(String code, String id, BooleanState state,

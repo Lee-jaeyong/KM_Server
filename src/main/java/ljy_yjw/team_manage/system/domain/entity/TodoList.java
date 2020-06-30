@@ -37,8 +37,7 @@ public class TodoList {
 	@GeneratedValue
 	long seq;
 
-	@Column(nullable = false)
-	@Lob
+	@Column(nullable = false, length = 40)
 	String title;
 
 	@Enumerated(EnumType.STRING)

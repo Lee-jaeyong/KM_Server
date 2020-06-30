@@ -123,6 +123,7 @@ public class PlanReadService {
 
 	@Memo("해당 코드의 팀의 일정을 가져오는 메소드")
 	public List<PlanByUser> getPlanList(String code, Pageable pageable, Date date, GetType type) {
+		System.out.println("searchAll");
 		if (type == GetType.SEARCH) {
 			return planByUserAPI.findByStateAndTeam_CodeAndEndLessThan(BooleanState.YES, code,
 				new Date(date.getYear(), date.getMonth() + 1, 1), pageable);

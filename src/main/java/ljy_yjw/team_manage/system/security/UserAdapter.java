@@ -12,7 +12,8 @@ import ljy_yjw.team_manage.system.domain.entity.Users;
 import ljy_yjw.team_manage.system.domain.enums.UserRule;
 	
 public class UserAdapter extends User {
-
+	private static final long serialVersionUID = 1L;
+	
 	public Users user;
 
 	public UserAdapter(Users user) {

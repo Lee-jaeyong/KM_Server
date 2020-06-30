@@ -4,13 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -29,16 +30,23 @@ import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel.Link;
 import ljy_yjw.team_manage.system.custom.util.CustomFileUpload;
+import ljy_yjw.team_manage.system.custom.util.impl.ObjectEntityFactory;
 import ljy_yjw.team_manage.system.domain.dto.UserDTO;
 import ljy_yjw.team_manage.system.domain.entity.Users;
 import ljy_yjw.team_manage.system.domain.enums.FileType;
 import ljy_yjw.team_manage.system.exception.exceptions.CanNotPerformException;
 import ljy_yjw.team_manage.system.exception.exceptions.FileUploadException;
+import ljy_yjw.team_manage.system.exception.exceptions.InputValidException;
+import ljy_yjw.team_manage.system.exception.exceptions.user.DupIdException;
+import ljy_yjw.team_manage.system.exception.object.ErrorResponse;
 import lombok.var;
 
 @RestController
 @RequestMapping(value = "/api/users")
 public class UsersRestController {
+
+	@Resource
+	ObjectEntityFactory userEntityFactory;
 
 	@Autowired
 	UsersService userService;
@@ -92,14 +100,17 @@ public class UsersRestController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> update(@RequestBody @Valid UserDTO user, Errors error) {
+	public ResponseEntity<?> update(@RequestBody @Valid UserDTO user, Errors error, @Current_User Users loginUser)
+		throws InputValidException, CanNotPerformException {
+		if (!loginUser.getId().equals(user.getId())) {
+			throw new CanNotPerformException("자신의 정보만 수정할 수 있습니다.");
+		}
 		if (error.hasErrors()) {
-			return ResponseEntity.badRequest().build();
+			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
 		userService.update(user);
-		user.setPass(null);
-		EntityModel<UserDTO> model = new EntityModel<UserDTO>(user);
-		model.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
+		EntityModel<UserDTO> model = new EntityModel<>(user);
+		model.add(WebMvcLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
 		return ResponseEntity.ok(model);
 	}
 
@@ -109,17 +120,15 @@ public class UsersRestController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> join(@RequestBody @Valid UserDTO user, Errors error) {
+	public CustomEntityModel<?> join(@RequestBody @Valid UserDTO user, Errors error) throws InputValidException, DupIdException {
 		if (error.hasErrors()) {
-			return ResponseEntity.badRequest().build();
+			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
-		userService.save(user);
-		user.setPass(null);
-		EntityModel<UserDTO> model = new EntityModel<UserDTO>(user);
-		model.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("").withSelfRel());
-		model.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/update").withRel("update"));
-		model.add(ControllerLinkBuilder.linkTo(this.getClass()).slash("/delete").withRel("delete"));
-		return ResponseEntity.ok(model);
+		if (this.checkDupId(user.getId())) {
+			throw new DupIdException("중복되는 아이디가 존재합니다.");
+		}
+		Users saveUser = userService.save(user);
+		return userEntityFactory.get(saveUser, saveUser.getId());
 	}
 
 	@GetMapping("/oauth/revoke-token")

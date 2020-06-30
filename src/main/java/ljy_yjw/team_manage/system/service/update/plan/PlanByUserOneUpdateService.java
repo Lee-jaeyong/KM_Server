@@ -3,6 +3,7 @@ package ljy_yjw.team_manage.system.service.update.plan;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import ljy_yjw.team_manage.system.custom.anotation.Memo;

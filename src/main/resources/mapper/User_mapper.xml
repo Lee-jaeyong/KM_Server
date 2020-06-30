@@ -7,8 +7,7 @@
 	namespace="ljy_yjw.team_manage.system.dbConn.mybatis.UserDAO">
 	<update id="update" parameterType="Users">
 		UPDATE `users`
-		SET NAME =
-		#{name}, email = #{email}
+		SET NAME = #{name}, email = #{email}
 		WHERE id = #{id}
 	</update>
 

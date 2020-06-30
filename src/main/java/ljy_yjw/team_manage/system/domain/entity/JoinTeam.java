@@ -61,15 +61,4 @@ public class JoinTeam {
 	@JsonBackReference
 	Team team;
 
-	@JsonIgnore
-	public static List<JoinTeam> getRealJoinPerson(List<JoinTeam> joinPerson) {
-		List<JoinTeam> returnList = new ArrayList<JoinTeam>();
-		for (int i = 0; i < joinPerson.size(); i++) {
-			JoinTeam person = joinPerson.get(i);
-			if (person.state == BooleanState.YES) {
-				returnList.add(person);
-			}
-		}
-		return returnList;
-	}
 }

@@ -11,7 +11,7 @@
 	</resultMap>
 	
 	<select id="selectTeamLeader" resultType="Users">
-		SELECT u.name,u.id,u.email
+		SELECT u.name,u.id,u.email,u.img
 		FROM users u
 		WHERE u.seq = #{seq}
 	</select>
@@ -41,7 +41,7 @@
 	</select>
 
 
-	<select id="checkTeamAuth" parameterType="hashmap" resultType="TeamDTO">
+	<select id="checkTeamAuth" parameterType="hashmap" resultType="Team">
 		SELECT DISTINCT team.*
 		FROM team
 		WHERE
@@ -65,7 +65,7 @@
 		)
 	</select>
 
-	<select id="getTeam" resultType="TeamDTO" parameterType="hashmap">
+	<select id="getTeam" resultType="Team" parameterType="hashmap">
 		SELECT DISTINCT t.*
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
@@ -147,9 +147,49 @@
 	]]>
 	</select>
 	
+	<select id="getTeamsFinishedToday" parameterType="string" resultMap="teamResult">
+	<![CDATA[
+		SELECT DISTINCT t.code,t.description,t.end_date AS "endDate",t.name,t.start_date AS "startDate", t.team_leader_seq seq
+		FROM team t
+		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
+		WHERE
+		(
+		t.team_leader_seq = (
+					SELECT seq
+					FROM Users
+					WHERE id = 'wodyd2'
+				
+		)
+		OR
+		(
+		q.state = 'YES'
+		AND
+		q.user_seq = (
+			SELECT seq
+			FROM users
+			WHERE id = 'wodyd2'
+		)
+		)
+		)
+		AND t.end_date = LEFT(NOW(),10) AND t.flag = 'YES'
+	]]>
+	</select>
+	
 	<update id="update" parameterType="Team">
 		UPDATE team
 		SET start_Date = #{startDate}, end_Date = #{endDate} , description = #{description}
+		WHERE code = #{code}
+	</update>
+	
+	<update id="finished" parameterType="Team">
+		UPDATE team
+		SET flag = 'FINISHED'
+		WHERE code = #{code}
+	</update>
+	
+	<update id="unFinished" parameterType="Team">
+		UPDATE team
+		SET end_date = LEFT(NOW(),10)
 		WHERE code = #{code}
 	</update>
 	

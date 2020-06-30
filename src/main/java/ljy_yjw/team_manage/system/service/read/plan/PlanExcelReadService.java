@@ -15,7 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import ljy_yjw.team_manage.system.custom.util.CustomDate;
-import ljy_yjw.team_manage.system.domain.dto.PlanByUserDTO;
+import ljy_yjw.team_manage.system.domain.dto.plan.PlanByUserDTO;
+import ljy_yjw.team_manage.system.domain.dto.valid.plan.PlanValidator;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.entity.Team;
 import ljy_yjw.team_manage.system.domain.entity.TodoList;
@@ -29,6 +30,9 @@ public class PlanExcelReadService {
 
 	@Autowired
 	UsersService userService;
+
+	@Autowired
+	PlanValidator planValidator;
 
 	private void excelFileCheck(String fileExtension) throws CanNotPerformException {
 		if (!fileExtension.equals("xlsx") && !fileExtension.equals("xls")) {
@@ -63,7 +67,7 @@ public class PlanExcelReadService {
 			Users user = Users.builder().seq(seq).name(name).myImg(imgByte).id(row.getCell(0).getStringCellValue()).build();
 			PlanByUserDTO chkPlan = PlanByUserDTO.builder().start(CustomDate.dateToLocalDate(row.getCell(2).getDateCellValue()))
 				.end(CustomDate.dateToLocalDate(row.getCell(3).getDateCellValue())).build();
-			chkPlan.isAfter("[" + i + "] 열 날짜 시작일은 종료일보다 작아야합니다.");
+			planValidator.checkDate(chkPlan, "[" + i + "] 열 날짜 시작일은 종료일보다 작아야합니다.");
 			PlanByUser plan = PlanByUser.builder().tag(row.getCell(1).getStringCellValue())
 				.start(row.getCell(2).getDateCellValue()).end(row.getCell(3).getDateCellValue()).build();
 			int cols = 4;

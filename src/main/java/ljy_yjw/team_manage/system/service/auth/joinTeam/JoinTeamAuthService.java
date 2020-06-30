@@ -28,16 +28,10 @@ public class JoinTeamAuthService {
 		}
 	}
 
-	public void existsJoinTeam(long seq) {
-		if(!teamJoinRequestAPI.existsById(seq)) {
-			
-		}
-	}
-	
 	public void alreadyAppliedCheck(String code, String id) throws AlreadyAppliedException {
-		if (teamJoinRequestAPI.existsByTeam_CodeAndUser_Id(code, id)) {
+		if (teamJoinRequestAPI.existsByTeam_CodeAndUser_IdAndResonIsNull(code, id)) {
 			throw new AlreadyAppliedException("이미 신청한 팀입니다.");
 		}
 	}
-	
+
 }

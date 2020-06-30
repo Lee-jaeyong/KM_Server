@@ -45,7 +45,7 @@ public class ExceptionHandler {
 		ErrorResponse error = new ErrorResponse(ex.getMessage(), ErrorCode.TEAM_CODE_NOT_FOUND);
 		EntityModel<ErrorResponse> result = new EntityModel<>(error);
 		result.add(WebMvcLinkBuilder.linkTo(this.getClass()).slash("docs/index.html").withRel("profile"));
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
 	}
 
 	@org.springframework.web.bind.annotation.ExceptionHandler(NotTeamLeaderException.class)

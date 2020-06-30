@@ -54,20 +54,21 @@ public class Users {
 	@JsonIgnore
 	long seq;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 40)
 	String id;
 
 	@JsonIgnore
-	@Column(nullable = false)
+	@Column(nullable = false, length = 255)
 	String pass;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 40)
 	String name;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 40)
 	String email;
 
 	@Transient
+	@JsonInclude(value = Include.NON_NULL)
 	byte[] myImg;
 
 	@JsonIgnore

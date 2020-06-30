@@ -13,7 +13,7 @@ import ljy_yjw.team_manage.system.domain.entity.JoinTeam;
 import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
 public interface TeamJoinRequestAPI extends JpaRepository<JoinTeam, Long> {
-	boolean existsByTeam_CodeAndUser_Id(String code, String id);
+	boolean existsByTeam_CodeAndUser_IdAndResonIsNull(String code, String id);
 
 	List<MyJoinTeam> findByUser_Id(String id);
 

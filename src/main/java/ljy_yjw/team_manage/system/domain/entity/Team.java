@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -44,17 +45,22 @@ public class Team {
 	@JsonIgnore
 	long seq;
 
+	@Column(length = 20)
 	String code;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 100)
 	String name;
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	Date startDate;
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	Date endDate;
+
 	@Column(nullable = false)
+	@Lob
 	String description;
 
 	@Enumerated(EnumType.STRING)
