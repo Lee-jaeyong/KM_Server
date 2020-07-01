@@ -121,7 +121,7 @@
 
 	<select id="getTeamsFinished" parameterType="string" resultMap="teamResult">
 	<![CDATA[
-		SELECT DISTINCT t.code,t.description,t.end_date as "endDate",t.name,t.start_date as "startDate", t.team_leader_seq seq
+		SELECT DISTINCT t.flag,t.code,t.description,t.end_date as "endDate",t.name,t.start_date as "startDate", t.team_leader_seq seq
 		FROM team t
 		LEFT OUTER JOIN join_team q ON t.seq = q.team_seq
 		WHERE
@@ -143,7 +143,7 @@
 		)
 		)
 		)
-		AND t.end_date < LEFT(NOW(),10) AND t.flag = 'YES'
+		AND ((t.end_date < LEFT(NOW(),10) AND t.flag = 'YES') OR t.flag = 'FINISHED')
 	]]>
 	</select>
 	
@@ -189,7 +189,7 @@
 	
 	<update id="unFinished" parameterType="Team">
 		UPDATE team
-		SET end_date = LEFT(NOW(),10)
+		SET end_date = LEFT(NOW(),10), flag = 'YES'
 		WHERE code = #{code}
 	</update>
 	

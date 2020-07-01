@@ -1,8 +1,6 @@
 package ljy_yjw.team_manage.system.domain.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,7 +14,6 @@ import javax.persistence.TemporalType;
 import org.apache.ibatis.type.Alias;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -49,7 +46,6 @@ public class JoinTeam {
 	@JsonInclude(value = Include.NON_NULL)
 	BooleanState state;
 
-	@JsonInclude(value = Include.NON_NULL)
 	String reson;
 
 	@ManyToOne

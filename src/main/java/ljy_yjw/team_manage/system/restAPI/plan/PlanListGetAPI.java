@@ -115,7 +115,13 @@ public class PlanListGetAPI {
 		PagedResourcesAssembler<PlanByUser> assembler) {
 		long totalCount = planSearchService.countAllByCodeAndCheckDate(code, searchDTO);
 		List<PlanByUser> planList = planSearchService.findAllByCodeAndCheckDate(code, searchDTO, pageable);
-
+		planList.forEach(c->{
+			try {
+				userSettingService.imgSetting(c.getUser());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 		var result = assembler.toModel(new PageImpl<>(planList, pageable, totalCount));
 		result.add(linkTo(this.getClass()).slash("/docs/index.html").withRel("profile"));
 

@@ -44,16 +44,16 @@ public class PlanValidator implements Validator {
 	}
 
 	public void validate(Team team, PlanByUserDTO planByUserDTO, Errors errors) {
-		Date planStart = CustomDate.LocalDate2Date(planByUserDTO.getStart());
-		Date planEnd = CustomDate.LocalDate2Date(planByUserDTO.getEnd());
+//		Date planStart = CustomDate.LocalDate2Date(planByUserDTO.getStart());
+//		Date planEnd = CustomDate.LocalDate2Date(planByUserDTO.getEnd());
 
-		if (planStart.after(planEnd)) {
-			errors.rejectValue("start", "400", "일정 시작일은 종료일보다 작거나 같아야합니다.");
-		} else if (planStart.before(team.getStartDate()) || planStart.after(team.getEndDate())) {
-			errors.rejectValue("start", "400", "일정은 팀이 진행되는 기간에만 등록할 수 있습니다.");
-		} else if (planEnd.after(team.getEndDate())) {
-			errors.rejectValue("end", "400", "일정은 팀이 진행되는 기간에만 등록할 수 있습니다.");
-		}
+//		if (planStart.after(planEnd)) {
+//			errors.rejectValue("start", "400", "일정 시작일은 종료일보다 작거나 같아야합니다.");
+//		} else if (planStart.before(team.getStartDate()) || planStart.after(team.getEndDate())) {
+//			errors.rejectValue("start", "400", "일정은 팀이 진행되는 기간에만 등록할 수 있습니다.");
+//		} else if (planEnd.after(team.getEndDate())) {
+//			errors.rejectValue("end", "400", "일정은 팀이 진행되는 기간에만 등록할 수 있습니다.");
+//		}
 
 		validate(planByUserDTO, errors);
 	}

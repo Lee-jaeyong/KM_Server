@@ -6,6 +6,7 @@ import org.springframework.validation.Validator;
 
 import ljy_yjw.team_manage.system.custom.util.CustomDate;
 import ljy_yjw.team_manage.system.domain.entity.Team;
+import ljy_yjw.team_manage.system.domain.enums.BooleanState;
 
 @Component
 public class TeamUnFinishValidator implements Validator {
@@ -20,7 +21,7 @@ public class TeamUnFinishValidator implements Validator {
 		Team team = (Team) target;
 		String endDate = CustomDate.dateToString(team.getEndDate());
 		String now = CustomDate.getNowDate();
-		if (endDate.compareTo(now) > 0) {
+		if (team.getFlag() != BooleanState.FINISHED && endDate.compareTo(now) > 0) {
 			errors.rejectValue("endDate", "400", "현재 진행중인 팀은 복구할 수 없습니다.");
 		}
 	}

@@ -49,17 +49,14 @@ public class TeamListGetAPI {
 		List<Team> result = null;
 		if (flag != null && flag.equals("finished")) {
 			result = teamReadService.getTeamListFinished(id);
-			teamLeaderImgSetting(result);
 			return result.stream().map(c -> new CustomEntityModel<>(c, this, c.getCode(), Link.NOT_INCLUDE))
 				.collect(Collectors.toList());
 		} else if (flag != null && flag.equals("son")) {
 			result = teamReadService.getTeamFinishToday(id);
-			teamLeaderImgSetting(result);
 			return result.stream().map(c -> new CustomEntityModel<>(c, this, c.getCode(), Link.NOT_INCLUDE))
 				.collect(Collectors.toList());
 		} else {
 			result = teamReadService.getTeamListUnFinished(id);
-			teamLeaderImgSetting(result);
 			return result.stream()
 				.map(c -> c.getTeamLeader().getId().equals(id) ? new CustomEntityModel<>(c, this, c.getCode(), Link.ALL)
 					: new CustomEntityModel<>(c, this, c.getCode(), Link.NOT_INCLUDE))

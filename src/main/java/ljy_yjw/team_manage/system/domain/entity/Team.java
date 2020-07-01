@@ -64,7 +64,6 @@ public class Team {
 	String description;
 
 	@Enumerated(EnumType.STRING)
-	@JsonIgnore
 	BooleanState flag;
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -27,7 +27,7 @@ public class PlanByUserDTO {
 	long seq;
 
 	@NotNull(message = "태그를 입력해주세요")
-	@Pattern(regexp = "^[가-힣\\s]*$", message = "태그는 한글 조합으로 입력해주세요.")
+	@Pattern(regexp = "^[a-zA-Zㄱ-힣0-9|s]*$", message = "특수문자를 제외한 2자 이상 20자 미만으로 입력해주세요.")
 	@Size(min = 1, max = 20, message = "태그는 2자 이상 20자 미만으로 입력해주세요.")
 	String tag;
 

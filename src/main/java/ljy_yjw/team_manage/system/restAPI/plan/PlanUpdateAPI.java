@@ -13,6 +13,7 @@ import ljy_yjw.team_manage.system.custom.anotation.Memo;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel;
 import ljy_yjw.team_manage.system.custom.object.CustomEntityModel.Link;
 import ljy_yjw.team_manage.system.domain.dto.plan.PlanByUserDTO;
+import ljy_yjw.team_manage.system.domain.dto.valid.plan.PlanValidator;
 import ljy_yjw.team_manage.system.domain.entity.PlanByUser;
 import ljy_yjw.team_manage.system.domain.entity.Team;
 import ljy_yjw.team_manage.system.domain.entity.Users;
@@ -34,6 +35,9 @@ public class PlanUpdateAPI {
 
 	@Autowired
 	PlanByUserOneUpdateService planByUserOneUpdateService;
+	
+	@Autowired
+	PlanValidator planValidator;
 
 	@Memo("일정을 수정하는 메소드")
 	@PutMapping("/{seq}")
@@ -42,8 +46,8 @@ public class PlanUpdateAPI {
 		if (error.hasErrors()) {
 			throw new InputValidException(ErrorResponse.parseFieldError(error.getFieldErrors()));
 		}
-//		planByUser.isAfter("시작일은 종료일보다 작아야합니다.");
 		Team team = planAuthService.checkAuthThenGet(seq, user);
+		planValidator.validate(team, planByUser, error);
 		PlanByUser updatePlan = planByUser.parseThis2PlanByUser(planByUser, team, null);
 		updatePlan.setSeq(seq);
 		updatePlan = planByUserOneUpdateService.updatePlanByUser(updatePlan);
