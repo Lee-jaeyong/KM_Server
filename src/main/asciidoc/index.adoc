@@ -1,4 +1,4 @@
-= Team Management System RESTful API Guide
+= K Tutoring System RESTful API Guide
 LJY & YJW;
 :doctype: book
 :icons: font
@@ -41,13 +41,6 @@ use of HTTP status codes.
 | `200 OK`
 | The request completed successfully
 
-| `201 Created`
-| A new resource has been created successfully. The resource's URI is available from the response's
-`Location` header
-
-| `204 No Content`
-| An update to an existing resource has been applied successfully
-
 | `400 Bad Request`
 | The request was malformed. The response body will include an error providing further information
 
@@ -68,104 +61,50 @@ include::{snippets}/login/response-fields.adoc[]
 
 === 회원가입 [POST]
 - 요청 ex
-include::{snippets}/Join User/request-body.adoc[]
+include::{snippets}/create User/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Join User/request-fields.adoc[]
+include::{snippets}/create User/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Join User/response-body.adoc[]
+include::{snippets}/create User/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Join User/response-fields.adoc[]
-
-=== 회원수정 [PUT]
-- 요청 ex
-include::{snippets}/Update User/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/Update User/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/Update User/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Update User/response-fields.adoc[]
-
-=== 회원탈퇴[DELETE]
-- 요청 ex
-include::{snippets}/Delete User/httpie-request.adoc[]
-- 응답 ex
-include::{snippets}/Delete User/http-response.adoc[]
+include::{snippets}/create User/response-fields.adoc[]
 
 == 팀(Team)
 === 팀 생성
 - 요청 ex
-include::{snippets}/Create Team/request-body.adoc[]
+include::{snippets}/create Team/request-body.adoc[]
 - 요청 파라미터 설명
-include::{snippets}/Create Team/request-fields.adoc[]
+include::{snippets}/create Team/request-fields.adoc[]
 - 응답 ex
-include::{snippets}/Create Team/response-body.adoc[]
+include::{snippets}/create Team/response-body.adoc[]
 - 응답 파라미터 설명 
-include::{snippets}/Create Team/response-fields.adoc[]
-
-=== 팀 수정
-- 요청 ex
-include::{snippets}/Update Team/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/Update Team/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/Update Team/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Update Team/response-fields.adoc[]
-
-=== 팀 삭제
-- 요청 ex
-include::{snippets}/Delete Team/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/Delete Team/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/Delete Team/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Delete Team/response-fields.adoc[]
-
-=== 팀 진척도 변경
-- 요청 ex
-include::{snippets}/Update Progress of Team/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/Update Progress of Team/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/Update Progress of Team/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Update Progress of Team/response-fields.adoc[]
+include::{snippets}/create Team/response-fields.adoc[]
 
 === 팀 승인 요청
 - 요청 ex
-include::{snippets}/joinTeamRequest/http-request.adoc[]
-- 응답 ex
-include::{snippets}/joinTeamRequest/response-body.adoc[]
+include::{snippets}/join team/http-request.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/join team/path-parameters.adoc[]
 
-=== 팀 승인 요청 승낙
+=== 팀 승인 요청 리스트 가져오기
 - 요청 ex
-include::{snippets}/SignUpSuccess JoinTeam/http-request.adoc[]
+include::{snippets}/get signUp list/http-request.adoc[]
+- 요청 파라미터 설명
+include::{snippets}/get signUp list/path-parameters.adoc[]
 - 응답 ex
-include::{snippets}/SignUpSuccess JoinTeam/response-body.adoc[]
+include::{snippets}/get signUp list/response-body.adoc[]
 
-=== 팀 승인 요청 반려
+=== 팀 정보 가져오기
 - 요청 ex
-include::{snippets}/SignUpFaild JoinTeam/http-request.adoc[]
+include::{snippets}/team Info/http-request.adoc[]
 - 응답 ex
-include::{snippets}/SignUpFaild JoinTeam/response-body.adoc[]
+include::{snippets}/team Info/response-body.adoc[]
 
-=== 팀 정보 가져오기(UnFinished)
+=== 팀 리스트 가져오기
 - 요청 ex
-include::{snippets}/Get JoinTeamUnFinished/http-request.adoc[]
+include::{snippets}/team List Info/http-request.adoc[]
 - 응답 ex
-include::{snippets}/Get JoinTeamUnFinished/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Get JoinTeamUnFinished/response-fields.adoc[]
-
-=== 팀 정보 가져오기(Finished)
-- 요청 ex
-include::{snippets}/Get JoinTeamFinished/http-request.adoc[]
-- 응답 ex
-include::{snippets}/Get JoinTeamFinished/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/Get JoinTeamFinished/response-fields.adoc[]
+include::{snippets}/team List Info/response-body.adoc[]
 
 == 일정(Plan)
 === 등록
@@ -175,166 +114,15 @@ include::{snippets}/create plan/request-body.adoc[]
 include::{snippets}/create plan/request-fields.adoc[]
 - 응답 ex
 include::{snippets}/create plan/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/create plan/response-fields.adoc[]
 
-=== 삭제
+=== 일정 리스트 가져오기
 - 요청 ex
-include::{snippets}/delete plan/http-request.adoc[]
+include::{snippets}/plan List/http-request.adoc[]
 - 응답 ex
-include::{snippets}/delete plan/response-body.adoc[]
+include::{snippets}/plan List/response-body.adoc[]
 
-=== 수정
+=== 일정 단건 가져오기
 - 요청 ex
-include::{snippets}/update plan/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/update plan/request-fields.adoc[]
+include::{snippets}/plan Info/http-request.adoc[]
 - 응답 ex
-include::{snippets}/update plan/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/update plan/response-fields.adoc[]
-
-=== 일정 가져오기(UnFinished)
-- 요청 ex
-include::{snippets}/update plan/http-request.adoc[]
-- 응답 ex
-include::{snippets}/update plan/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/update plan/response-fields.adoc[]
-
-=== 일정 단건 가져오기(UnFinished)
-- 요청 ex
-include::{snippets}/GetOne PlanByUser/http-request.adoc[]
-- 응답 ex
-include::{snippets}/GetOne PlanByUser/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/GetOne PlanByUser/response-fields.adoc[]
-
-== 공지사항(Notice)
-=== 등록
-- 요청 ex
-include::{snippets}/create notice/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/create notice/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/create notice/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/create notice/response-fields.adoc[]
-
-=== 수정
-- 요청 ex
-include::{snippets}/update notice/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/update notice/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/update notice/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/update notice/response-fields.adoc[]
-
-=== 삭제
-- 요청 ex
-include::{snippets}/delete notice/http-request.adoc[]
-- 응답 ex
-include::{snippets}/delete notice/response-body.adoc[]
-
-=== 해당 팀 공지사항 가져오기
-- 요청 ex
-include::{snippets}/getAll notice/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getAll notice/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getAll notice/response-fields.adoc[]
-
-=== 해당 팀 공지사항 한건 가져오기
-- 요청 ex
-include::{snippets}/getOne notice/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getOne notice/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getOne notice/response-fields.adoc[]
-
-== 자유게시판(FreeBoard)
-=== 등록
-- 요청 ex
-include::{snippets}/create freeBoard/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/create freeBoard/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/create freeBoard/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/create freeBoard/response-fields.adoc[]
-
-=== 수정
-- 요청 ex
-include::{snippets}/update freeBoard/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/update freeBoard/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/update freeBoard/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/update freeBoard/response-fields.adoc[]
-
-=== 삭제
-- 요청 ex
-include::{snippets}/delete freeBoard/http-request.adoc[]
-- 응답 ex
-include::{snippets}/delete freeBoard/response-body.adoc[]
-
-=== 해당 팀 자유게시판 가져오기
-- 요청 ex
-include::{snippets}/getList freeBoard/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getList freeBoard/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getList freeBoard/response-fields.adoc[]
-
-=== 해당 팀 자유게시판 한건 가져오기
-- 요청 ex
-include::{snippets}/getOne freeBoard/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getOne freeBoard/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getOne freeBoard/response-fields.adoc[]
-
-== 참고자료(ReferenceData)
-=== 등록
-- 요청 ex
-include::{snippets}/create referenceData/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/create referenceData/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/create referenceData/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/create referenceData/response-fields.adoc[]
-
-=== 수정
-- 요청 ex
-include::{snippets}/update referenceData/request-body.adoc[]
-- 요청 파라미터 설명
-include::{snippets}/update referenceData/request-fields.adoc[]
-- 응답 ex
-include::{snippets}/update referenceData/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/update referenceData/response-fields.adoc[]
-
-=== 삭제
-- 요청 ex
-include::{snippets}/delete referenceData/http-request.adoc[]
-- 응답 ex
-include::{snippets}/delete referenceData/response-body.adoc[]
-
-=== 해당 팀 자유게시판 가져오기
-- 요청 ex
-include::{snippets}/getList referenceData/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getList referenceData/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getList referenceData/response-fields.adoc[]
-
-=== 해당 팀 자유게시판 한건 가져오기
-- 요청 ex
-include::{snippets}/getOne referenceData/http-request.adoc[]
-- 응답 ex
-include::{snippets}/getOne referenceData/response-body.adoc[]
-- 응답 파라미터 설명 
-include::{snippets}/getOne referenceData/response-fields.adoc[]
+include::{snippets}/plan Info/response-body.adoc[]
